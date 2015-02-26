@@ -6,4 +6,4 @@ def search():
 
 @app.route('/results')
 def results():
-    return "Output results for the nonprofit"
+    return "Output results for the current nonprofit"
