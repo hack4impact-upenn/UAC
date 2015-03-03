@@ -56,6 +56,12 @@
     .form-control {
         width: 100px;
     }
+    .red {
+        color:"#DC4E00";
+    }
+    .blue {
+        color:"#89CEDE";
+    }
 
 </style>
 
@@ -88,13 +94,19 @@
 
     <div class="row"> 
         <div class="col-md-8">Savings Breakdown</div>
-            <div class="col-md-4">
-                <form>
-                    <label><input type="radio" name="mode" value="grouped"> Grouped</label>
-                    <label><input type="radio" name="mode" value="stacked" checked > Stacked</label>
-                </form>
-            </div>
+        <div class="col-md-4">
+            <form>
+                <label><input type="radio" name="mode" value="grouped"> Grouped</label>
+                <label><input type="radio" name="mode" value="stacked" checked > Stacked</label>
+            </form>
         </div>
+    </div>
+    <div class="row"> 
+        <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#DC4E00" aria-hidden="true">  Current Costs</span></div>
+    </div>
+    <div class="row"> 
+        <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#89CEDE" aria-hidden="true">  Costs with UAC</span></div>
+    </div>
     <div class="row"> 
         <div class="col-md-8">
             <div id="svg_container"> 
