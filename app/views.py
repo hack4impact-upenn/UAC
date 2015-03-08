@@ -1,14 +1,14 @@
 from app import app
 from flask import request, render_template
+import requests
 
 @app.route('/', methods=['GET','POST'])
 def search():
-    print "HI ARMAN"
     if request.method == 'POST':
-        print "are we here at all"
-        d = request.form.getlist('search')
-        t = d[0]
-        print t
+        search_value = request.form.getlist('search')[0]
+        print search_value
+
+    print requests.get('https://projects.propublica.org/nonprofits/api/v1/search.json?q=propublica').content
 
     return render_template('index.html')
 
