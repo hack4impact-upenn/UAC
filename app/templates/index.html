@@ -16,4 +16,24 @@
     </form>
   </div>
 
+  {% if results %}
+    {{ pagination.info }}
+    {{ pagination.links }}
+
+    {% for result in results %}
+    <!-- TODO make template for displaying each result -->
+      <a href={{ url_for('ein_results', ein=result['ein']) }}>{{ result['name'] }}</a>
+      {{ result['city'] }}
+      {{ result['state'] }}
+      {{ result['ein'] }}
+      {{ result['tax_prd'] }}
+
+
+      <br>
+      <br>
+    {% endfor %}
+
+    {{ pagination.links }}
+  {% endif %}
+
 </body>

@@ -1,5 +1,6 @@
 from app import app
 from flask import request, render_template, redirect, url_for
+from flask.ext.paginate import Pagination
 from attrdict import AttrDict
 from urllib import quote_plus
 import requests, json, re
@@ -21,7 +22,7 @@ def search():
           print org['ein']
           print org['city']
           print org['state']
-          print org['tax_period']
+          print result['tax_prd']
 
           # redirect
           ein = parse_EIN(search_value)
@@ -31,16 +32,31 @@ def search():
           filings = result['filings']
           num_results = result['total_results']
 
-          print 'Search yielded ' + num_results + ' result(s).'
+          print 'Search yielded ' + str(num_results) + ' result(s).'
 
+          results_for_html = []
           for i in range(0, min(RESULTS_PER_PAGE,num_results)-1):
             org = filings[i]['organization']
+            result_for_html = {
+              'name': org['name'],
+              'ein': org['ein'],
+              'city': org['city'],
+              'state': org['state'],
+              'tax_prd': filings[i]['tax_prd']
+              }
+            results_for_html.append(result_for_html)
+
+            # print - delete me when ur done
             print org['name']
             print org['ein']
             print org['city']
             print org['state']
-            print org['tax_period']
+            print filings[i]['tax_prd']
             print ''
+
+          pagination = Pagination(page=1, total=num_results, search=False, per_page = RESULTS_PER_PAGE)
+
+          return render_template('index.html', results=results_for_html, pagination=pagination)
 
     return render_template('index.html')
 
@@ -105,6 +121,16 @@ def results():
 @app.route('/results/<ein>')
 def ein_results(ein):
   print ein
+
+  result = query(ein)
+
+  org = result['organization']
+  print org['name']
+  print org['ein']
+  print org['city']
+  print org['state']
+  print result['tax_prd']
+
   return render_template('results.html')
 
 #@app.route('/results/') # ? results/123456789
