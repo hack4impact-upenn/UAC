@@ -1,5 +1,5 @@
 from app import app
-from flask import request, render_template
+from flask import request, render_template, redirect, url_for
 from attrdict import AttrDict
 from urllib import quote_plus
 import requests, json, re
@@ -24,12 +24,13 @@ def search():
           print org['state']
           print org['tax_period']
 
+          # redirect
+          return redirect(url_for('results'))
+
         else:
-          print "HERE I AM 2"
           filings = result['filings']
           num_results = result['total_results']
 
-          print "HERE I AM 3"
           for i in range(0, min(RESULTS_PER_PAGE,num_results)-1):
             org = filings[i]['organization']
             print org['name']
@@ -78,4 +79,4 @@ def is_EIN(search_value):
 
 @app.route('/results')
 def results():
-    return "Output results for the current nonprofit"
+  return render_template('results.html')
