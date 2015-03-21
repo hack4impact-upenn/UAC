@@ -14,9 +14,8 @@
 <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Bootstrap theme -->
 <link href="../dist/css/bootstrap-theme.min.css" rel="stylesheet">
-
 <!-- Custom styles for this template -->
-<link href="theme.css" rel="stylesheet">
+<link href="../dist/css/bootstrap-theme.css" rel="stylesheet">
 
 <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
 <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -41,7 +40,6 @@
         margin: 100px;
     }
 
-
     text {
         font: 10px sans-serif;
     }
@@ -60,6 +58,10 @@
     
     .form-control {
         width: 100px;
+    }
+
+    .svg {
+        padding:50px;
     }
 
     /* Adjust colors of bars in legend/key */
@@ -99,13 +101,34 @@
 
 <div class="container theme-showcase" role="main">
 
+<!-- PDF iframed here-->
+    <div>
+        <iframe src="">iframe</iframe>
+    </div>
+
+<!-- Links to other websites and PDFs here -->
+    <div> 
+        {%
+            items = ["Link1", "Link2", "Link3"]
+            for item in items:
+        %}
+            <a href="">{{item}}</a>
+        {% endfor %}
+    </div>
+
+<!-- Overall Savings Numbers -->
+    <div>
+        <p>Name of Non-Profit</p>
+        <p>With UAC, you can save</p>
+        <p>$2021</p>
+        <p>every year.</p>
+    </div>
+
+
+<!-- Costs/Savings by Categories Chart -->
     <div class="row"> 
         <div class="col-md-8">Savings Breakdown</div>
         <div class="col-md-4">
-            <form>
-                <label><input type="radio" name="mode" value="grouped" checked> Grouped</label>
-                <label><input type="radio" name="mode" value="stacked"> Stacked</label>
-            </form>
         </div>
     </div>
     <div class="row"> 
@@ -115,74 +138,134 @@
         <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#89CEDE" aria-hidden="true">  Costs with UAC</span></div>
     </div>
     <div class="row"> 
-        <div class="col-md-8">
+        <div class="col-md-9">
             <div id="svg_container"> 
             </div>
         </div>  
-        <div class="col-md-4"> 
+        <div class="col-md-3"> 
             
+            <!-- FORM TO CHANGE SPENDING DATA VALUES -->
             <form id="costs_form">
-                <div class="form-group" >
-                    <label for="legal">Legal</label>
+                <div class=row>
+                    <div class="form-group">
+                        <label class="update" for="management">Management</label>
+                        <input type="text" class="form-control" class="btn pull-right" id="management" placeholder="">
+                    </div>
+                </div>
+               
+                <div class="form-group">
+                    <label class="update" for="legal">Legal</label>
                     <input type="text" class="form-control" id="legal" placeholder="">
                 </div>
-                <div class="form-group">
-                    <label for="accounting">Accounting</label>
+                <div class="form-group" class="form-inline">
+                    <label class="update"for="accounting">Accounting</label>
                     <input type="text" class="form-control" id="accounting" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label for="insurance">Insurance</label>
+                    <label class="update" for="lobbying">Lobbying</label>
+                    <input type="text" class="form-control" id="lobbying" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="professional_fundraising">Professional Fundraising</label>
+                    <input type="text" class="form-control" id="professional_fundraising" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="investment_management">Investment Management</label>
+                    <input type="text" class="form-control" id="investment_management" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="advertising">Advertising</label>
+                    <input type="text" class="form-control" id="advertising" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="office_expenses">Office Expenses</label>
+                    <input type="text" class="form-control" id="office_expenses" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="information_technology">Information Technology</label>
+                    <input type="text" class="form-control" id="information_technology" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="interest_expense">Interest Expense</label>
+                    <input type="text" class="form-control" id="interest_expense" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="insurance">Insurance</label>
                     <input type="text" class="form-control" id="insurance" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label for="compensation">Compensation</label>
-                    <input type="text" class="form-control" id="compensation" placeholder="">
+                    <label class="update" for="employee_benefits">Employee Benefits</label>
+                    <input type="text" class="form-control" id="employee_benefits" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label for="services">Services</label>
-                    <input type="text" class="form-control" id="services" placeholder="">
+                    <label class="update" for="pension_plan_contributions">Pension Plan Contributions</label>
+                    <input type="text" class="form-control" id="pension_plan_contributions" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label for "other">Other</label>
+                    <label class="update" for="other">Other</label>
                     <input type="text" class="form-control" id="other" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="total">Total</label>
+                    <p id="total"> </p>
                 </div>
                 <button type="submit" class="btn btn-default" id="submit_button">Submit</button>
             </form>
         </div>
     </div>
 
+<!-- Comparison Chart -->
     <div class="row"> 
         <div class="col-md-8">How Do You Stack Up?</div>
         <div class="col-md-4">
-            
         </div>
     </div>
 
     <div class="row"> 
         <div class='col-md-1'>
+            <!-- Labels for bars -->
             <p class="labels">Total</p>
             <p class="labels">Legal</p>
             <p class="labels">Accounting</p>
+            <p class="labels">Lobbying</p>
+            <p class="labels">Professional Fundraising</p>
+            <p class="labels">Investment Management</p>
+            <p class="labels">Advertising</p>
+            <p class="labels">Office Expenses</p>
+            <p class="labels">Information Technology</p>
+            <p class="labels">Interest Expense</p>
             <p class="labels">Insurance</p>
-            <p class="labels">Compensation</p>
-            <p class="labels">Services</p>
+            <p class="labels">Employee benefits</p>
             <p class="labels">Other</p>
         </div>
         <div class="col-md-8">
             <div id="svg2_container"> 
-                
-
+                <!-- Comparison SVG/Chart inserted here -->
             </div>
         </div>
-        <div class="col-md-3">
-            other column
+        <div class="col-md-1">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">State<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Dropdown link</a></li>
+                    <li><a href="#">Dropdown link</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">NTEE<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Dropdown link</a></li>
+                    <li><a href="#">Dropdown link</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <linearGradient id="grad">
-       <stop offset="0" stop-color="#12f84f"/>
-       <stop offset="1" stop-color="#f00f0f"/>
-    </linearGradient>
+   
 
 </div> <!-- /container -->
 
@@ -200,12 +283,25 @@ BUILDING BAR GRAPH
     Both graphs pull from 'expense data' currently for demo, but second graph should pull from data comparing user to other non-profits.
 */
 
-    var expense_data = [[210,40,30,20,50,60,10],[120,10,15,10,25,50,10]];
+    // var expense_data = [
+    //      [50,30,10,40,60,80,30,40,50,60,70,80,90,100,],
+    //      [60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
+
+    var expense_data = [
+         [5000,3000,1000,4000,6000,8000,10000,9000,7000,5000,3000,2000,3000,5000,],
+         [3000,2000,500,3000,3000,5000,9000,7000,5000,4000,2000,1000,1000,4000]];
+
+    // DATA WITH TOTAL INCLUDED:
+    // var expense_data = [
+    //     [780,50,40,30,20,10,20,30,40,50,60,70,80,90,100,],
+    //     [830,60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
+
+    var labels = ['Management', 'Legal', 'Accounting', 'Lobbying', 'Prof. Fund.', 'Invest. MGMT.', 'Advertising', 'Office Exp.', 'Information Tech.', 'Interest Expense', 'Insurance', 'Empl. Benefits', 'Pension Plan', 'Other'];
 
     populateForm(); // to fill in cost form with current data 
 
     var n = 2, // number of layers
-        m = 7; // number of samples per layer
+        m = 14; // number of samples per layer
     var x;
     var y;
     var rect;
@@ -217,7 +313,9 @@ BUILDING BAR GRAPH
     createBarGraph();
 
     function createBarGraph() {
-        
+
+        updateTotalCost();
+
         var stack = d3.layout.stack();
         var layers = stack(d3.range(n).map(function(x) {return getData(x); }));
         console.log("LAYERS");
@@ -229,17 +327,17 @@ BUILDING BAR GRAPH
         yStackMax = d3.max(layers, function(layer) { return d3.max(layer, 
             function(d) { return d.y0 + d.y; }); });
 
-        var margin = {top: 40, right: 10, bottom: 20, left: 10};
-        width = 800 - margin.left - margin.right;
-        var diagramWidth = 800 - margin.left - margin.right - 200;
-        height = 500 - margin.top - margin.bottom;
+        var margin = {top: 40, right: 10, bottom: 75, left: 10};
+        width = 1000 - margin.left - margin.right;
+        var diagramWidth = 1000 - margin.left - margin.right - 200;
+        height = 600 - margin.top - margin.bottom;
 
         x = d3.scale.ordinal()
         .domain(d3.range(m))
         .rangeRoundBands([0, diagramWidth], .08);
 
         y = d3.scale.linear()
-        .domain([0, yStackMax])
+        .domain([0, yGroupMax])
         .range([height, 0]);
 
         // set bar graph colors
@@ -247,16 +345,16 @@ BUILDING BAR GRAPH
 
         var xAxis = d3.svg.axis()
         .scale(x)
-        .tickSize(1)
+        .tickSize(3)
         .tickPadding(6)
-        .ticks([0,1,2,3,4,5,6])
-        .tickValues([0,1,2,3,4,5,6])
+        .ticks([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
+        .tickValues([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
         .tickFormat(function(d) { return convertToLabel(d); })
         .orient("bottom");
 
         var yAxis = d3.svg.axis()
         .scale(y)
-        .tickSize(1)
+        .tickSize(3)
         .ticks(20)
         .tickPadding(0)
         .tickFormat(function(d) {return '$' + d; })
@@ -281,7 +379,57 @@ BUILDING BAR GRAPH
         .attr("x", function(d) { return x(d.x); })
         .attr("y", height)
         .attr("width", x.rangeBand())
-        .attr("height", 0);
+        .attr("height", 0)
+        .on("mouseover", function(d) {
+            layer.selectAll("text")
+            .data(function(d) {
+                return d;
+            })
+            .enter()
+            .append("text")
+            .style("text-anchor","middle")
+            //.attr("transform", "rotate(10)")
+            .attr("x", function(d) {
+                if (d.y0 == 0) return x(d.x) + 10;
+                return x(d.x) + 40;
+            })
+            .attr("y", function(d) {
+                console.log('y = ' + d.y);
+                return y(d.y) -10;
+            })
+            .filter(function(e) {
+                console.log(e.x == d.x);
+                return e.x == d.x;
+            })
+            .text(function(d) {
+                return '$'+d.y;
+            });
+
+        }).on("mouseout",  function(d) { 
+            layer.selectAll("text").remove();
+        });
+
+        // layer.selectAll("text")
+        // .data(function(d) {
+        //     return d;
+        // })
+        // .enter()
+        // .append("text")
+        // .style("text-anchor","middle")
+        // //.attr("transform", "rotate(10)")
+        // .attr("x", function(d) {
+        //     if (d.y0 == 0) return x(d.x) + 10;
+        //     return x(d.x) + 40;
+        // })
+        // .attr("y", function(d) {
+        //     console.log('y = ' + d.y);
+        //     return y(d.y) -10;
+        // })
+        // .text(function(d) {
+        //     return '$'+d.y;
+        // });
+
+        
 
         rect.transition()
         .delay(function(d, i) { return i * 10; })
@@ -291,7 +439,12 @@ BUILDING BAR GRAPH
         svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor","end")
+        .attr("transform", function(d) {
+            return "rotate(-60)"
+        });
 
         svg.append("g")
         .attr("class", "y axis")
@@ -304,30 +457,26 @@ BUILDING BAR GRAPH
         change();
     }
 
+    function updateTotalCost() {
+        var total_cost = 0;
+        for (var i = 0; i < m; i++) {
+            total_cost += expense_data[0][i];
+        }
+        $('#total').text(total_cost);
+    }
+
+    // m = number of categories
     function convertToLabel(d) {
-        switch(d) {
-            case 0:
-                return 'Total';
-                break;
-            case 1:
-                return 'Legal';
-                break;
-            case 2:
-                return 'Accounting';
-                break;
-            case 3:
-                return 'Insurance';
-                break;
-            case 4:
-                return 'Compensation';
-                break;
-            case 5:
-                return 'Services';
-                break; 
-            case 6:
-                return 'Other';
-                break;
-        } 
+        if (d >= 0 && d < m) {
+            var label = labels[d]
+            // if (label.length > 5) {
+            //     return label.substring(0,6) + '.';
+            // } 
+            return label;
+            
+        } else {
+            return 'Not a valid label';
+        }
     }
 
     // to change graph from STACKED to GROUPED bars
@@ -383,18 +532,21 @@ BUILDING BAR GRAPH
     }
 
     function populateForm() {
+        $('#management').val(expense_data[0][0]);
         $('#legal').val(expense_data[0][1]);
         $('#accounting').val(expense_data[0][2]);
-        $('#insurance').val(expense_data[0][3]);
-        $('#compensation').val(expense_data[0][4]);
-        $('#services').val(expense_data[0][5]);
-        $('#other').val(expense_data[0][6]);
-        // $('#legal').attr('text', expense_data[0][1]);
-        // $('#accounting').attr('text', expense_data[0][2]);
-        // $('#insurance').attr('text', expense_data[0][3]);
-        // $('#compensation').attr('text', expense_data[0][4]);
-        // $('#services').attr('text', expense_data[0][5]);
-        // $('#other').attr('text', expense_data[0][6]);
+        $('#lobbying').val(expense_data[0][3]);
+        $('#professional_fundraising').val(expense_data[0][4]);
+        $('#investment_management').val(expense_data[0][5]);
+        $('#advertising').val(expense_data[0][6]);
+        $('#office_expenses').val(expense_data[0][7]);
+        $('#information_technology').val(expense_data[0][8]);
+        $('#interest_expense').val(expense_data[0][9]);
+        $('#insurance').val(expense_data[0][10]);
+        $('#employee_benefits').val(expense_data[0][11]);
+        $('#pension_plan_contributions').val(expense_data[0][12]);
+        $('#other').val(expense_data[0][13]);
+        
     }
 
     $('#costs_form').submit(function() {
@@ -412,7 +564,7 @@ BUILDING BAR GRAPH
             }
         });
 
-        values.unshift(total);
+        //values.unshift(total);
         console.log(values);
 
         expense_data[0] = values;
@@ -426,7 +578,7 @@ BUILDING BAR GRAPH
 BUILDING HORIZONTAL SLIDER BARS
 ****************************************/
 
-    var numBars = 7;
+    var numBars = 14;
     var width = 800;
     var height = numBars*100;
 
@@ -438,7 +590,7 @@ BUILDING HORIZONTAL SLIDER BARS
         .attr("height",height);
 
         var rectWidth = width - 100;
-        var rectHeight = height/20;
+        var rectHeight = height/(numBars*2);
 
         var gradient = rect_container.append("linearGradient")
             .attr('y1', 0)
@@ -473,19 +625,23 @@ BUILDING HORIZONTAL SLIDER BARS
             .attr("fill", "url(#gradient)");
         }
 
+        var comparison_data = [
+            [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2],
+            [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4]];
+
         for (var i = 0; i < numBars; i++) {
             rect_container.append("line")
-            .attr('x1', rectWidth - (expense_data[0][i] * rectWidth / 100))
+            .attr('x1', rectWidth - (comparison_data[0][i] * rectWidth))
             .attr('y1', i*100)
-            .attr('x2', rectWidth - (expense_data[0][i] * rectWidth / 100))
+            .attr('x2', rectWidth - (comparison_data[0][i] * rectWidth))
             .attr('y2', i*100 + rectHeight)
             .attr('stroke-width',2)
             .attr('stroke','black');
 
             rect_container.append("line")
-            .attr('x1', rectWidth - (expense_data[1][i] * rectWidth / 100))
+            .attr('x1', rectWidth - (comparison_data[1][i] * rectWidth))
             .attr('y1', i*100)
-            .attr('x2', rectWidth - (expense_data[1][i] * rectWidth / 100))
+            .attr('x2', rectWidth - (comparison_data[1][i] * rectWidth))
             .attr('y2', i*100 + rectHeight)
             .attr('stroke-width',2)
             .attr('stroke','white');
@@ -499,9 +655,7 @@ BUILDING HORIZONTAL SLIDER BARS
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="../../dist/js/bootstrap.min.js"></script>
-<script src="../../assets/js/docs.min.js"></script>
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+<script src="../dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>
