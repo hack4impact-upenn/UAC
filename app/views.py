@@ -13,25 +13,51 @@ def search():
         search_value = quote_plus(search_value)
         print search_value
 
-        query = 'https://projects.propublica.org/nonprofits/api/v1/search.json?q='
+        result = query(search_value)
 
-        # TODO error checking
-        result = requests.get(query + search_value).content
-        result = json.loads(result) # convert to json obj
-
-        filings = result['filings']
-        num_results = result['total_results']
-
-        for i in range(0, min(RESULTS_PER_PAGE,num_results-1)):
-          org = filings[i]
-          print org['organization']['name']
+        if is_EIN(search_value):
+          org = result['organization']
+          print org['name']
           print org['ein']
-          print org['organization']['city']
-          print org['organization']['state']
-          print org['organization']['tax_period']
-          print ""
+          print org['city']
+          print org['state']
+          print org['tax_period']
+
+        else:
+          filings = result['filings']
+          num_results = result['total_results']
+
+          for i in range(0, min(RESULTS_PER_PAGE,num_results)-1):
+            org = filings[i]['organization']
+            print org['name']
+            print org['ein']
+            print org['city']
+            print org['state']
+            print org['tax_period']
+            print ""
 
     return render_template('index.html')
+
+# if search value is EIN, use Organization Method
+# else, use Search Method
+def query(search_value):
+  # use pattern matching to check if search value is EIN or org name
+  if is_EIN(search_value):
+    query = 'https://projects.propublica.org/nonprofits/api/v1/organizations/'
+
+    result = requests.get(query + search_value + '.json').content
+
+  else:
+    query = 'https://projects.propublica.org/nonprofits/api/v1/search.json?q='
+
+    # TODO error checking
+    result = requests.get(query + search_value).content
+    
+  result = json.loads(result) # convert to json obj
+  return result
+
+def is_EIN(search_value):
+  return True
 
 @app.route('/results')
 def results():
