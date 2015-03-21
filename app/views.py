@@ -16,7 +16,6 @@ def search():
         result = query(search_value)
 
         if is_EIN(search_value):
-          # ein = parse_EIN(search_value)
           org = result['organization']
           print org['name']
           print org['ein']
@@ -25,11 +24,14 @@ def search():
           print org['tax_period']
 
           # redirect
-          return redirect(url_for('results'))
+          ein = parse_EIN(search_value)
+          return redirect(url_for('ein_results', ein=ein))
 
         else:
           filings = result['filings']
           num_results = result['total_results']
+
+          print 'Search yielded ' + num_results + ' result(s).'
 
           for i in range(0, min(RESULTS_PER_PAGE,num_results)-1):
             org = filings[i]['organization']
@@ -38,7 +40,7 @@ def search():
             print org['city']
             print org['state']
             print org['tax_period']
-            print ""
+            print ''
 
     return render_template('index.html')
 
@@ -49,7 +51,6 @@ def query(search_value):
   if is_EIN(search_value):
     #print "is EIN"
     query = 'https://projects.propublica.org/nonprofits/api/v1/organizations/'
-
     result = requests.get(query + search_value + '.json').content
 
   else:
@@ -60,23 +61,51 @@ def query(search_value):
   result = json.loads(result) # convert to json obj
   return result
 
+# TODO ? - what if they search for a number that happens to be an ein?
 def is_EIN(search_value):
   # TODO double check error logic
   # 1. strip non-alphanumeric, check is number and length <= 9
   # remove all non-alphanumeric characters
-  check_val = re.sub(r'[^a-zA-Z0-9]','', search_value)
+  check_val = parse_EIN(search_value)
   if (not check_val.isdigit()) or (len(check_val) > 9):
     return False
 
-  # pad with leading 0's if len < 9
-  if len(check_val) < 9:
-    check_val = check_val.zfill(9)
-
   # 2. check if ein is valid using API request
+  #return is_valid_EIN(check_val)
+  if not is_valid_EIN(check_val):
+    return False
 
+  return True
 
+def parse_EIN(search_value):
+  ein = re.sub(r'[^a-zA-Z0-9]','', search_value)
+
+  # pad with leading 0's if len < 9
+  if len(ein) < 9:
+    ein = ein.zfill(9)
+
+  return ein
+
+# may become deprecated if the Propublica API changes the way they handle 
+# invalid EIN get requests
+def is_valid_EIN(ein):
+  query = 'https://projects.propublica.org/nonprofits/api/v1/organizations/'
+  result = requests.get(query + ein + '.json').content
+
+  # check if result is html page rather than valid json object
+  if result.split('\n', 1)[0] == '<!DOCTYPE html>':
+    return False
   return True
 
 @app.route('/results')
 def results():
   return render_template('results.html')
+
+# TODO ? should i convert ein to <int:ein> ?
+@app.route('/results/<ein>')
+def ein_results(ein):
+  print ein
+  return render_template('results.html')
+
+#@app.route('/results/') # ? results/123456789
+
