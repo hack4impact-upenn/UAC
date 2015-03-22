@@ -1,3 +1,661 @@
-<body>
-  HELLO THIS IS A TEST
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico">
+
+<title>Home</title>
+
+<!-- Bootstrap core CSS -->
+<link href="../dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap theme -->
+<link href="../dist/css/bootstrap-theme.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="../dist/css/bootstrap-theme.css" rel="stylesheet">
+
+<!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+<!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+<script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="jquery-1.11.2.min.js"></script>
+
+
+</head>
+
+<style>
+
+    body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        margin: 100px;
+    }
+
+    text {
+        font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+/* Adjust padding to create space between grid lines */
+    .row {
+        padding:10px;
+    }
+    
+    .form-control {
+        width: 100px;
+    }
+
+    .svg {
+        padding:50px;
+    }
+
+    /* Adjust colors of bars in legend/key */
+    .red { color:"#DC4E00"; }
+    .blue { color:"#89CEDE"; }
+
+    .labels {
+        margin-bottom:80px;
+    }
+
+</style>
+
+<body role="document">
+
+<!-- NAVBAR built by bootstrap -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">UAC Expense Optimizer</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li ><a href="#search">SEARCH</a></li>
+                <li class="active"><a href="#savings">SAVINGS</a></li>
+                <li><a href="#rankings">RANKINGS</a></li>
+                <li><a href="#contact">CONTACT</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container theme-showcase" role="main">
+
+<!-- PDF iframed here-->
+    <div>
+        <iframe src="">iframe</iframe>
+    </div>
+
+<!-- Links to other websites and PDFs here -->
+    <div> 
+        {%
+            items = ["Link1", "Link2", "Link3"]
+            for item in items:
+        %}
+            <a href="">{{item}}</a>
+        {% endfor %}
+    </div>
+
+<!-- Overall Savings Numbers -->
+    <div>
+        <p>Name of Non-Profit</p>
+        <p>With UAC, you can save</p>
+        <p>$2021</p>
+        <p>every year.</p>
+    </div>
+
+
+<!-- Costs/Savings by Categories Chart -->
+    <div class="row"> 
+        <div class="col-md-8">Savings Breakdown</div>
+        <div class="col-md-4">
+        </div>
+    </div>
+    <div class="row"> 
+        <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#DC4E00" aria-hidden="true">  Current Costs</span></div>
+    </div>
+    <div class="row"> 
+        <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#89CEDE" aria-hidden="true">  Costs with UAC</span></div>
+    </div>
+    <div class="row"> 
+        <div class="col-md-9">
+            <div id="svg_container"> 
+            </div>
+        </div>  
+        <div class="col-md-3"> 
+            
+            <!-- FORM TO CHANGE SPENDING DATA VALUES -->
+            <form id="costs_form">
+                <div class=row>
+                    <div class="form-group">
+                        <label class="update" for="management">Management</label>
+                        <input type="text" class="form-control" class="btn pull-right" id="management" placeholder="">
+                    </div>
+                </div>
+               
+                <div class="form-group">
+                    <label class="update" for="legal">Legal</label>
+                    <input type="text" class="form-control" id="legal" placeholder="">
+                </div>
+                <div class="form-group" class="form-inline">
+                    <label class="update"for="accounting">Accounting</label>
+                    <input type="text" class="form-control" id="accounting" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="lobbying">Lobbying</label>
+                    <input type="text" class="form-control" id="lobbying" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="professional_fundraising">Professional Fundraising</label>
+                    <input type="text" class="form-control" id="professional_fundraising" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="investment_management">Investment Management</label>
+                    <input type="text" class="form-control" id="investment_management" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="advertising">Advertising</label>
+                    <input type="text" class="form-control" id="advertising" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="office_expenses">Office Expenses</label>
+                    <input type="text" class="form-control" id="office_expenses" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="information_technology">Information Technology</label>
+                    <input type="text" class="form-control" id="information_technology" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="interest_expense">Interest Expense</label>
+                    <input type="text" class="form-control" id="interest_expense" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="insurance">Insurance</label>
+                    <input type="text" class="form-control" id="insurance" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="employee_benefits">Employee Benefits</label>
+                    <input type="text" class="form-control" id="employee_benefits" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="pension_plan_contributions">Pension Plan Contributions</label>
+                    <input type="text" class="form-control" id="pension_plan_contributions" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="other">Other</label>
+                    <input type="text" class="form-control" id="other" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="total">Total</label>
+                    <p id="total"> </p>
+                </div>
+                <button type="submit" class="btn btn-default" id="submit_button">Submit</button>
+            </form>
+        </div>
+    </div>
+
+<!-- Comparison Chart -->
+    <div class="row"> 
+        <div class="col-md-8">How Do You Stack Up?</div>
+        <div class="col-md-4">
+        </div>
+    </div>
+
+    <div class="row"> 
+        <div class='col-md-1'>
+            <!-- Labels for bars -->
+            <p class="labels">Total</p>
+            <p class="labels">Legal</p>
+            <p class="labels">Accounting</p>
+            <p class="labels">Lobbying</p>
+            <p class="labels">Professional Fundraising</p>
+            <p class="labels">Investment Management</p>
+            <p class="labels">Advertising</p>
+            <p class="labels">Office Expenses</p>
+            <p class="labels">Information Technology</p>
+            <p class="labels">Interest Expense</p>
+            <p class="labels">Insurance</p>
+            <p class="labels">Employee benefits</p>
+            <p class="labels">Other</p>
+        </div>
+        <div class="col-md-8">
+            <div id="svg2_container"> 
+                <!-- Comparison SVG/Chart inserted here -->
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">State<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Dropdown link</a></li>
+                    <li><a href="#">Dropdown link</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">NTEE<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Dropdown link</a></li>
+                    <li><a href="#">Dropdown link</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+   
+
+</div> <!-- /container -->
+
+<script>
+
+/***************************************
+BUILDING BAR GRAPH
+****************************************/
+
+/* IMPORTANT: THE DATA */
+/* 
+    To change the data set, change variable expense_data (below).
+    expense_data[0] refers to the current costs being spent in 0-7 categories.
+    expense_data[1] refers to the possible costs if user makes switch to UAC, in same 0-7 categories. 
+    Both graphs pull from 'expense data' currently for demo, but second graph should pull from data comparing user to other non-profits.
+*/
+
+    // var expense_data = [
+    //      [50,30,10,40,60,80,30,40,50,60,70,80,90,100,],
+    //      [60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
+
+    var expense_data = [
+         [5000,3000,1000,4000,6000,8000,10000,9000,7000,5000,3000,2000,3000,5000,],
+         [3000,2000,500,3000,3000,5000,9000,7000,5000,4000,2000,1000,1000,4000]];
+
+    // DATA WITH TOTAL INCLUDED:
+    // var expense_data = [
+    //     [780,50,40,30,20,10,20,30,40,50,60,70,80,90,100,],
+    //     [830,60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
+
+    var labels = ['Management', 'Legal', 'Accounting', 'Lobbying', 'Prof. Fund.', 'Invest. MGMT.', 'Advertising', 'Office Exp.', 'Information Tech.', 'Interest Expense', 'Insurance', 'Empl. Benefits', 'Pension Plan', 'Other'];
+
+    populateForm(); // to fill in cost form with current data 
+
+    var n = 2, // number of layers
+        m = 14; // number of samples per layer
+    var x;
+    var y;
+    var rect;
+    var yGroupMax;
+    var yStackMax;
+    var width;
+    var height;
+
+    createBarGraph();
+
+    function createBarGraph() {
+
+        updateTotalCost();
+
+        var stack = d3.layout.stack();
+        var layers = stack(d3.range(n).map(function(x) {return getData(x); }));
+        console.log("LAYERS");
+        console.log(layers);
+        
+        yGroupMax = d3.max(layers, function(layer) { return d3.max(layer, 
+            function(d) { return d.y; }); });
+        
+        yStackMax = d3.max(layers, function(layer) { return d3.max(layer, 
+            function(d) { return d.y0 + d.y; }); });
+
+        var margin = {top: 40, right: 10, bottom: 75, left: 10};
+        width = 1000 - margin.left - margin.right;
+        var diagramWidth = 1000 - margin.left - margin.right - 200;
+        height = 600 - margin.top - margin.bottom;
+
+        x = d3.scale.ordinal()
+        .domain(d3.range(m))
+        .rangeRoundBands([0, diagramWidth], .08);
+
+        y = d3.scale.linear()
+        .domain([0, yGroupMax])
+        .range([height, 0]);
+
+        // set bar graph colors
+        var color = d3.scale.linear().domain([0, n - 1]).range(["#DC4E00", "#89CEDE"]);
+
+        var xAxis = d3.svg.axis()
+        .scale(x)
+        .tickSize(3)
+        .tickPadding(6)
+        .ticks([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
+        .tickValues([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
+        .tickFormat(function(d) { return convertToLabel(d); })
+        .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+        .scale(y)
+        .tickSize(3)
+        .ticks(20)
+        .tickPadding(0)
+        .tickFormat(function(d) {return '$' + d; })
+        .orient("left");
+
+        var offset = margin.left + 30; // to move diagram right
+        var svg = d3.select("#svg_container").append("svg")
+        .attr("width", width + margin.left)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + offset + "," + margin.top + ")");
+
+        var layer = svg.selectAll(".layer")
+        .data(layers)
+        .enter().append("g")
+        .attr("class", "layer")
+        .style("fill", function(d, i) { return color(i); });
+
+        rect = layer.selectAll("rect")
+        .data(function(d) { return d; })
+        .enter().append("rect")
+        .attr("x", function(d) { return x(d.x); })
+        .attr("y", height)
+        .attr("width", x.rangeBand())
+        .attr("height", 0)
+        .on("mouseover", function(d) {
+            layer.selectAll("text")
+            .data(function(d) {
+                return d;
+            })
+            .enter()
+            .append("text")
+            .style("text-anchor","middle")
+            //.attr("transform", "rotate(10)")
+            .attr("x", function(d) {
+                if (d.y0 == 0) return x(d.x) + 10;
+                return x(d.x) + 40;
+            })
+            .attr("y", function(d) {
+                console.log('y = ' + d.y);
+                return y(d.y) -10;
+            })
+            .filter(function(e) {
+                console.log(e.x == d.x);
+                return e.x == d.x;
+            })
+            .text(function(d) {
+                return '$'+d.y;
+            });
+
+        }).on("mouseout",  function(d) { 
+            layer.selectAll("text").remove();
+        });
+
+        // layer.selectAll("text")
+        // .data(function(d) {
+        //     return d;
+        // })
+        // .enter()
+        // .append("text")
+        // .style("text-anchor","middle")
+        // //.attr("transform", "rotate(10)")
+        // .attr("x", function(d) {
+        //     if (d.y0 == 0) return x(d.x) + 10;
+        //     return x(d.x) + 40;
+        // })
+        // .attr("y", function(d) {
+        //     console.log('y = ' + d.y);
+        //     return y(d.y) -10;
+        // })
+        // .text(function(d) {
+        //     return '$'+d.y;
+        // });
+
+        
+
+        rect.transition()
+        .delay(function(d, i) { return i * 10; })
+        .attr("y", function(d) { return y(d.y0 + d.y); })
+        .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); });
+
+        svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor","end")
+        .attr("transform", function(d) {
+            return "rotate(-60)"
+        });
+
+        svg.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(0,0)")
+        .call(yAxis);
+
+        d3.selectAll("input").on("change", change);
+
+        console.log("change()");
+        change();
+    }
+
+    function updateTotalCost() {
+        var total_cost = 0;
+        for (var i = 0; i < m; i++) {
+            total_cost += expense_data[0][i];
+        }
+        $('#total').text(total_cost);
+    }
+
+    // m = number of categories
+    function convertToLabel(d) {
+        if (d >= 0 && d < m) {
+            var label = labels[d]
+            // if (label.length > 5) {
+            //     return label.substring(0,6) + '.';
+            // } 
+            return label;
+            
+        } else {
+            return 'Not a valid label';
+        }
+    }
+
+    // to change graph from STACKED to GROUPED bars
+    function change() {
+        if (this.value === "stacked") transitionStacked();
+        else transitionGrouped();
+    }
+
+    function transitionGrouped() {
+        console.log('transitionGrouped()');
+        y.domain([0, yGroupMax]);
+
+        rect.transition()
+        .duration(500)
+        .delay(function(d, i) { return i * 10; })
+        .attr("x", function(d, i, j) { return x(d.x) + x.rangeBand() / n * j; })
+        .attr("width", x.rangeBand() / n)
+        .transition()
+        .attr("y", function(d) { return y(d.y); })
+        .attr("height", function(d) { return height - y(d.y); });
+        console.log('transitionGrouped() end');
+    }
+
+    function transitionStacked() {
+        console.log('transitionStacked()')
+        y.domain([0, yStackMax]);
+
+        rect.transition()
+        .duration(500)
+        .delay(function(d, i) { return i * 10; })
+        .attr("y", function(d) { return y(d.y0 + d.y); })
+        .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); })
+        .transition()
+        .attr("x", function(d) { return x(d.x); })
+        .attr("width", x.rangeBand());
+    }
+    
+    /* BAR GRAPH DATA GETTER */
+    // n = x axis num categories
+    // o = 0.1
+    function getData(n) {
+        console.log(n);
+        var a = expense_data[n];
+        console.log(a);
+        // if (n==0) {
+        //     a = [70,40,30,20,50,60,10];
+        // } else {
+        //     a = [60,10,15,10,25,50,10];
+        // }
+        var m = a.map(function(d, i) {return {x: i, y: d}; });
+        console.log(m);
+        return m;
+    }
+
+    function populateForm() {
+        $('#management').val(expense_data[0][0]);
+        $('#legal').val(expense_data[0][1]);
+        $('#accounting').val(expense_data[0][2]);
+        $('#lobbying').val(expense_data[0][3]);
+        $('#professional_fundraising').val(expense_data[0][4]);
+        $('#investment_management').val(expense_data[0][5]);
+        $('#advertising').val(expense_data[0][6]);
+        $('#office_expenses').val(expense_data[0][7]);
+        $('#information_technology').val(expense_data[0][8]);
+        $('#interest_expense').val(expense_data[0][9]);
+        $('#insurance').val(expense_data[0][10]);
+        $('#employee_benefits').val(expense_data[0][11]);
+        $('#pension_plan_contributions').val(expense_data[0][12]);
+        $('#other').val(expense_data[0][13]);
+        
+    }
+
+    $('#costs_form').submit(function() {
+        var $inputs = $('#costs_form :input');
+        
+        var values = [];
+        var total = 0;
+        $inputs.each(function() {
+            var value = parseInt($(this).val());
+            if (!isNaN(value)) {
+                console.log('VALUE');
+                console.log(value);
+                total = total + value;
+                values.push(value);
+            }
+        });
+
+        //values.unshift(total);
+        console.log(values);
+
+        expense_data[0] = values;
+
+        $('#svg_container').empty();
+        createBarGraph();
+        return false;
+    });
+
+/***************************************
+BUILDING HORIZONTAL SLIDER BARS
+****************************************/
+
+    var numBars = 14;
+    var width = 800;
+    var height = numBars*100;
+
+    createHorizontalBars();
+
+    function createHorizontalBars() {
+        var rect_container = d3.select("#svg2_container").append("svg")
+        .attr("width", width)
+        .attr("height",height);
+
+        var rectWidth = width - 100;
+        var rectHeight = height/(numBars*2);
+
+        var gradient = rect_container.append("linearGradient")
+            .attr('y1', 0)
+            .attr('y2', 0)
+            .attr('x1', 0)
+            .attr('x2', width-100)
+            .attr('x3', width-100)
+            .attr('id', "gradient")
+            .attr('gradientUnits', 'userSpaceOnUse')
+
+        gradient
+        .append("stop")
+        .attr("offset", "0")
+        .attr("stop-color", "#DC4E00")
+
+        gradient
+        .append("stop")
+        .attr("offset", "0.5")
+        .attr("stop-color", "#ffdb33")
+        
+        gradient
+        .append("stop")
+        .attr("offset", "1")
+        .attr("stop-color", "#31c960")
+
+        for (var i = 0; i < numBars; i++) {
+            rect_container.append("rect")
+            .attr("x",0)
+            .attr("y",i*100)
+            .attr("width",rectWidth)
+            .attr("height",rectHeight)
+            .attr("fill", "url(#gradient)");
+        }
+
+        var comparison_data = [
+            [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2],
+            [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4]];
+
+        for (var i = 0; i < numBars; i++) {
+            rect_container.append("line")
+            .attr('x1', rectWidth - (comparison_data[0][i] * rectWidth))
+            .attr('y1', i*100)
+            .attr('x2', rectWidth - (comparison_data[0][i] * rectWidth))
+            .attr('y2', i*100 + rectHeight)
+            .attr('stroke-width',2)
+            .attr('stroke','black');
+
+            rect_container.append("line")
+            .attr('x1', rectWidth - (comparison_data[1][i] * rectWidth))
+            .attr('y1', i*100)
+            .attr('x2', rectWidth - (comparison_data[1][i] * rectWidth))
+            .attr('y2', i*100 + rectHeight)
+            .attr('stroke-width',2)
+            .attr('stroke','white');
+        }
+    }
+    
+
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="../dist/js/bootstrap.min.js"></script>
+
 </body>
+</html>
