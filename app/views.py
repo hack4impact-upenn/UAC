@@ -122,16 +122,27 @@ def results():
 def ein_results(ein):
     print ein
 
+    states = ["AL - Alabama", "AK - Alaska", "AZ - Arizona", "AR - Arkansas", "CA - California", "CO - Colorado", "CT - Connecticut", "DE - Delaware", "FL - Florida", "GA - Georgia", "HI - Hawaii", "ID - Idaho", "IL - Illinois", "IN - Indiana", "IA - Iowa", "KS - Kansas", "KY - Kentucky", "LA - Louisiana", "ME - Maine", "MD - Maryland", "MA - Massachusetts", "MI - Michigan", "MN - Minnesota", "MS - Mississippi", "MO - Missouri", "MT - Montana", "NE - Nebraska", "NV - Nevada", "NH - New Hampshire", "NJ - New Jersey", "NM - New Mexico", "NY - New York", "NC - North Carolina", "ND - North Dakota", "OH - Ohio", "OK - Oklahoma", "OR - Oregon", "PA - Pennsylvania", "RI - Rhode Island", "SC - South Carolina", "SD - South Dakota", "TN - Tennessee", "TX - Texas", "UT - Utah", "VT - Vermont", "VA - Virginia", "WA - Washington", "WV - West Virginia", "WI - Wisconsin", "WY - Wyoming"]
+
+    abbrevs = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "UT", "VT", "VA", "WA", "WV", "WI", "WY" ]
+    
     result = query(ein)
 
+    print result
     org = result['organization']
-    print org['name']
-    print org['ein']
-    print org['city']
-    print org['state']
-    print result['tax_prd']
+    name = org['name']
+    ntee_code = org['ntee_code']
+    state = org['state']
+    revenue = org['revenue']
 
-    return render_template('results.html')
+    return render_template('results.html', 
+        name=org['name'], 
+        savings=2021, 
+        current_percentile=50, 
+        uac_percentile=75
+        ntee_code=ntee_code
+        state=state
+        revenue=revenue)
 
 #@app.route('/results/') # ? results/123456789
 
