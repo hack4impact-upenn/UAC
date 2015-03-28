@@ -139,9 +139,9 @@ def ein_results(ein):
         name=org['name'], 
         savings=2021, 
         current_percentile=50, 
-        uac_percentile=75
-        ntee_code=ntee_code
-        state=state
+        uac_percentile=75,
+        ntee_code=ntee_code,
+        state=state,
         revenue=revenue)
 
 #@app.route('/results/') # ? results/123456789
