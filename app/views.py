@@ -54,9 +54,13 @@ def search():
                 print filings[i]['tax_prd']
                 print ''
 
-            pagination = Pagination(page=1, total=num_results, search=False, per_page = RESULTS_PER_PAGE)
+            print len(results_for_html) == 0
+            pagination = Pagination(page=1, total=num_results, search=False,
+                                    per_page=RESULTS_PER_PAGE)
 
-            return render_template('index.html', results=results_for_html, pagination=pagination)
+            return render_template('index.html', results=results_for_html,
+                                    pagination=pagination,
+                                    no_result=len(results_for_html) == 0)
 
     return render_template('index.html')
 
