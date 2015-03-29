@@ -32,8 +32,12 @@
       <br>
       <br>
     {% endfor %}
-
     {{ pagination.links }}
+
+  {% endif %}
+
+  {% if no_result %}
+    Sorry, no results matching your query. Please try a different one.
   {% endif %}
 
 </body>
