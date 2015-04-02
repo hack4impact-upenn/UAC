@@ -1,19 +1,24 @@
-<body id="home_p">
+{% extends "base.html" %}
+
+{% block content %}
+<div id="home_p">
 
   <div class="row">
-    <h1>UAC Expense Calculator</h1>
+    <div class="col-md-10">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec blandit, est vel rhoncus eleifend, tortor lectus congue massa, sit amet efficitur est tellus ut nibh. Nulla blandit congue neque. Donec vitae euismod urna.</p>
+    </div>
+    
   </div>
 
   <div class="row">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec blandit, est vel rhoncus eleifend, tortor lectus congue massa, sit amet efficitur est tellus ut nibh. Nulla blandit congue neque. Donec vitae euismod urna.</p>
-  </div>
-
-  <div class="row">
-    <!-- search bar -->
-    <form method="post">  <!-- action="reroute" -->
-      Search: <input type="text" name="search"><br>
-    <input type="submit" value="Submit">
-    </form>
+    <div class="col-md-6">
+      <!-- search bar -->
+      <form method="post">  <!-- action="reroute" -->
+        <label for="">Search:</label>
+        <input type="text" class="form-control" name="search"><br>
+      <input type="submit" class="btn btn-default" value="Submit">
+      </form>
+    </div>
   </div>
 
   {% if results %}
@@ -36,4 +41,6 @@
     {{ pagination.links }}
   {% endif %}
 
-</body>
+</div>
+
+{% endblock %}
