@@ -23,7 +23,7 @@ class Bucket(db.Model):
 
 	def get_percentile(self, field_id):
 		# ordered array of data values
-		data = self.getattr(self, field_id).split('\%')
+		data = getattr(self, field_id).split('\%')
 		# number of intervals 
 		n = len(data) + 1
 		

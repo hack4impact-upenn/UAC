@@ -4,6 +4,7 @@ import os
 from app import app, db
 from app.models import *
 from config import basedir
+import csv
 
 class TestCase(unittest.TestCase):
 
@@ -25,7 +26,7 @@ class TestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_create_resource_type(self):
+    def test_create_bucket(self):
         bucket1 = Bucket(
             bucket_id = 'AL_A',
             management = '0\%1\%5\%7\%10\%')
@@ -36,6 +37,22 @@ class TestCase(unittest.TestCase):
         assert len(b) == 1
         assert b[0].management == '0\%1\%5\%7\%10\%'
         assert len(Bucket.query.filter_by(bucket_id = "AL_42").all()) == 0
+
+    def test_read_csv(self):
+        field_names = ['management', 'legal', 'accounting', 'lobbying', 'fundraising',
+            'investment', 'other_fees', 'advertising', 'office', 'interest',
+            'insurance', 'other_benefits']
+
+        with open('AccountingMatrix.csv', 'rU') as csvfile:
+            reader = csv.reader(csvfile, quotechar='|')
+            for row in reader:
+                b = Bucket(bucket_id = row[0])
+                field_counter = 1;
+                for field in field_names:
+                    setattr(b, field, row[field_counter])
+                    field_counter += 1
+                db.session.add(b)
+                db.session.commit()
 
 if __name__ == '__main__':
     unittest.main()
