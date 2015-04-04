@@ -52,7 +52,14 @@ class TestCase(unittest.TestCase):
                     setattr(b, field, row[field_counter])
                     field_counter += 1
                 db.session.add(b)
-                db.session.commit()
+        db.session.commit()
+
+        wy_z = Bucket.query.filter_by(bucket_id = 'WY_Z').all()
+        assert len(wy_z) == 1
+        assert wy_z[0].legal == '0.52%0.64%0.95%'
+        ca_t = Bucket.query.filter_by(bucket_id = 'CA_T').all()
+        assert len(wy_z) == 1
+        assert ca_t[0].management == '0.0%0.0%0.0%0.0%0.0%0.0%0.0%0.17%0.91%'
 
 if __name__ == '__main__':
     unittest.main()
