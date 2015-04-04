@@ -29,14 +29,50 @@ class TestCase(unittest.TestCase):
     def test_create_bucket(self):
         bucket1 = Bucket(
             bucket_id = 'AL_A',
-            management = '0\%1\%5\%7\%10\%')
+            management = '0%1%5%7%10%')
         db.session.add(bucket1)
         db.session.commit()
-        
         b = Bucket.query.filter_by(bucket_id = 'AL_A').all()
         assert len(b) == 1
-        assert b[0].management == '0\%1\%5\%7\%10\%'
+        assert b[0].management == '0%1%5%7%10%'
         assert len(Bucket.query.filter_by(bucket_id = "AL_42").all()) == 0
+
+    def test_get_percentile_first_interval(self):
+        bucket1 = Bucket(
+            bucket_id = 'AL_A',
+            management = '0%1%5%7%10%')
+        db.session.add(bucket1)
+        db.session.commit()
+        b = Bucket.query.filter_by(bucket_id = 'AL_A').first()
+        # [0%] 0%, 1%, 5%, 7%, 10% [last value]
+        # 5 values, 6 intervals, interval width = 16.67
+        assert b.get_percentile('management', 0) == 0
+
+    def test_get_percentile_middle_intervals(self):
+        bucket1 = Bucket(
+            bucket_id = 'AL_A',
+            management = '0%1%5%7%10%')
+        db.session.add(bucket1)
+        db.session.commit()
+        b = Bucket.query.filter_by(bucket_id = 'AL_A').first()
+        # [0%] 0%, 1%, 5%, 7%, 10% [last value]
+        # 5 values, 6 intervals, interval width = 16.67
+        assert b.get_percentile('management', 1) > 33.3
+        assert b.get_percentile('management', 1) < 33.4
+        assert b.get_percentile('management', 3) > 41.66
+        assert b.get_percentile('management', 3) < 41.67
+
+    def test_get_percentile_last_interval(self):
+        bucket1 = Bucket(
+            bucket_id = 'AL_A',
+            management = '0%1%5%7%10%')
+        db.session.add(bucket1)
+        db.session.commit()
+        b = Bucket.query.filter_by(bucket_id = 'AL_A').first()
+        # [0%] 0%, 1%, 5%, 7%, 10% [last value]
+        # 5 values, 6 intervals, interval width = 16.67
+        assert b.get_percentile('management', 1000) > 91.66
+        assert b.get_percentile('management', 1000) < 91.67
 
     def test_read_csv(self):
         field_names = ['management', 'legal', 'accounting', 'lobbying', 'fundraising',

@@ -22,4 +22,3 @@ with open('AccountingMatrix.csv', 'rU') as csvfile:
     		field_counter += 1
         db.session.add(b)
 db.session.commit()
-
