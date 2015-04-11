@@ -1,0 +1,24 @@
+INDEX VERSION 1.126+/Users/yoninachmany/Desktop/Spring2015/UAC/990Parsing/.metadata/.plugins/org.eclipse.jdt.core
+2775959377.index
+3321539481.index
+4082587601.index
+2209870153.index
+2139576723.index
+1744670643.index
+3788427059.index
+1271342938.index
+1833648217.index
+3909959958.index
+3712507179.index
+4253713330.index
+1384487945.index
+2978579992.index
+156905802.index
+2545238116.index
+1308420387.index
+3302703152.index
+3266567714.index
+2551287059.index
+369741659.index
+4010447654.index
+1819685514.index

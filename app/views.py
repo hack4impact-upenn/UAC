@@ -16,17 +16,12 @@ def search():
     if request.method == 'POST':
         search_value = request.form.getlist('search')[0]
         search_value = quote_plus(search_value)
-        print search_value
+        print search_value # value of the search query
 
         result = query(search_value)
 
         if is_EIN(search_value):
             org = result['organization']
-            print org['name']
-            print org['ein']
-            print org['city']
-            print org['state']
-            print result['tax_prd']
 
             # redirect
             ein = parse_EIN(search_value)
