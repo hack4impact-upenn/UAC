@@ -5,9 +5,13 @@ from attrdict import AttrDict
 from urllib import quote_plus
 import requests, json, re
 
+import string
+
 RESULTS_PER_PAGE = 25
 
+
 @app.route('/', methods=['GET','POST'])
+@app.route('/#search', methods=['GET','POST'])
 def search():
     if request.method == 'POST':
         search_value = request.form.getlist('search')[0]
@@ -127,21 +131,27 @@ def ein_results(ein):
     
     result = query(ein)
 
-    print result
+   
     org = result['organization']
+    print org
     name = org['name']
     ntee_code = org['ntee_code']
     state = org['state']
-    revenue = org['revenue']
+    revenue = org['revenue_amount']
+
+    name = name.lower()
+    name = string.capwords(name)
+    print name
 
     return render_template('results.html', 
-        name=org['name'], 
+        name=name, 
         savings=2021, 
         current_percentile=50, 
         uac_percentile=75,
         ntee_code=ntee_code,
         state=state,
-        revenue=revenue)
+        revenue=revenue,
+        overhead=000000)
 
 #@app.route('/results/') # ? results/123456789
 
