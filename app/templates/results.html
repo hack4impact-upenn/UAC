@@ -164,11 +164,39 @@
                     <h3 class="panel-title">NTEE Code: {{ntee_code}}</h3>
                 </div>
                 <div class="panel-body">
-                    <div class="input-group">
+                    <!-- <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1">Update NTEE code:</span>
                         <input type="text" class="form-control" placeholder="ex. A23" id="NTEE_input" aria-describedby="basic-addon1">
                         
-                    </div>
+                    </div> -->
+                    <select>
+                        <option value="A">A - Arts, Culture, and Humanities</option>
+                        <option value="B">B - Educational Institutions</option>
+                        <option value="C">C - Environmental Quality Protection, Beautification</option>
+                        <option value="D">D - Animal Related</option>
+                        <option value="E">E - Health — General & Rehabilitative</option>
+                        <option value="F">F - Mental Health, Crisis Intervention</option>
+                        <option value="G">G - Disease, Disorders, Medical Disciplines</option>
+                        <option value="H">H - Medical Research</option>
+                        <option value="I">I - Crime, Legal Related</option>
+                        <option value="J">J - Employment, Job Related</option>
+                        <option value="K">K - Agriculture, Food, Nutrition</option>
+                        <option value="L">L - Housing, Shelter</option>
+                        <option value="M">M - Public Safety, Disaster Preparedness and Relief</option>
+                        <option value="N">N - Recreation, Sports, Leisure, Athletics</option>
+                        <option value="O">O - Youth Development</option>
+                        <option value="P">P - Human Services</option>
+                        <option value="Q">Q - International, Foreign Affairs, and National Security</option>
+                        <option value="R">R - Civil Rights, Social Action, Advocacy</option>
+                        <option value="S">S - Community Improvement, Capacity Building</option>
+                        <option value="T">T - Philanthropy, Voluntarism, and Grantmaking</option>
+                        <option value="U">U - Science and Technology Research Institutes</option>
+                        <option value="V">V - Social Science Research Institutes</option>
+                        <option value="W">W - Public, Society Benefit</option>
+                        <option value="X">X - Religion, Spiritual Development</option>
+                        <option value="Y">Y - Mutual/Membership Benefit Organizations, Other</option>
+                        <option value="Z">Z - Unknown</option>
+                    </select>
                 </div> 
             </div> <!-- Panel for NTEE Submit-->
         </div> <!-- col 2 -->
@@ -179,6 +207,7 @@
                 </div>
                 <div class="panel-body">
                     <select>
+                        <option value="0k">under $50,000</option>
                         <option value="50k">$50,000-$250,000</option>
                         <option value="250k">$250,000-$1M</option>
                         <option value="1M">$1M-$5M</option>
@@ -235,24 +264,29 @@
          -->
     <div class="row"> 
         <h1>Savings Breakdown</h1>
-       
     </div>
-    <div class="row"> 
-        <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#DC4E00" aria-hidden="true">  Current Costs</span></div>
-    </div>
-    <div class="row"> 
-        <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#89CEDE" aria-hidden="true">  Costs with UAC</span></div>
-    </div>
-    <div class="row"> 
-        <div class="col-md-9">
-            <div id="svg_container"> 
+
+    <div class="panel panel-default">        
+        <div class="panel-body">
+
+            <div class="row"> 
+                <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#DC4E00" aria-hidden="true">  Current Costs</span></div>
             </div>
-        </div>  
-        <div class="col-md-3"> 
-            
-            
-        </div>
-    </div>
+            <div class="row"> 
+                <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#89CEDE" aria-hidden="true">  Costs with UAC</span></div>
+            </div>
+            <div class="row"> 
+                <div class="col-md-9">
+                    <div id="svg_container"> 
+                    </div>
+                </div>  
+                <div class="col-md-3"> 
+                    
+                    
+                </div>
+            </div>
+        </div> <!-- PANEL BODY -->
+    </div> <!-- PANEL -->
 
 
 <script type="text/javascript" src="{{ url_for('static', filename='results.js') }}"></script>
