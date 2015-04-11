@@ -25,22 +25,26 @@
 
 <!-- Welcome -->
 <div class="jumbotron">
-    <h1>Welcome, {{name}}.</h1>
+    <h1>Welcome, <strong>{{name}}.</strong></h1>
 </div>
 
+<div class="row"> <h1>Please enter your costs:</h1></div>
 
-<!-- PDF iframed here-->
-    <div>
-        <iframe src="">iframe</iframe>
+<div class="panel panel-default">
+    <div class="panel-body">
+<div class="row">
+    <div class="col-md-5">
+        <!-- PDF iframed here-->
+        <div><iframe src="">iframe</iframe></div>
     </div>
-
-    <div class="panel panel-default">
+    <div class="col-md-5">
+        <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Change values:</h3>
         </div>
         <div class="panel-body">
             <!-- FORM TO CHANGE SPENDING DATA VALUES -->
-            <form id="costs_form" class="form-inline">
+            <form id="costs_form" >
                 <div class="form-group">
                     <label class="update" for="management">Management</label>
                     <input type="text" class="form-control" class="btn pull-right" id="management" placeholder="">
@@ -105,10 +109,17 @@
             </form>
         </div>
     </div>
+    </div>
+</div>
+</div> <!-- ENTER COSTS PANEL BODY -->
+</div> <!-- ENTER COSTS PANEL -->
+
+
+    
 
 <!-- Links to other websites and PDFs here -->
     <div> 
-        
+        <h2>Links to other websites and PDFs here</h2>
     </div>
 
 <!-- Overall Numbers -->
@@ -127,74 +138,19 @@
      Comparison Chart 
      -------------------------------------->
     <div class="row"> 
-        <h1>How Does {{name}} Stack Up?</h1>
+        <h1>How Does <strong>{{name}}</strong> Stack Up?</h1>
     </div>
 
    
 
-
+<div class="panel panel-default">
     <div class="row">
-        <div class='col-md-5'>
+        <div class='col-md-4'>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title"> State: {{state}}</h3>
                 </div>
                 <div class="panel-body">
-                    <!-- <div class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">State<span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">AL - Alabama</a></li>
-                            <li><a href="#">AK - Alaska</a></li>
-                            <li><a href="#">AZ - Arizona</a></li>
-                            <li><a href="#">AR - Arkansas</a></li>
-                            <li><a href="#">CA - California</a></li>
-                            <li><a href="#">CO - Colorado</a></li>
-                            <li><a href="#">CT - Connecticut</a></li>
-                            <li><a href="#">DE - Delaware</a></li>
-                            <li><a href="#">FL - Florida</a></li>
-                            <li><a href="#">GA - Georgia</a></li>
-                            <li><a href="#">HI - Hawaii</a></li>
-                            <li><a href="#">ID - Idaho</a></li>
-                            <li><a href="#">IL - Illinois</a></li>
-                            <li><a href="#">IN - Indiana</a></li>
-                            <li><a href="#">IA - Iowa</a></li>
-                            <li><a href="#">KS - Kansas</a></li>
-                            <li><a href="#">KY - Kentucky</a></li>
-                            <li><a href="#">LA - Louisiana</a></li>
-                            <li><a href="#">ME - Maine</a></li>
-                            <li><a href="#">MD - Maryland</a></li>
-                            <li><a href="#">MA - Massachusetts</a></li>
-                            <li><a href="#">MI - Michigan</a></li>
-                            <li><a href="#">MN - Minnesota</a></li>
-                            <li><a href="#">MS - Mississippi</a></li>
-                            <li><a href="#">MO - Missouri</a></li>
-                            <li><a href="#">MT - Montana</a></li>
-                            <li><a href="#">NE - Nebraska</a></li>
-                            <li><a href="#">NV - Nevada</a></li>
-                            <li><a href="#">NH - New Hampshire</a></li>
-                            <li><a href="#">NJ - New Jersey</a></li>
-                            <li><a href="#">NM - New Mexico</a></li>
-                            <li><a href="#">NY - New York</a></li>
-                            <li><a href="#">NC - North Carolina</a></li>
-                            <li><a href="#">ND - North Dakota</a></li>
-                            <li><a href="#">OH - Ohio</a></li>
-                            <li><a href="#">OK - Oklahoma</a></li>
-                            <li><a href="#">OR - Oregon</a></li>
-                            <li><a href="#">PA - Pennsylvania</a></li>
-                            <li><a href="#">RI - Rhode Island</a></li>
-                            <li><a href="#">SC - South Carolina</a></li>
-                            <li><a href="#">SD - South Dakota</a></li>
-                            <li><a href="#">TN - Tennessee</a></li>
-                            <li><a href="#">TX - Texas</a></li>
-                            <li><a href="#">UT - Utah</a></li>
-                            <li><a href="#">VT - Vermont</a></li>
-                            <li><a href="#">VA - Virginia</a></li>
-                            <li><a href="#">WA - Washington</a></li>
-                            <li><a href="#">WV - West Virginia</a></li>
-                            <li><a href="#">WI - Wisconsin</a></li>
-                            <li><a href="#">WY - Wyoming</a></li></ul>
-                    </div> -->
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1">Update state:</span>
                         <input type="text" class="form-control" placeholder="ex. MA" id="state_input" aria-describedby="basic-addon1">  
@@ -202,7 +158,7 @@
                 </div> 
             </div> <!-- Panel for State Submit-->
         </div> <!-- col 1 -->
-        <div class='col-md-5'>
+        <div class='col-md-4'>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">NTEE Code: {{ntee_code}}</h3>
@@ -215,14 +171,31 @@
                     </div>
                 </div> 
             </div> <!-- Panel for NTEE Submit-->
-        </div> <!-- col 1 -->
-
-        
+        </div> <!-- col 2 -->
+        <div class='col-md-4'>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Revenue: ${{revenue}}</h3>
+                </div>
+                <div class="panel-body">
+                    <select>
+                        <option value="50k">$50,000-$250,000</option>
+                        <option value="250k">$250,000-$1M</option>
+                        <option value="1M">$1M-$5M</option>
+                        <option value="5M">$5M-$10M</option>
+                        <option value="10M">$10M and over</option>
+                    </select>
+                </div>
+            </div>
+        </div> <!-- col 3 -->
     </div> <!-- Row 1-->
 
+    
     <div class="row">
-        <button class="btn btn-default" id="btn_submit_state_ntee" type="submit">Update</button>
+        <div class="col-md-9"></div>
+        <div class="col-md-3"><button class="btn btn-default" id="btn_submit_state_ntee" type="submit">Update</button></div>
     </div>
+</div> <!-- panel for ntee, state, and revenue group updates -->
 
     <div class="panel panel-default">
         <div class="panel-body">
