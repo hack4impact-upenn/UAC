@@ -116,28 +116,40 @@ def is_valid_EIN(ein):
         return False
     return True
 
+def get_filing_data(filing_array):
+    filing_data = []
+    return filing_data
+    # for filing in filing_array:
+
+
 @app.route('/results')
 def results():
     return render_template('results.html')
+
 
 # TODO ? should i convert ein to <int:ein> ?
 @app.route('/results/<ein>')
 def ein_results(ein):
     print ein
-
-    states = ["AL - Alabama", "AK - Alaska", "AZ - Arizona", "AR - Arkansas", "CA - California", "CO - Colorado", "CT - Connecticut", "DE - Delaware", "FL - Florida", "GA - Georgia", "HI - Hawaii", "ID - Idaho", "IL - Illinois", "IN - Indiana", "IA - Iowa", "KS - Kansas", "KY - Kentucky", "LA - Louisiana", "ME - Maine", "MD - Maryland", "MA - Massachusetts", "MI - Michigan", "MN - Minnesota", "MS - Mississippi", "MO - Missouri", "MT - Montana", "NE - Nebraska", "NV - Nevada", "NH - New Hampshire", "NJ - New Jersey", "NM - New Mexico", "NY - New York", "NC - North Carolina", "ND - North Dakota", "OH - Ohio", "OK - Oklahoma", "OR - Oregon", "PA - Pennsylvania", "RI - Rhode Island", "SC - South Carolina", "SD - South Dakota", "TN - Tennessee", "TX - Texas", "UT - Utah", "VT - Vermont", "VA - Virginia", "WA - Washington", "WV - West Virginia", "WI - Wisconsin", "WY - Wyoming"]
-
-    abbrevs = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "UT", "VT", "VA", "WA", "WV", "WI", "WY" ]
     
     result = query(ein)
 
-   
-    org = result['organization']
-    print org
-    name = org['name']
-    ntee_code = org['ntee_code']
-    state = org['state']
-    revenue = org['revenue_amount']
+    try:
+        org = result['organization']
+        print org
+        name = org['name']
+        ntee_code = org['ntee_code']
+        state = org['state']
+        revenue = org['revenue_amount']
+        # nccs_url = org['nccs_url']
+        # print nccs_url
+        # guidestar_url = org['guidestar_url']
+        # print guidestar_url
+        # filing_data = get_filing_data(result['filings_with_data'])
+        # print filing_data
+    except KeyError:
+        print 'Invalid key'
+        return
 
     name = name.lower()
     name = string.capwords(name)
@@ -152,6 +164,8 @@ def ein_results(ein):
         state=state,
         revenue=revenue,
         overhead=000000)
+        # nccs_url=nccs_url,
+        # guidestar_url=guidestar_url
 
 #@app.route('/results/') # ? results/123456789
 
