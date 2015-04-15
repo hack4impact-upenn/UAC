@@ -1,0 +1,43 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 100px;
+}
+
+text {
+    font: 10px sans-serif;
+}
+
+.jumbotron {
+    /*padding:50px;*/
+    width:90%;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+/* Adjust padding to create space between grid lines */
+.row {
+    padding:10px;
+}
+
+.form-control {
+    width: 100px;
+}
+
+.svg {
+    padding:50px;
+}
+
+/* Adjust colors of bars in legend/key */
+.red { color:"#DC4E00"; }
+.blue { color:"#89CEDE"; }
+
+
+.labels {
+
+    margin-bottom:80px;
+}
