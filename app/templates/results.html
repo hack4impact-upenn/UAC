@@ -25,7 +25,7 @@
 
 <!-- Welcome -->
 <div class="jumbotron">
-    <h1>Welcome, <strong>{{name}}.</strong></h1>
+    <h1>Welcome, <strong>{{result_data['name']}}.</strong></h1>
 </div>
 
 <div class="row"> <h1>Please enter your costs:</h1></div>
@@ -107,7 +107,7 @@
                 </div>
                 <div class="form-group">
                     <label class="update" for="total_revenue">Total Revenue</label>
-                    <input type="text" class="form-control" id="total_revenue" placeholder="" value="{{revenue}}">
+                    <input type="text" class="form-control" id="total_revenue" placeholder="" value="{{result_data['revenue']}}">
                 </div>
                 <button type="submit" class="btn btn-default" id="submit_button">Submit</button>
             </form>
@@ -120,19 +120,26 @@
 
 
     
-
+{% if nccs_url or guidestar_url %}
 <!-- Links to other websites and PDFs here -->
     <div> 
-        <h2>Links to other websites and PDFs here</h2>
+        <h2>Not satisfied? Find other records for {{result_data['name']}} here:</h2>
+        {% if nccs_url %}
+        <h3><a href="{{result_data['nccs_url']}}">NCCS</a></h3>
+        {% endif %}
+        {% if guidestar_url %}
+        <h3><a href="{{result_data['guidestar_url']}}">Guidestar</a></h3>
+        {% endif %}
     </div>
+{% endif %}
 
 <!-- Overall Numbers -->
 <div class="jumbotron">
     <h2>The Numbers.</h2>
-    <p> Your overhead amount is {{overhead}}</p>
+    <p> Your overhead amount is {{result_data['overhead']}}</p>
     <!-- <p>With UAC, you can save <strong>${{savings}}</strong> every year.</p> -->
-    <p>You are more cost-efficient than <strong>{{current_percentile}}%</strong> of other non-profits.</p>
-    <p>With UAC, you could be more cost-efficient than <strong>{{uac_percentile}}%</strong> of other non-profits.</p>
+    <p>You are more cost-efficient than <strong>{{result_data['current_percentile']}}%</strong> of other non-profits.</p>
+    <p>With UAC, you could be more cost-efficient than <strong>{{result_data['uac_percentile']}}%</strong> of other non-profits.</p>
 </div>
 
     
@@ -142,7 +149,7 @@
      Comparison Chart 
      -------------------------------------->
     <div class="row"> 
-        <h1>How Does <strong>{{name}}</strong> Stack Up?</h1>
+        <h1>How Does <strong>{{result_data['name']}}</strong> Stack Up?</h1>
     </div>
 
    
@@ -152,7 +159,7 @@
         <div class='col-md-4'>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"> State: {{state}}</h3>
+                    <h3 class="panel-title"> State: {{result_data['state']}}</h3>
                 </div>
                 <div class="panel-body">
                     <!-- <div class="input-group">
@@ -218,7 +225,7 @@
         <div class='col-md-4'>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">NTEE Code: {{ntee_code}}</h3>
+                    <h3 class="panel-title">NTEE Code: {{result_data['ntee_code']}}</h3>
                 </div>
                 <div class="panel-body">
                     <!-- <div class="input-group">
@@ -262,7 +269,7 @@
         <div class='col-md-4'>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Revenue: ${{revenue}}</h3>
+                    <h3 class="panel-title">Revenue: ${{result_data['revenue']}}</h3>
                 </div>
                 <div class="panel-body">
                     <select>
@@ -288,7 +295,7 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="row"> 
-        <div class='col-md-1'>
+        <div class='col-md-2'>
             <!-- Labels for bars -->
             <p class="labels" class="LLLLLL">Total</p>
             <p class="labels">Legal</p>

@@ -25,9 +25,15 @@ BUILDING BAR GRAPH
     //      [50,30,10,40,60,80,30,40,50,60,70,80,90,100,],
     //      [60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
 
+    var profndraising = result_data['filing_data']['profndraising'];
+    var totexpns = result_data['filing_data']['totexpns'];
+
+    console.log(profndraising);
+    console.log(totexpns);
+
     var expense_data = [
-         [5000,3000,1000,4000,6000,8000,10000,9000,7000,5000,3000,2000,3000,5000,],
-         [3000,2000,500,3000,3000,5000,9000,7000,5000,4000,2000,1000,1000,4000]];
+         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+         [0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
 
     // DATA WITH TOTAL INCLUDED:
     // var expense_data = [
@@ -300,7 +306,7 @@ BUILDING BAR GRAPH
 BUILDING HORIZONTAL SLIDER BARS
 ****************************************/
 
-    var numBars = 14;
+    var numBars = 13;
     var gapSize = 70;
     var width = 800;
     var height = numBars*gapSize;
