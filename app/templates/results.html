@@ -25,36 +25,40 @@
 
 <!-- Welcome -->
 <div class="jumbotron">
-    <h1>Welcome, {{name}}.</h1>
+    <h1>Welcome, <strong>{{name}}.</strong></h1>
 </div>
 
+<div class="row"> <h1>Please enter your costs:</h1></div>
 
-<!-- PDF iframed here-->
-    <div>
-        <iframe src="">iframe</iframe>
+<div class="panel panel-default">
+    <div class="panel-body">
+<div class="row">
+    <div class="col-md-5">
+        <!-- PDF iframed here-->
+        <div><iframe src="">iframe</iframe></div>
     </div>
-
-    <div class="panel panel-default">
+    <div class="col-md-5">
+        <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Change values:</h3>
         </div>
         <div class="panel-body">
             <!-- FORM TO CHANGE SPENDING DATA VALUES -->
-            <form id="costs_form" class="form-inline">
+            <form id="costs_form" >
                 <div class="form-group">
-                    <label class="update" for="management">Management</label>
+                    <label class="update" for="management">Management Expenses</label>
                     <input type="text" class="form-control" class="btn pull-right" id="management" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="legal">Legal</label>
+                    <label class="update" for="legal">Legal Expenses</label>
                     <input type="text" class="form-control" id="legal" placeholder="">
                 </div>
                 <div class="form-group" >
-                    <label class="update"for="accounting">Accounting</label>
+                    <label class="update"for="accounting">Accounting Expenses</label>
                     <input type="text" class="form-control" id="accounting" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="lobbying">Lobbying</label>
+                    <label class="update" for="lobbying">Lobbying Expenses</label>
                     <input type="text" class="form-control" id="lobbying" placeholder="">
                 </div>
                 <div class="form-group">
@@ -62,11 +66,11 @@
                     <input type="text" class="form-control" id="professional_fundraising" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="investment_management">Investment Management</label>
+                    <label class="update" for="investment_management">Investment Management Expenses</label>
                     <input type="text" class="form-control" id="investment_management" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="advertising">Advertising</label>
+                    <label class="update" for="advertising">Advertising Expenses</label>
                     <input type="text" class="form-control" id="advertising" placeholder="">
                 </div>
                 <div class="form-group">
@@ -74,19 +78,19 @@
                     <input type="text" class="form-control" id="office_expenses" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="information_technology">Information Technology</label>
+                    <label class="update" for="information_technology">I.T. Expenses</label>
                     <input type="text" class="form-control" id="information_technology" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="interest_expense">Interest Expense</label>
+                    <label class="update" for="interest_expense">Interest Expenses</label>
                     <input type="text" class="form-control" id="interest_expense" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="insurance">Insurance</label>
+                    <label class="update" for="insurance">Insurance Expenses</label>
                     <input type="text" class="form-control" id="insurance" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="employee_benefits">Employee Benefits</label>
+                    <label class="update" for="employee_benefits">Employee Benefits </label>
                     <input type="text" class="form-control" id="employee_benefits" placeholder="">
                 </div>
                 <div class="form-group">
@@ -94,21 +98,32 @@
                     <input type="text" class="form-control" id="pension_plan_contributions" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="other">Other</label>
+                    <label class="update" for="other">Other Expenses</label>
                     <input type="text" class="form-control" id="other" placeholder="">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="total">Total</label>
+                    <label class="update" for="total">Total Expenses</label>
                     <p id="total"> </p>
+                </div>
+                <div class="form-group">
+                    <label class="update" for="total_revenue">Total Revenue</label>
+                    <input type="text" class="form-control" id="total_revenue" placeholder="" value="{{revenue}}">
                 </div>
                 <button type="submit" class="btn btn-default" id="submit_button">Submit</button>
             </form>
         </div>
     </div>
+    </div>
+</div>
+</div> <!-- ENTER COSTS PANEL BODY -->
+</div> <!-- ENTER COSTS PANEL -->
+
+
+    
 
 <!-- Links to other websites and PDFs here -->
     <div> 
-        
+        <h2>Links to other websites and PDFs here</h2>
     </div>
 
 <!-- Overall Numbers -->
@@ -127,102 +142,148 @@
      Comparison Chart 
      -------------------------------------->
     <div class="row"> 
-        <h1>How Does {{name}} Stack Up?</h1>
+        <h1>How Does <strong>{{name}}</strong> Stack Up?</h1>
     </div>
 
    
 
-
+<div class="panel panel-default">
     <div class="row">
-        <div class='col-md-5'>
+        <div class='col-md-4'>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title"> State: {{state}}</h3>
                 </div>
                 <div class="panel-body">
-                    <!-- <div class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">State<span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">AL - Alabama</a></li>
-                            <li><a href="#">AK - Alaska</a></li>
-                            <li><a href="#">AZ - Arizona</a></li>
-                            <li><a href="#">AR - Arkansas</a></li>
-                            <li><a href="#">CA - California</a></li>
-                            <li><a href="#">CO - Colorado</a></li>
-                            <li><a href="#">CT - Connecticut</a></li>
-                            <li><a href="#">DE - Delaware</a></li>
-                            <li><a href="#">FL - Florida</a></li>
-                            <li><a href="#">GA - Georgia</a></li>
-                            <li><a href="#">HI - Hawaii</a></li>
-                            <li><a href="#">ID - Idaho</a></li>
-                            <li><a href="#">IL - Illinois</a></li>
-                            <li><a href="#">IN - Indiana</a></li>
-                            <li><a href="#">IA - Iowa</a></li>
-                            <li><a href="#">KS - Kansas</a></li>
-                            <li><a href="#">KY - Kentucky</a></li>
-                            <li><a href="#">LA - Louisiana</a></li>
-                            <li><a href="#">ME - Maine</a></li>
-                            <li><a href="#">MD - Maryland</a></li>
-                            <li><a href="#">MA - Massachusetts</a></li>
-                            <li><a href="#">MI - Michigan</a></li>
-                            <li><a href="#">MN - Minnesota</a></li>
-                            <li><a href="#">MS - Mississippi</a></li>
-                            <li><a href="#">MO - Missouri</a></li>
-                            <li><a href="#">MT - Montana</a></li>
-                            <li><a href="#">NE - Nebraska</a></li>
-                            <li><a href="#">NV - Nevada</a></li>
-                            <li><a href="#">NH - New Hampshire</a></li>
-                            <li><a href="#">NJ - New Jersey</a></li>
-                            <li><a href="#">NM - New Mexico</a></li>
-                            <li><a href="#">NY - New York</a></li>
-                            <li><a href="#">NC - North Carolina</a></li>
-                            <li><a href="#">ND - North Dakota</a></li>
-                            <li><a href="#">OH - Ohio</a></li>
-                            <li><a href="#">OK - Oklahoma</a></li>
-                            <li><a href="#">OR - Oregon</a></li>
-                            <li><a href="#">PA - Pennsylvania</a></li>
-                            <li><a href="#">RI - Rhode Island</a></li>
-                            <li><a href="#">SC - South Carolina</a></li>
-                            <li><a href="#">SD - South Dakota</a></li>
-                            <li><a href="#">TN - Tennessee</a></li>
-                            <li><a href="#">TX - Texas</a></li>
-                            <li><a href="#">UT - Utah</a></li>
-                            <li><a href="#">VT - Vermont</a></li>
-                            <li><a href="#">VA - Virginia</a></li>
-                            <li><a href="#">WA - Washington</a></li>
-                            <li><a href="#">WV - West Virginia</a></li>
-                            <li><a href="#">WI - Wisconsin</a></li>
-                            <li><a href="#">WY - Wyoming</a></li></ul>
-                    </div> -->
-                    <div class="input-group">
+                    <!-- <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1">Update state:</span>
                         <input type="text" class="form-control" placeholder="ex. MA" id="state_input" aria-describedby="basic-addon1">  
-                    </div>
+                    </div> -->
+                    <select>
+                        <option value="US">All states</option>
+                        <option value="1">AL - Alabama</option>
+                        <option value="2">AK - Alaska</option>
+                        <option value="3">AZ - Arizona</option>
+                        <option value="4">AR - Arkansas</option>
+                        <option value="5">CA - California</option>
+                        <option value="6">CO - Colorado</option>
+                        <option value="7">CT - Connecticut</option>
+                        <option value="8">DE - Delaware</option>
+                        <option value="9">FL - Florida</option>
+                        <option value="10">GA - Georgia</option>
+                        <option value="11">HI - Hawaii</option>
+                        <option value="12">ID - Idaho</option>
+                        <option value="13">IL - Illinois</option>
+                        <option value="14">IN - Indiana</option>
+                        <option value="15">IA - Iowa</option>
+                        <option value="16">KS - Kansas</option>
+                        <option value="17">KY - Kentucky</option>
+                        <option value="18">LA - Louisiana</option>
+                        <option value="19">ME - Maine</option>
+                        <option value="20">MD - Maryland</option>
+                        <option value="21">MA - Massachusetts</option>
+                        <option value="22">MI - Michigan</option>
+                        <option value="23">MN - Minnesota</option>
+                        <option value="24">MS - Mississippi</option>
+                        <option value="25">MO - Missouri</option>
+                        <option value="26">MT - Montana</option>
+                        <option value="27">NE - Nebraska</option>
+                        <option value="28">NV - Nevada</option>
+                        <option value="29">NH - New Hampshire</option>
+                        <option value="30">NJ - New Jersey</option>
+                        <option value="31">NM - New Mexico</option>
+                        <option value="32">NY - New York</option>
+                        <option value="33">NC - North Carolina</option>
+                        <option value="34">ND - North Dakota</option>
+                        <option value="35">OH - Ohio</option>
+                        <option value="36">OK - Oklahoma</option>
+                        <option value="37">OR - Oregon</option>
+                        <option value="38">PA - Pennsylvania</option>
+                        <option value="39">RI - Rhode Island</option>
+                        <option value="40">SC - South Carolina</option>
+                        <option value="41">SD - South Dakota</option>
+                        <option value="42">TN - Tennessee</option>
+                        <option value="43">TX - Texas</option>
+                        <option value="44">UT - Utah</option>
+                        <option value="45">VT - Vermont</option>
+                        <option value="46">VA - Virginia</option>
+                        <option value="47">WA - Washington</option>
+                        <option value="48">WV - West Virginia</option>
+                        <option value="49">WI - Wisconsin</option>
+                        <option value="50">WY - Wyoming</option>
+                    </select>
                 </div> 
             </div> <!-- Panel for State Submit-->
         </div> <!-- col 1 -->
-        <div class='col-md-5'>
+        <div class='col-md-4'>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">NTEE Code: {{ntee_code}}</h3>
                 </div>
                 <div class="panel-body">
-                    <div class="input-group">
+                    <!-- <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1">Update NTEE code:</span>
                         <input type="text" class="form-control" placeholder="ex. A23" id="NTEE_input" aria-describedby="basic-addon1">
                         
-                    </div>
+                    </div> -->
+                    <select>
+                        <option value="All">All codes</option>
+                        <option value="A">A - Arts, Culture, and Humanities</option>
+                        <option value="B">B - Educational Institutions</option>
+                        <option value="C">C - Environmental Quality Protection, Beautification</option>
+                        <option value="D">D - Animal Related</option>
+                        <option value="E">E - Health — General & Rehabilitative</option>
+                        <option value="F">F - Mental Health, Crisis Intervention</option>
+                        <option value="G">G - Disease, Disorders, Medical Disciplines</option>
+                        <option value="H">H - Medical Research</option>
+                        <option value="I">I - Crime, Legal Related</option>
+                        <option value="J">J - Employment, Job Related</option>
+                        <option value="K">K - Agriculture, Food, Nutrition</option>
+                        <option value="L">L - Housing, Shelter</option>
+                        <option value="M">M - Public Safety, Disaster Preparedness and Relief</option>
+                        <option value="N">N - Recreation, Sports, Leisure, Athletics</option>
+                        <option value="O">O - Youth Development</option>
+                        <option value="P">P - Human Services</option>
+                        <option value="Q">Q - International, Foreign Affairs, and National Security</option>
+                        <option value="R">R - Civil Rights, Social Action, Advocacy</option>
+                        <option value="S">S - Community Improvement, Capacity Building</option>
+                        <option value="T">T - Philanthropy, Voluntarism, and Grantmaking</option>
+                        <option value="U">U - Science and Technology Research Institutes</option>
+                        <option value="V">V - Social Science Research Institutes</option>
+                        <option value="W">W - Public, Society Benefit</option>
+                        <option value="X">X - Religion, Spiritual Development</option>
+                        <option value="Y">Y - Mutual/Membership Benefit Organizations, Other</option>
+                        <option value="Z">Z - Unknown</option>
+
+                    </select>
                 </div> 
             </div> <!-- Panel for NTEE Submit-->
-        </div> <!-- col 1 -->
-
-        
+        </div> <!-- col 2 -->
+        <div class='col-md-4'>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Revenue: ${{revenue}}</h3>
+                </div>
+                <div class="panel-body">
+                    <select>
+                        <option value="0k">under $50,000</option>
+                        <option value="50k">$50,000-$250,000</option>
+                        <option value="250k">$250,000-$1M</option>
+                        <option value="1M">$1M-$5M</option>
+                        <option value="5M">$5M-$10M</option>
+                        <option value="10M">$10M and over</option>
+                    </select>
+                </div>
+            </div>
+        </div> <!-- col 3 -->
     </div> <!-- Row 1-->
 
+    
     <div class="row">
-        <button class="btn btn-default" id="btn_submit_state_ntee" type="submit">Update</button>
+        <div class="col-md-9"></div>
+        <div class="col-md-3"><button class="btn btn-default" id="btn_submit_state_ntee" type="submit">Update</button></div>
     </div>
+</div> <!-- panel for ntee, state, and revenue group updates -->
 
     <div class="panel panel-default">
         <div class="panel-body">
@@ -262,24 +323,29 @@
          -->
     <div class="row"> 
         <h1>Savings Breakdown</h1>
-       
     </div>
-    <div class="row"> 
-        <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#DC4E00" aria-hidden="true">  Current Costs</span></div>
-    </div>
-    <div class="row"> 
-        <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#89CEDE" aria-hidden="true">  Costs with UAC</span></div>
-    </div>
-    <div class="row"> 
-        <div class="col-md-9">
-            <div id="svg_container"> 
+
+    <div class="panel panel-default">        
+        <div class="panel-body">
+
+            <div class="row"> 
+                <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#DC4E00" aria-hidden="true">  Current Costs</span></div>
             </div>
-        </div>  
-        <div class="col-md-3"> 
-            
-            
-        </div>
-    </div>
+            <div class="row"> 
+                <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#89CEDE" aria-hidden="true">  Costs with UAC</span></div>
+            </div>
+            <div class="row"> 
+                <div class="col-md-9">
+                    <div id="svg_container"> 
+                    </div>
+                </div>  
+                <div class="col-md-3"> 
+                    
+                    
+                </div>
+            </div>
+        </div> <!-- PANEL BODY -->
+    </div> <!-- PANEL -->
 
 
 <script type="text/javascript" src="{{ url_for('static', filename='results.js') }}"></script>
