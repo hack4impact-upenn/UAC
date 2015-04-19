@@ -77,12 +77,12 @@ def query(search_value, page=0):
     if is_EIN(search_value):
         #print "is EIN"
         query = 'https://projects.propublica.org/nonprofits/api/v1/organizations/'
-        result = requests.get(query + search_value + '.json?page=' + page).content
+        result = requests.get(query + search_value + '.json?page=' + str(page)).content
 
     else:
         query = 'https://projects.propublica.org/nonprofits/api/v1/search.json?q='
         # TODO error checking
-        result = requests.get(query + search_value).content
+        result = requests.get(query + search_value + '&page=' + str(page)).content
 
     result = json.loads(result) # convert to json obj
     return result
