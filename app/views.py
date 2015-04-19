@@ -36,7 +36,7 @@ def search():
             print 'Search yielded ' + str(num_results) + ' result(s).'
 
             results_for_html = []
-            for i in range(0, min(RESULTS_PER_PAGE,num_results)-1):
+            for i in range(0, len(filings)):
                 org = filings[i]['organization']
                 result_for_html = {
                     'name': org['name'],
