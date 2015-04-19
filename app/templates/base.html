@@ -22,6 +22,24 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
         <title>UAC Nonprofit Overhead Analyzer</title>
+
+        <!-- Pagination frontend logic -->
+        <script>
+            $(document).ready(function() {
+                $(".pagination a").click(function(event){
+                    event.preventDefault();
+                    console.log($(this).html());
+                    //$.get("https://projects.propublica.org/nonprofits/api/v1/organizations/'", function(data, status){
+                    //    alert("Data: " + data + "\nStatus: " + status);
+                    $.post('/',
+                        {search: $('#search_value').html(), page:$(this).html()},
+                        function(data, status) {
+                            console.log(data);
+                            $('body').html(data);
+                        });
+                });
+            });
+        </script>
     </head>
 
     <body>

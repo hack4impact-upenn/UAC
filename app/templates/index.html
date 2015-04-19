@@ -22,11 +22,13 @@
   </div>
 
   {% if results %}
-    {{ pagination.info }}
-    {{ pagination.links }}
+    <div style="display:none" id="search_value">{{ search_value }}</div>
+      {{ pagination.info }}
+      {{ pagination.links }}
 
     {% for result in results %}
     <!-- TODO make template for displaying each result -->
+      <br>
       <a href={{ url_for('ein_results', ein=result['ein']) }}>{{ result['name'] }}</a>
       {{ result['city'] }}
       {{ result['state'] }}
@@ -34,7 +36,6 @@
       {{ result['tax_prd'] }}
 
 
-      <br>
       <br>
     {% endfor %}
     {{ pagination.links }}
