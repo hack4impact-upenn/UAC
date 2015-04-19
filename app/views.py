@@ -117,9 +117,53 @@ def is_valid_EIN(ein):
     return True
 
 def get_filing_data(filing_array):
-    filing_data = []
+    filing_data = {'profndraising':0, 'totexpns':0}
+    for filing in filing_array:
+        try:
+            filing_data['profndraising'] = filing['profndraising']
+            filing_data['totexpns'] = filing['totexpns']
+        except KeyError:
+            print 'Invalid key: profndraising, totexpns'
     return filing_data
-    # for filing in filing_array:
+
+def populate_results_data(result, result_data):
+    try:
+        org = result['organization']
+        try:
+            name = org['name']
+            name = name.lower()
+            name = string.capwords(name)
+            result_data['name'] = name
+        except KeyError:
+            print 'Invalid key: name'
+        try:
+            result_data['ntee_code'] = org['ntee_code']
+        except KeyError:
+            print 'Invalid key: ntee_code'
+        try:
+            result_data['state'] = org['state']
+        except KeyError:
+            print 'Invalid key: state'
+        try:
+            result_data['revenue'] = org['revenue_amount']
+        except KeyError:
+            print 'Invalid key: revenue_amount'
+        try:
+            result_data['nccs_url'] = org['nccs_url']
+        except KeyError:
+            print 'Invalid key: nccs_url'
+        try:
+            result_data['guidestar_url'] = org['guidestar_url']
+        except KeyError:
+            print 'Invalid key: guidestar_url'
+        try:
+            result_data['filing_data'] = get_filing_data(result['filings_with_data'])
+        except KeyError:
+            print 'Invalid key: filings_with_data'
+    except KeyError:
+        print 'Invalid key: organization'
+    
+        return
 
 
 @app.route('/results')
@@ -134,38 +178,22 @@ def ein_results(ein):
     
     result = query(ein)
 
-    try:
-        org = result['organization']
-        print org
-        name = org['name']
-        ntee_code = org['ntee_code']
-        state = org['state']
-        revenue = org['revenue_amount']
-        # nccs_url = org['nccs_url']
-        # print nccs_url
-        # guidestar_url = org['guidestar_url']
-        # print guidestar_url
-        # filing_data = get_filing_data(result['filings_with_data'])
-        # print filing_data
-    except KeyError:
-        print 'Invalid key'
-        return
+    result_data = {
+        'name':'', 
+        'ntee_code':0, 
+        'state':'', 
+        'revenue':0, 
+        'nccs_url':'', 
+        'guidestar_url':'', 
+        'filing_data':{},
+        'savings':0,
+        'current_percentile':0,
+        'uac_percentile':0,
+        'overhead':0}
 
-    name = name.lower()
-    name = string.capwords(name)
-    print name
+    populate_results_data(result, result_data)
 
-    return render_template('results.html', 
-        name=name, 
-        savings=2021, 
-        current_percentile=50, 
-        uac_percentile=75,
-        ntee_code=ntee_code,
-        state=state,
-        revenue=revenue,
-        overhead=000000)
-        # nccs_url=nccs_url,
-        # guidestar_url=guidestar_url
+    return render_template('results.html', result_data=result_data)
 
 #@app.route('/results/') # ? results/123456789
 
