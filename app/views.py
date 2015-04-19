@@ -18,7 +18,7 @@ def search():
         print search_value # value of the search query
 
         if (len(request.form.getlist('page')) > 0):
-            result = query(search_value, request.form.getlist('page')[0])
+            result = query(search_value, int(request.form.getlist('page')[0]))
         else:
             result = query(search_value)
 
@@ -56,7 +56,11 @@ def search():
                 print ''
 
             print len(results_for_html) == 0
-            pagination = Pagination(page=1, total=num_results, search=False,
+            if (len(request.form.getlist('page')) > 0):
+                page = int(request.form.getlist('page')[0])
+            else:
+                page = 1
+            pagination = Pagination(page=page, total=num_results, search=False,
                                     per_page=RESULTS_PER_PAGE)
 
             return render_template('index.html', results=results_for_html,
@@ -73,27 +77,7 @@ def query(search_value, page=0):
     if is_EIN(search_value):
         #print "is EIN"
         query = 'https://projects.propublica.org/nonprofits/api/v1/organizations/'
-        result = requests.get(query + search_value + '?page=' + page + '.json').content
-
-    else:
-        query = 'https://projects.propublica.org/nonprofits/api/v1/search.json?q='
-        # TODO error checking
-        result = requests.get(query + search_value).content
-
-    result = json.loads(result) # convert to json obj
-    return result
-
-@app.route('/paginate', methods=['POST'])
-def query_get():
-    search_value = request.form['search']
-    page = request.form['page']
-    print 'search_value: ' + search_value
-    print 'page: ' + page
-    # use pattern matching to check if search value is EIN or org name
-    if is_EIN(search_value):
-        #print "is EIN"
-        query = 'https://projects.propublica.org/nonprofits/api/v1/organizations/'
-        result = requests.get(query + search_value + '?page=' + page + '.json').content
+        result = requests.get(query + search_value + '.json?page=' + page).content
 
     else:
         query = 'https://projects.propublica.org/nonprofits/api/v1/search.json?q='

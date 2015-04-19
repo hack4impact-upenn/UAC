@@ -35,7 +35,7 @@
                         {search: $('#search_value').html(), page:$(this).html()},
                         function(data, status) {
                             console.log(data);
-                            $('#pagination').html(data);
+                            $('body').html(data);
                         });
                 });
             });
