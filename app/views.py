@@ -123,42 +123,84 @@ def is_valid_EIN(ein):
         return False
     return True
 
+def get_filing_data(filing_array):
+    filing_data = {'profndraising':0, 'totexpns':0}
+    for filing in filing_array:
+        try:
+            filing_data['profndraising'] = filing['profndraising']
+            filing_data['totexpns'] = filing['totexpns']
+        except KeyError:
+            print 'Invalid key: profndraising, totexpns'
+    return filing_data
+
+def populate_results_data(result, result_data):
+    try:
+        org = result['organization']
+        try:
+            name = org['name']
+            name = name.lower()
+            name = string.capwords(name)
+            result_data['name'] = name
+        except KeyError:
+            print 'Invalid key: name'
+        try:
+            result_data['ntee_code'] = org['ntee_code']
+        except KeyError:
+            print 'Invalid key: ntee_code'
+        try:
+            result_data['state'] = org['state']
+        except KeyError:
+            print 'Invalid key: state'
+        try:
+            result_data['revenue'] = org['revenue_amount']
+        except KeyError:
+            print 'Invalid key: revenue_amount'
+        try:
+            result_data['nccs_url'] = org['nccs_url']
+        except KeyError:
+            print 'Invalid key: nccs_url'
+        try:
+            result_data['guidestar_url'] = org['guidestar_url']
+        except KeyError:
+            print 'Invalid key: guidestar_url'
+        try:
+            result_data['filing_data'] = get_filing_data(result['filings_with_data'])
+        except KeyError:
+            print 'Invalid key: filings_with_data'
+    except KeyError:
+        print 'Invalid key: organization'
+    
+        return
+
+
 @app.route('/results')
 def results():
     return render_template('results.html')
+
 
 # TODO ? should i convert ein to <int:ein> ?
 @app.route('/results/<ein>')
 def ein_results(ein):
     print ein
-
-    states = ["AL - Alabama", "AK - Alaska", "AZ - Arizona", "AR - Arkansas", "CA - California", "CO - Colorado", "CT - Connecticut", "DE - Delaware", "FL - Florida", "GA - Georgia", "HI - Hawaii", "ID - Idaho", "IL - Illinois", "IN - Indiana", "IA - Iowa", "KS - Kansas", "KY - Kentucky", "LA - Louisiana", "ME - Maine", "MD - Maryland", "MA - Massachusetts", "MI - Michigan", "MN - Minnesota", "MS - Mississippi", "MO - Missouri", "MT - Montana", "NE - Nebraska", "NV - Nevada", "NH - New Hampshire", "NJ - New Jersey", "NM - New Mexico", "NY - New York", "NC - North Carolina", "ND - North Dakota", "OH - Ohio", "OK - Oklahoma", "OR - Oregon", "PA - Pennsylvania", "RI - Rhode Island", "SC - South Carolina", "SD - South Dakota", "TN - Tennessee", "TX - Texas", "UT - Utah", "VT - Vermont", "VA - Virginia", "WA - Washington", "WV - West Virginia", "WI - Wisconsin", "WY - Wyoming"]
-
-    abbrevs = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "UT", "VT", "VA", "WA", "WV", "WI", "WY" ]
     
     result = query(ein)
 
-   
-    org = result['organization']
-    print org
-    name = org['name']
-    ntee_code = org['ntee_code']
-    state = org['state']
-    revenue = org['revenue_amount']
+    result_data = {
+        'name':'', 
+        'ntee_code':0, 
+        'state':'', 
+        'revenue':0, 
+        'nccs_url':'', 
+        'guidestar_url':'', 
+        'filing_data':{},
+        'savings':0,
+        'current_percentile':0,
+        'uac_percentile':0,
+        'overhead':0}
 
-    name = name.lower()
-    name = string.capwords(name)
-    print name
+    populate_results_data(result, result_data)
 
-    return render_template('results.html', 
-        name=name, 
-        savings=2021, 
-        current_percentile=50, 
-        uac_percentile=75,
-        ntee_code=ntee_code,
-        state=state,
-        revenue=revenue,
-        overhead=000000)
+    return render_template('results.html', result_data=result_data)
 
 #@app.route('/results/') # ? results/123456789
 
