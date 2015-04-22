@@ -9,7 +9,6 @@ import string
 
 RESULTS_PER_PAGE = 25
 
-
 @app.route('/', methods=['GET','POST'])
 @app.route('/#search', methods=['GET','POST'])
 def search():
@@ -18,15 +17,16 @@ def search():
         search_value = quote_plus(search_value)
         #print search_value
 
-        result = query(search_value)
+
+
+        if (len(request.form.getlist('page')) > 0):
+            result = query(search_value, int(request.form.getlist('page')[0]))
+        else:
+            result = query(search_value)
 
         if is_EIN(search_value):
             org = result['organization']
-            # print org['name']
-            # print org['ein']
-            # print org['city']
-            # print org['state']
-            # print result['tax_prd']
+
 
             # redirect
             ein = parse_EIN(search_value)
@@ -39,7 +39,7 @@ def search():
             #print 'Search yielded ' + str(num_results) + ' result(s).'
 
             results_for_html = []
-            for i in range(0, min(RESULTS_PER_PAGE,num_results)-1):
+            for i in range(0, len(filings)):
                 org = filings[i]['organization']
                 result_for_html = {
                     'name': org['name'],
@@ -58,26 +58,35 @@ def search():
                 # print filings[i]['tax_prd']
                 # print ''
 
-            pagination = Pagination(page=1, total=num_results, search=False, per_page = RESULTS_PER_PAGE)
+            print len(results_for_html) == 0
+            if (len(request.form.getlist('page')) > 0):
+                page = int(request.form.getlist('page')[0])
+            else:
+                page = 1
+            pagination = Pagination(page=page, total=num_results, search=False,
+                                    per_page=RESULTS_PER_PAGE)
 
-            return render_template('index.html', results=results_for_html, pagination=pagination)
+            return render_template('index.html', results=results_for_html,
+                                    pagination=pagination,
+                                    no_result=len(results_for_html) == 0,
+                                    search_value=search_value)
 
     return render_template('index.html')
 
 # if search value is EIN, use Organization Method
 # else, use Search Method
-def query(search_value):
+def query(search_value, page=0):
     # use pattern matching to check if search value is EIN or org name
     if is_EIN(search_value):
         #print "is EIN"
         query = 'https://projects.propublica.org/nonprofits/api/v1/organizations/'
-        result = requests.get(query + search_value + '.json').content
+        result = requests.get(query + search_value + '.json?page=' + str(page)).content
 
     else:
         query = 'https://projects.propublica.org/nonprofits/api/v1/search.json?q='
         # TODO error checking
-        result = requests.get(query + search_value).content
-    
+        result = requests.get(query + search_value + '&page=' + str(page)).content
+
     result = json.loads(result) # convert to json obj
     return result
 
