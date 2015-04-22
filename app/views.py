@@ -16,17 +16,17 @@ def search():
     if request.method == 'POST':
         search_value = request.form.getlist('search')[0]
         search_value = quote_plus(search_value)
-        print search_value
+        #print search_value
 
         result = query(search_value)
 
         if is_EIN(search_value):
             org = result['organization']
-            print org['name']
-            print org['ein']
-            print org['city']
-            print org['state']
-            print result['tax_prd']
+            # print org['name']
+            # print org['ein']
+            # print org['city']
+            # print org['state']
+            # print result['tax_prd']
 
             # redirect
             ein = parse_EIN(search_value)
@@ -36,7 +36,7 @@ def search():
             filings = result['filings']
             num_results = result['total_results']
 
-            print 'Search yielded ' + str(num_results) + ' result(s).'
+            #print 'Search yielded ' + str(num_results) + ' result(s).'
 
             results_for_html = []
             for i in range(0, min(RESULTS_PER_PAGE,num_results)-1):
@@ -51,12 +51,12 @@ def search():
                 results_for_html.append(result_for_html)
 
                 # print - delete me when ur done
-                print org['name']
-                print org['ein']
-                print org['city']
-                print org['state']
-                print filings[i]['tax_prd']
-                print ''
+                # print org['name']
+                # print org['ein']
+                # print org['city']
+                # print org['state']
+                # print filings[i]['tax_prd']
+                # print ''
 
             pagination = Pagination(page=1, total=num_results, search=False, per_page = RESULTS_PER_PAGE)
 
@@ -175,7 +175,7 @@ def results():
 # TODO ? should i convert ein to <int:ein> ?
 @app.route('/results/<ein>')
 def ein_results(ein):
-    print ein
+    #print ein
     
     result = query(ein)
 
