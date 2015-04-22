@@ -378,6 +378,14 @@ BUILDING HORIZONTAL RAINBOW BARS
     var width = 800;
     var height = numBars*gapSize;  
 
+    // container for whole chart
+    var rect_container = d3.select("#svg2_container").append("svg")
+        .attr("width", width)
+        .attr("height",height);
+
+    var rectWidth = width - 100;
+    var rectHeight = height/(numBars*2);
+
 /* IMPORTANT: THE DATA */
 /*
     comparison_data[0] creates all of the black lines in the graph, and refers to the current status of the nonprofit.
@@ -392,17 +400,9 @@ BUILDING HORIZONTAL RAINBOW BARS
 
     createHorizontalBars();
 
-    addLineMarks(comparison_data);
+    addLineMarks(comparison_data)
 
     function createHorizontalBars() {
-
-    // container for whole chart
-        var rect_container = d3.select("#svg2_container").append("svg")
-        .attr("width", width)
-        .attr("height",height);
-
-        var rectWidth = width - 100;
-        var rectHeight = height/(numBars*2);
 
     // color gradient
         var gradient = rect_container.append("linearGradient")
