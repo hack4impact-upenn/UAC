@@ -33,11 +33,11 @@
 <div class="panel panel-default">
     <div class="panel-body">
 <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-8">
         <!-- PDF iframed here-->
         <div><iframe src="">iframe</iframe></div>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-4">
         <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Change values:</h3>
@@ -156,7 +156,7 @@
 
 <div class="panel panel-default">
     <div class="row">
-        <div class='col-md-4'>
+        <div class='col-md-3'>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title"> State: {{result_data['state']}}</h3>
@@ -222,7 +222,7 @@
                 </div> 
             </div> <!-- Panel for State Submit-->
         </div> <!-- col 1 -->
-        <div class='col-md-4'>
+        <div class='col-md-6'>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">NTEE Code: {{result_data['ntee_code']}}</h3>
@@ -266,7 +266,7 @@
                 </div> 
             </div> <!-- Panel for NTEE Submit-->
         </div> <!-- col 2 -->
-        <div class='col-md-4'>
+        <div class='col-md-3'>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Revenue: ${{result_data['revenue']}}</h3>
@@ -376,12 +376,27 @@ BUILDING HORIZONTAL RAINBOW BARS
     var numBars = 13;
     var gapSize = 70;
     var width = 800;
-    var height = numBars*gapSize;
+    var height = numBars*gapSize;  
 
+/* IMPORTANT: THE DATA */
+/*
+    comparison_data[0] creates all of the black lines in the graph, and refers to the current status of the nonprofit.
+
+    comparison_data[1] creates all of the white lines in the graph, and refers to the potential status of the nonprofit if it uses UAC.
+
+    the black and white lines are added in the function 'addLineMarks()'
+*/
+    var comparison_data = [
+        [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2],
+        [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4]];
 
     createHorizontalBars();
 
+    addLineMarks(comparison_data);
+
     function createHorizontalBars() {
+
+    // container for whole chart
         var rect_container = d3.select("#svg2_container").append("svg")
         .attr("width", width)
         .attr("height",height);
@@ -389,6 +404,7 @@ BUILDING HORIZONTAL RAINBOW BARS
         var rectWidth = width - 100;
         var rectHeight = height/(numBars*2);
 
+    // color gradient
         var gradient = rect_container.append("linearGradient")
             .attr('y1', 0)
             .attr('y2', 0)
@@ -413,6 +429,7 @@ BUILDING HORIZONTAL RAINBOW BARS
         .attr("offset", "1")
         .attr("stop-color", "#31c960")
 
+    // creating individual bars
         for (var i = 0; i < numBars; i++) {
             rect_container.append("rect")
             .attr("x",0)
@@ -421,12 +438,10 @@ BUILDING HORIZONTAL RAINBOW BARS
             .attr("height",rectHeight)
             .attr("fill", "url(#gradient)");
         }
+    }
 
-// THE DATA
-        var comparison_data = [
-            [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2],
-            [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4]];
-
+    function addLineMarks(comparison_data) {
+    // adding black and white lines 
         for (var i = 0; i < numBars; i++) {
             rect_container.append("line")
             .attr('x1', rectWidth - (comparison_data[0][i] * rectWidth))
@@ -456,30 +471,15 @@ BUILDING VERTICAL BAR GRAPH
     To change the data set, change variable expense_data (below).
     expense_data[0] refers to the current costs being spent in 0-7 categories.
     expense_data[1] refers to the possible costs if user makes switch to UAC, in same 0-7 categories. 
-    Both graphs pull from 'expense data' currently for demo, but second graph should pull from data comparing user to other non-profits.
+
+    This data only affects the vertical bar graph.
 */
 
-    // var expense_data = [
-    //      [50,30,10,40,60,80,30,40,50,60,70,80,90,100,],
-    //      [60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
-
-    // console.log("HEY");
-    // console.log({{result_data}});
-
-    // var profndraising = "{{result_data['filing_data']['profndraising']}}";
-    // var totexpns = "{{result_data['filing_data']['totexpns']}}";
-
-    // console.log(profndraising);
-    // console.log(totexpns);
 
     var expense_data = [
          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
          [0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
 
-    // DATA WITH TOTAL INCLUDED:
-    // var expense_data = [
-    //     [780,50,40,30,20,10,20,30,40,50,60,70,80,90,100,],
-    //     [830,60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
 
     var labels = ['Management', 'Legal', 'Accounting', 'Lobbying', 'Prof. Fund.', 'Invest. MGMT.', 'Advertising', 'Office Exp.', 'Information Tech.', 'Interest Expense', 'Insurance', 'Empl. Benefits', 'Pension Plan', 'Other'];
 
@@ -590,26 +590,6 @@ BUILDING VERTICAL BAR GRAPH
             layer.selectAll("text").remove();
         });
 
-        // layer.selectAll("text")
-        // .data(function(d) {
-        //     return d;
-        // })
-        // .enter()
-        // .append("text")
-        // .style("text-anchor","middle")
-        // //.attr("transform", "rotate(10)")
-        // .attr("x", function(d) {
-        //     if (d.y0 == 0) return x(d.x) + 10;
-        //     return x(d.x) + 40;
-        // })
-        // .attr("y", function(d) {
-        //     console.log('y = ' + d.y);
-        //     return y(d.y) -10;
-        // })
-        // .text(function(d) {
-        //     return '$'+d.y;
-        // });
-
         
 
         rect.transition()
@@ -659,48 +639,12 @@ BUILDING VERTICAL BAR GRAPH
         }
     }
 
-    // to change graph from STACKED to GROUPED bars
-    function change() {
-        if (this.value === "stacked") transitionStacked();
-        else transitionGrouped();
-    }
-
-    function transitionGrouped() {
-        y.domain([0, yGroupMax]);
-
-        rect.transition()
-        .duration(500)
-        .delay(function(d, i) { return i * 10; })
-        .attr("x", function(d, i, j) { return x(d.x) + x.rangeBand() / n * j; })
-        .attr("width", x.rangeBand() / n)
-        .transition()
-        .attr("y", function(d) { return y(d.y); })
-        .attr("height", function(d) { return height - y(d.y); });
-    }
-
-    function transitionStacked() {
-        y.domain([0, yStackMax]);
-
-        rect.transition()
-        .duration(500)
-        .delay(function(d, i) { return i * 10; })
-        .attr("y", function(d) { return y(d.y0 + d.y); })
-        .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); })
-        .transition()
-        .attr("x", function(d) { return x(d.x); })
-        .attr("width", x.rangeBand());
-    }
     
     /* BAR GRAPH DATA GETTER */
     // n = x axis num categories
     // o = 0.1
     function getData(n) {
         var a = expense_data[n];
-        // if (n==0) {
-        //     a = [70,40,30,20,50,60,10];
-        // } else {
-        //     a = [60,10,15,10,25,50,10];
-        // }
         var m = a.map(function(d, i) {return {x: i, y: d}; });
         return m;
     }

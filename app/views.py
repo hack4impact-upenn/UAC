@@ -196,5 +196,17 @@ def ein_results(ein):
 
     return render_template('results.html', result_data=result_data)
 
+    # return render_template('results.html', 
+    #     name=result_data['name'],
+    #     ntee_code=result_data['ntee_code'],
+    #     state=result_data['state'],
+    #     revenue=result_data['revenue'],
+    #     nccs_url=result_data['nccs_url'],
+    #     guidestar_url=result_data['guidestar_url'],
+    #     savings=0,
+    #     current_percentile=0,
+    #     uac_percentile=0,
+    #     overhead=0)
+
 #@app.route('/results/') # ? results/123456789
 
