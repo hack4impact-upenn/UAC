@@ -9,6 +9,36 @@ $("#btn_submit_state_ntee").click(function() {
     // update values
 });
 
+$("#submit_button_calculate").click(function(event){
+    event.preventDefault();
+    var field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
+    'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
+    'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
+    'totalefficiency'];
+    console.log("calculate button clicked");
+    var expenses = {
+        legalfees:$('#legalfees').val(),
+        accountingfees:$('#accountingfees').val(),
+        insurance:$('#insurance').val(),
+        feesforsrvcmgmt:$('#feesforsrvcmgmt').val(),
+        feesforsrvclobby:$('#feesforsrvclobby').val(),
+        profndraising:$('#profndraising').val(),
+        feesforsrvcinvstmgmt:$('#feesforsrvcinvstmgmt').val(),
+        feesforsrvcothr:$('#feesforsrvcothr').val(),
+        advrtpromo:$('#advrtpromo').val(),
+        officexpns:$('#officexpns').val(),
+        infotech:$('#infotech').val(),
+        interestamt:$('#interestamt').val(),
+        othremplyeebene:$('#othremplyeebene').val(),
+        total_revenue:$('#total_revenue').val()
+    };
+    $.post('/calculate',
+        expenses,
+        function(data, status) {
+            console.log(data);
+        });
+});
+
 /***************************************
 BUILDING BAR GRAPH
 ****************************************/

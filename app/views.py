@@ -1,13 +1,19 @@
-from app import app
+from app import app, db, models
+from app.models import *
 from flask import request, render_template, redirect, url_for
 from flask.ext.paginate import Pagination
 from attrdict import AttrDict
 from urllib import quote_plus
 import requests, json, re
 
+
 import string
 
 RESULTS_PER_PAGE = 25
+
+field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
+    'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
+    'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene']
 
 @app.route('/', methods=['GET','POST'])
 @app.route('/#search', methods=['GET','POST'])
@@ -175,7 +181,7 @@ def populate_results_data(result, result_data):
 
 @app.route('/results')
 def results():
-    return render_template('results.html')
+    return render_template('results.html', expenses=field_names)
 
 
 # TODO ? should i convert ein to <int:ein> ?
@@ -200,7 +206,17 @@ def ein_results(ein):
 
     populate_results_data(result, result_data)
 
-    return render_template('results.html', result_data=result_data)
+    return render_template('results.html', result_data=result_data, expenses=field_names)
+
+@app.route('/calculate', methods=['POST'])
+def calculate():
+    print request.form.getlist('total_revenue')
+    total = float(request.form.getlist('total_revenue')[0])
+    expense_list = []
+    print 'POST: calculating percentiles'
+    for x in field_names:
+        expense_list.append(float(request.form.getlist(x)[0]) / total * 100)
+    print expense_list
+    return models.Bucket.query.filter_by(bucket_id = '00_0_1').first().get_all_percentiles(expense_list)
 
 #@app.route('/results/') # ? results/123456789
-
