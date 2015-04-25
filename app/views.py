@@ -136,6 +136,28 @@ def get_filing_data(filing_array):
             print 'Invalid key: profndraising, totexpns'
     return filing_data
 
+def get_pdf_url(result):
+    max_year = 0
+    pdf_url = ""
+    try:
+        filings = result['filings_with_data']
+        for filing in filings:
+            if filing['tax_prd'] > max_year:
+                max_year = filing['tax_prd']
+                pdf_url = filing['pdf_url']
+    except KeyError:
+        print 'Invalid Key: get_pdf_url() filings_with_data'
+    try:
+        filings = result['filings_without_data']
+        for filing in filings:
+            if filing['tax_prd'] > max_year:
+                max_year = filing['tax_prd']
+                pdf_url = filing['pdf_url']
+    except KeyError:
+        print 'Invalid Key: get_pdf_url() filings_without_data'
+
+    return pdf_url
+
 def populate_results_data(result, result_data):
     try:
         org = result['organization']
@@ -170,6 +192,10 @@ def populate_results_data(result, result_data):
             result_data['filing_data'] = get_filing_data(result['filings_with_data'])
         except KeyError:
             print 'Invalid key: filings_with_data'
+        try:
+            result_data['pdf_url'] = get_pdf_url(result)
+        except KeyError:
+            print 'Invalid key: pdf_url'
     except KeyError:
         print 'Invalid key: organization'
     
@@ -195,6 +221,7 @@ def ein_results(ein):
         'revenue':0, 
         'nccs_url':'', 
         'guidestar_url':'', 
+        'pdf_url':'',
         'filing_data':{},
         'savings':0,
         'current_percentile':0,
