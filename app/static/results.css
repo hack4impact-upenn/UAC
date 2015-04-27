@@ -41,3 +41,12 @@ text {
 
     margin-bottom:50px;
 }
+
+.panel {
+    width:90%;
+}
+
+#pdf_iframe {
+    width:100%;
+    height:700px;
+}
