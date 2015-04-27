@@ -9,7 +9,6 @@ import string
 
 RESULTS_PER_PAGE = 25
 
-
 @app.route('/', methods=['GET','POST'])
 @app.route('/#search', methods=['GET','POST'])
 def search():
@@ -18,15 +17,16 @@ def search():
         search_value = quote_plus(search_value)
         #print search_value
 
-        result = query(search_value)
+
+
+        if (len(request.form.getlist('page')) > 0):
+            result = query(search_value, int(request.form.getlist('page')[0]))
+        else:
+            result = query(search_value)
 
         if is_EIN(search_value):
             org = result['organization']
-            # print org['name']
-            # print org['ein']
-            # print org['city']
-            # print org['state']
-            # print result['tax_prd']
+
 
             # redirect
             ein = parse_EIN(search_value)
@@ -39,7 +39,7 @@ def search():
             #print 'Search yielded ' + str(num_results) + ' result(s).'
 
             results_for_html = []
-            for i in range(0, min(RESULTS_PER_PAGE,num_results)-1):
+            for i in range(0, len(filings)):
                 org = filings[i]['organization']
                 result_for_html = {
                     'name': org['name'],
@@ -58,26 +58,35 @@ def search():
                 # print filings[i]['tax_prd']
                 # print ''
 
-            pagination = Pagination(page=1, total=num_results, search=False, per_page = RESULTS_PER_PAGE)
+            print len(results_for_html) == 0
+            if (len(request.form.getlist('page')) > 0):
+                page = int(request.form.getlist('page')[0])
+            else:
+                page = 1
+            pagination = Pagination(page=page, total=num_results, search=False,
+                                    per_page=RESULTS_PER_PAGE)
 
-            return render_template('index.html', results=results_for_html, pagination=pagination)
+            return render_template('index.html', results=results_for_html,
+                                    pagination=pagination,
+                                    no_result=len(results_for_html) == 0,
+                                    search_value=search_value)
 
     return render_template('index.html')
 
 # if search value is EIN, use Organization Method
 # else, use Search Method
-def query(search_value):
+def query(search_value, page=0):
     # use pattern matching to check if search value is EIN or org name
     if is_EIN(search_value):
         #print "is EIN"
         query = 'https://projects.propublica.org/nonprofits/api/v1/organizations/'
-        result = requests.get(query + search_value + '.json').content
+        result = requests.get(query + search_value + '.json?page=' + str(page)).content
 
     else:
         query = 'https://projects.propublica.org/nonprofits/api/v1/search.json?q='
         # TODO error checking
-        result = requests.get(query + search_value).content
-    
+        result = requests.get(query + search_value + '&page=' + str(page)).content
+
     result = json.loads(result) # convert to json obj
     return result
 
@@ -127,6 +136,28 @@ def get_filing_data(filing_array):
             print 'Invalid key: profndraising, totexpns'
     return filing_data
 
+def get_pdf_url(result):
+    max_year = 0
+    pdf_url = ""
+    try:
+        filings = result['filings_with_data']
+        for filing in filings:
+            if filing['tax_prd'] > max_year:
+                max_year = filing['tax_prd']
+                pdf_url = filing['pdf_url']
+    except KeyError:
+        print 'Invalid Key: get_pdf_url() filings_with_data'
+    try:
+        filings = result['filings_without_data']
+        for filing in filings:
+            if filing['tax_prd'] > max_year:
+                max_year = filing['tax_prd']
+                pdf_url = filing['pdf_url']
+    except KeyError:
+        print 'Invalid Key: get_pdf_url() filings_without_data'
+
+    return pdf_url
+
 def populate_results_data(result, result_data):
     try:
         org = result['organization']
@@ -161,6 +192,10 @@ def populate_results_data(result, result_data):
             result_data['filing_data'] = get_filing_data(result['filings_with_data'])
         except KeyError:
             print 'Invalid key: filings_with_data'
+        try:
+            result_data['pdf_url'] = get_pdf_url(result)
+        except KeyError:
+            print 'Invalid key: pdf_url'
     except KeyError:
         print 'Invalid key: organization'
     
@@ -186,6 +221,7 @@ def ein_results(ein):
         'revenue':0, 
         'nccs_url':'', 
         'guidestar_url':'', 
+        'pdf_url':'',
         'filing_data':{},
         'savings':0,
         'current_percentile':0,
@@ -195,6 +231,18 @@ def ein_results(ein):
     populate_results_data(result, result_data)
 
     return render_template('results.html', result_data=result_data)
+
+    # return render_template('results.html', 
+    #     name=result_data['name'],
+    #     ntee_code=result_data['ntee_code'],
+    #     state=result_data['state'],
+    #     revenue=result_data['revenue'],
+    #     nccs_url=result_data['nccs_url'],
+    #     guidestar_url=result_data['guidestar_url'],
+    #     savings=0,
+    #     current_percentile=0,
+    #     uac_percentile=0,
+    #     overhead=0)
 
 #@app.route('/results/') # ? results/123456789
 
