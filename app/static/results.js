@@ -25,8 +25,11 @@ BUILDING BAR GRAPH
     //      [50,30,10,40,60,80,30,40,50,60,70,80,90,100,],
     //      [60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
 
-    var profndraising = result_data['filing_data']['profndraising'];
-    var totexpns = result_data['filing_data']['totexpns'];
+    console.log("HEY");
+    console.log(result_data);
+
+    var profndraising = "{{result_data['filing_data']['profndraising']}}";
+    var totexpns = "{{result_data['filing_data']['totexpns']}}";
 
     console.log(profndraising);
     console.log(totexpns);

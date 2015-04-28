@@ -15,7 +15,7 @@ def search():
     if request.method == 'POST':
         search_value = request.form.getlist('search')[0]
         search_value = quote_plus(search_value)
-        print search_value # value of the search query
+        #print search_value
 
         if (len(request.form.getlist('page')) > 0):
             result = query(search_value, int(request.form.getlist('page')[0]))
@@ -24,7 +24,6 @@ def search():
 
         if is_EIN(search_value):
             org = result['organization']
-
             # redirect
             ein = parse_EIN(search_value)
             return redirect(url_for('ein_results', ein=ein))
@@ -33,10 +32,10 @@ def search():
             filings = result['filings']
             num_results = result['total_results']
 
-            print 'Search yielded ' + str(num_results) + ' result(s).'
+            #print 'Search yielded ' + str(num_results) + ' result(s).'
 
             results_for_html = []
-            for i in range(0, min(RESULTS_PER_PAGE,num_results)-1):
+            for i in range(0, len(filings)):
                 org = filings[i]['organization']
                 result_for_html = {
                     'name': org['name'],
@@ -47,13 +46,12 @@ def search():
                 }
                 results_for_html.append(result_for_html)
 
-                # print - delete me when ur done
-                print org['name']
-                print org['ein']
-                print org['city']
-                print org['state']
-                print filings[i]['tax_prd']
-                print ''
+                # print org['name']
+                # print org['ein']
+                # print org['city']
+                # print org['state']
+                # print filings[i]['tax_prd']
+                # print ''
 
             print len(results_for_html) == 0
             if (len(request.form.getlist('page')) > 0):
@@ -133,7 +131,29 @@ def get_filing_data(filing_array):
             print 'Invalid key: profndraising, totexpns'
     return filing_data
 
-def populate_results_data(result, result_data):
+def get_pdf_url(result):
+    max_year = 0
+    pdf_url = ""
+    try:
+        filings = result['filings_with_data']
+        for filing in filings:
+            if filing['tax_prd'] > max_year:
+                max_year = filing['tax_prd']
+                pdf_url = filing['pdf_url']
+    except KeyError:
+        print 'Invalid Key: get_pdf_url() filings_with_data'
+    try:
+        filings = result['filings_without_data']
+        for filing in filings:
+            if filing['tax_prd'] > max_year:
+                max_year = filing['tax_prd']
+                pdf_url = filing['pdf_url']
+    except KeyError:
+        print 'Invalid Key: get_pdf_url() filings_without_data'
+
+    return pdf_url
+
+def populate_results_data(result, result_data, ein):
     try:
         org = result['organization']
         try:
@@ -156,17 +176,23 @@ def populate_results_data(result, result_data):
         except KeyError:
             print 'Invalid key: revenue_amount'
         try:
-            result_data['nccs_url'] = org['nccs_url']
+            #result_data['nccs_url'] = org['nccs_url']
+            result_data['nccs_url'] = "http://nccsweb.urban.org/communityplatform/nccs/organization/profile/id/" + ein + "/"
         except KeyError:
             print 'Invalid key: nccs_url'
         try:
-            result_data['guidestar_url'] = org['guidestar_url']
+            #result_data['guidestar_url'] = org['guidestar_url']
+            result_data['guidestar_url'] = "https://www.guidestar.org/organizations/"+ str(ein)[0:2]+"-" + str(ein)[2:]+"/.aspx"
         except KeyError:
             print 'Invalid key: guidestar_url'
         try:
             result_data['filing_data'] = get_filing_data(result['filings_with_data'])
         except KeyError:
             print 'Invalid key: filings_with_data'
+        try:
+            result_data['pdf_url'] = get_pdf_url(result)
+        except KeyError:
+            print 'Invalid key: pdf_url'
     except KeyError:
         print 'Invalid key: organization'
     
@@ -181,7 +207,7 @@ def results():
 # TODO ? should i convert ein to <int:ein> ?
 @app.route('/results/<ein>')
 def ein_results(ein):
-    print ein
+    #print ein
     
     result = query(ein)
 
@@ -192,15 +218,28 @@ def ein_results(ein):
         'revenue':0, 
         'nccs_url':'', 
         'guidestar_url':'', 
+        'pdf_url':'',
         'filing_data':{},
         'savings':0,
         'current_percentile':0,
         'uac_percentile':0,
         'overhead':0}
 
-    populate_results_data(result, result_data)
+    populate_results_data(result, result_data, ein)
 
     return render_template('results.html', result_data=result_data)
+
+    # return render_template('results.html', 
+    #     name=result_data['name'],
+    #     ntee_code=result_data['ntee_code'],
+    #     state=result_data['state'],
+    #     revenue=result_data['revenue'],
+    #     nccs_url=result_data['nccs_url'],
+    #     guidestar_url=result_data['guidestar_url'],
+    #     savings=0,
+    #     current_percentile=0,
+    #     uac_percentile=0,
+    #     overhead=0)
 
 #@app.route('/results/') # ? results/123456789
 
