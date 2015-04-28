@@ -28,16 +28,19 @@
     <h1>Welcome, <strong>{{result_data['name']}}.</strong></h1>
 </div>
 
-<div class="row"> <h1>Please enter your costs:</h1></div>
+<div class="row"> <h1>Please enter your expenses and revenue:</h1></div>
 
-<div>{{result_data['pdf_url']}}</div>
 <div class="panel panel-default">
     <div class="panel-body">
 <div class="row">
     <div class="col-md-8">
+        {% if result_data['pdf_url'] %}
         <!-- PDF iframed here-->
-        <h3>Please look to Part IX for Expense Data.</h3>
+        <h3>Look to Part IX for Expense Data.</h3>
         <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
+        {% else %}
+        <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
+        {% endif %}
     </div>
     <div class="col-md-4">
         <div class="panel panel-default">
@@ -124,20 +127,24 @@
     
 {% if result_data['nccs_url'] or result_data['guidestar_url'] %}
 <!-- Links to other websites and PDFs here -->
-    <div> 
-        <h2>Not satisfied? Find other records for {{result_data['name']}} here:</h2>
+<h2>Not satisfied? Find other records for <strong>{{result_data['name']}}</strong> here:</h2>
+<div class="panel panel-default">
+    <div class="panel-body">
+    
+       
         {% if result_data['nccs_url'] %}
-        <h3><a href="{{result_data['nccs_url']}}">NCCS</a></h3>
+        <h3><a href="{{result_data['nccs_url']}}">National Center for Charitable Statistics (NCCS)</a></h3>
         {% endif %}
         {% if result_data['guidestar_url'] %}
         <h3><a href="{{result_data['guidestar_url']}}">Guidestar</a></h3>
         {% endif %}
     </div>
+</div>
 {% endif %}
 
 <!-- Overall Numbers -->
 <div class="jumbotron">
-    <h2>The Numbers.</h2>
+    <h1>The Numbers.</h1>
     <p> Your overhead amount is {{result_data['overhead']}}</p>
     <!-- <p>With UAC, you can save <strong>${{savings}}</strong> every year.</p> -->
     <p>You are more cost-efficient than <strong>{{result_data['current_percentile']}}%</strong> of other non-profits.</p>
@@ -151,7 +158,7 @@
      Comparison Chart 
      -------------------------------------->
     <div class="row"> 
-        <h1>How Does <strong>{{result_data['name']}}</strong> Stack Up?</h1>
+        <h1>How Does <strong>{{result_data['name']}}</strong> Compare?</h1>
     </div>
 
    
@@ -356,7 +363,11 @@
         </div> <!-- PANEL BODY -->
     </div> <!-- PANEL -->
 
-
+<div class="panel panel-default">        
+    <div class="panel-body">
+        <h2>Looking for more information? Need a copy of this report? Leave us your contact information below:</h2>
+    </div>
+</div>
 <!-- <script type="text/javascript" src="{{ url_for('static', filename='results.js') }}"></script> -->
 
 <script type="text/javascript">
