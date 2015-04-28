@@ -40,7 +40,6 @@
     <div class="panel-body">
 <div class="row">
     <div class="col-md-8">
-<<<<<<< HEAD
         {% if result_data['pdf_url'] %}
         <!-- PDF iframed here-->
         <h3>Look to Part IX for Expense Data.</h3>
@@ -48,11 +47,7 @@
         {% else %}
         <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
         {% endif %}
-=======
-        <!-- PDF iframed here-->
-        <h3>Please look to Part IX for Expense Data.</h3>
-        <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
->>>>>>> master
+
     </div>
     <div class="col-md-4">
         <div class="panel panel-default">
@@ -141,7 +136,6 @@
     
 {% if result_data['nccs_url'] or result_data['guidestar_url'] %}
 <!-- Links to other websites and PDFs here -->
-<<<<<<< HEAD
 <h2>Not satisfied? Find other records for <strong>{{result_data['name']}}</strong> here:</h2>
 <div class="panel panel-default">
     <div class="panel-body">
@@ -149,12 +143,6 @@
        
         {% if result_data['nccs_url'] %}
         <h3><a href="{{result_data['nccs_url']}}">National Center for Charitable Statistics (NCCS)</a></h3>
-=======
-    <div> 
-        <h2>Not satisfied? Find other records for {{result_data['name']}} here:</h2>
-        {% if result_data['nccs_url'] %}
-        <h3><a href="{{result_data['nccs_url']}}">NCCS</a></h3>
->>>>>>> master
         {% endif %}
         {% if result_data['guidestar_url'] %}
         <h3><a href="{{result_data['guidestar_url']}}">Guidestar</a></h3>
@@ -384,14 +372,7 @@
         </div> <!-- PANEL BODY -->
     </div> <!-- PANEL -->
 
-<<<<<<< HEAD
-<div class="panel panel-default">        
-    <div class="panel-body">
-        <h2>Looking for more information? Need a copy of this report? Leave us your contact information below:</h2>
-    </div>
-</div>
-<!-- <script type="text/javascript" src="{{ url_for('static', filename='results.js') }}"></script> -->
-=======
+
     <div class="row"> 
         <button id="pdfbutton" type="button" class="btn btn-default">Submit Form</button></a>
         <div id="png"></div>
@@ -420,7 +401,6 @@ $('#pdfbutton').click(function() {
 </script>
 
 
->>>>>>> master
 
 <script type="text/javascript" src="{{ url_for('static', filename='results.js') }}"></script>
 <!--
