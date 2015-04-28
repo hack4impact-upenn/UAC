@@ -51,7 +51,7 @@ class Bucket(db.Model):
 		percentiles_list = []
 		percentages = []
 		arr = {}
-		for (name in field_names):
+		for name in field_names:
 			percentile_for_this_value = self.get_percentile(name, expense_dict[name])
 			arr[name].append(percentile_for_this_value)
 			percentiles = getattr(self, name).split('%')[:-1]
