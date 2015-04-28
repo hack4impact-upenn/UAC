@@ -1,3 +1,5 @@
+## TODO: FIX DATABASE_TEST FOR NEW DATA
+
 #!flask/bin/python
 import unittest
 import os
@@ -46,7 +48,7 @@ class TestCase(unittest.TestCase):
         b = Bucket.query.filter_by(bucket_id = 'AL_A').first()
         # [0%] 0%, 1%, 5%, 7%, 10% [last value]
         # 5 values, 6 intervals, interval width = 16.67
-        assert b.get_percentile('management', 0) == 0
+        assert b.get_percentile('feesforsrvcmgmt', 0) == 0
 
     def test_get_percentile_middle_intervals(self):
         bucket1 = Bucket(
@@ -57,10 +59,10 @@ class TestCase(unittest.TestCase):
         b = Bucket.query.filter_by(bucket_id = 'AL_A').first()
         # [0%] 0%, 1%, 5%, 7%, 10% [last value]
         # 5 values, 6 intervals, interval width = 16.67
-        assert b.get_percentile('management', 1) > 33.3
-        assert b.get_percentile('management', 1) < 33.4
-        assert b.get_percentile('management', 3) > 41.66
-        assert b.get_percentile('management', 3) < 41.67
+        assert b.get_percentile('feesforsrvcmgmt', 1) > 33.3
+        assert b.get_percentile('feesforsrvcmgmt', 1) < 33.4
+        assert b.get_percentile('feesforsrvcmgmt', 3) > 41.66
+        assert b.get_percentile('feesforsrvcmgmt', 3) < 41.67
 
     def test_get_percentile_last_interval(self):
         bucket1 = Bucket(
@@ -71,13 +73,14 @@ class TestCase(unittest.TestCase):
         b = Bucket.query.filter_by(bucket_id = 'AL_A').first()
         # [0%] 0%, 1%, 5%, 7%, 10% [last value]
         # 5 values, 6 intervals, interval width = 16.67
-        assert b.get_percentile('management', 1000) > 91.66
-        assert b.get_percentile('management', 1000) < 91.67
+        assert b.get_percentile('feesforsrvcmgmt', 1000) > 91.66
+        assert b.get_percentile('feesforsrvcmgmt', 1000) < 91.67
 
     def test_read_csv(self):
-        field_names = ['management', 'legal', 'accounting', 'lobbying', 'fundraising',
-            'investment', 'other_fees', 'advertising', 'office', 'interest',
-            'insurance', 'other_benefits']
+        field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
+        'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
+        'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
+        'totalefficiency']
 
         with open('AccountingMatrix.csv', 'rU') as csvfile:
             reader = csv.reader(csvfile, quotechar='|')
