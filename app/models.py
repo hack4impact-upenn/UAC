@@ -40,19 +40,39 @@ class Bucket(db.Model):
 		for i in range(0, len(data)):
 			d = float(data[i])
 			if value==d:
-				return i*interval_width*100
+				return i*interval_width
 			elif (i==len(data)-1) or (value>d and value<float(data[i+1])):
 				# percentile = number of prior intervals + half of current interval
-				return (i+0.5)*interval_width*100
+				return (i+0.5)*interval_width
 
 	# Takes an array of expense percentage values and returns json list of percentiles
-	def get_all_percentiles(self, values):
+	# 
+	def get_all_percentiles(self, expense_dict):
 		percentiles_list = []
 		percentages = []
-		for i in range(0, len(field_names)):
-			percentiles_list.append(self.get_percentile(field_names[i], float(values[i])))
-			percentages.append(getattr(self, field_names[i]))
+		arr = {}
+		for (name in field_names):
+			percentile_for_this_value = self.get_percentile(name, expense_dict[name])
+			arr[name].append(percentile_for_this_value)
+			percentiles = getattr(self, name).split('%')[:-1]
+			for p in percentiles: 
+				arr[name].append(p)
 
-		return jsonify(percentages=percentages,
-			list=str(percentiles_list),
+		return jsonify(
+			legalfees_array=arr['legalfees_array'],
+			accountingfees_array=arr['accountingfees_array'],
+			insurance_array=arr['insurance_array'],
+			feesforsrvcmgmt_array=arr['feesforsrvcmgmt_array'],
+			feesforsrvclobby_array=arr['feesforsrvclobby_array'],
+			profndraising_array=arr['profndraising_array'],
+			feesforsrvcinvstmgmt_array=arr['feesforsrvcinvstmgmt_array'],
+			feesforsrvcothr_array=arr['feesforsrvcothr_array'],
+			advrtpromo_array=arr['advrtpromo_array'],
+			officexpns_array=arr['officexpns_array'],
+			infotech_array=arr['infotech_array'],
+			interestamt_array=arr['interestamt_array'],
+			othremplyeebene_array=arr['othremplyeebene_array'],
+			totalefficienc_array=arr['totalefficienc_array'],
+			percentages=percentages,
+			list=percentiles_list,
 			values=values)

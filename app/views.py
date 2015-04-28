@@ -241,13 +241,19 @@ def ein_results(ein):
 @app.route('/calculate', methods=['POST'])
 def calculate():
     print request.form.getlist('total_revenue')
-    total = float(request.form.getlist('total_revenue')[0])
-    expense_list = []
+    total_rev = float(request.form.getlist('total_revenue')[0])
     print 'POST: calculating percentiles'
+    expense_dict = {}
+    # converts all expenses into percentages and puts into dict by category name
     for x in field_names:
-        expense_list.append(float(request.form.getlist(x)[0]) / total * 100)
-    print expense_list
-    return models.Bucket.query.filter_by(bucket_id = '00_0_1').first().get_all_percentiles(expense_list)
+        expense_dict[x] = float(request.form.getlist(x)[0]) / total_rev * 100
+
+    state_id = request.form.getlist('state_id')[0]
+    ntee_id = request.form.getlist('ntee_id')[0]
+    revenue_id = request.form.getlist('revenue_id')[0]
+    query_bucket_id = state_id + '_' + ntee_id + '_' + revenue_id
+    table_row = models.Bucket.query.filter_by(bucket_id=query_bucket_id).first()
+    return table_row.get_all_percentiles(expense_dict)
     # return render_template('results.html', 
     #     name=result_data['name'],
     #     ntee_code=result_data['ntee_code'],
