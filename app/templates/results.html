@@ -13,6 +13,11 @@
 <!-- CDN for D3 Data Visualization Library -->
 <script src="http://d3js.org/d3.v3.min.js"></script>
 
+<script src="/static/js/jspdf/jspdf.min.js"></script>
+
+<script src="/static/js/html2canvas/html2canvas.min.js"></script>
+<script src="http://www.nihilogic.dk/labs/canvas2image/canvas2image.js"></script>
+
 <!-- CDN for Bootstrap -->
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -346,6 +351,34 @@
             </div>
         </div> <!-- PANEL BODY -->
     </div> <!-- PANEL -->
+
+    <div class="row"> 
+        <button id="pdfbutton" type="button" class="btn btn-default">Submit Form</button></a>
+        <div id="png"></div>
+
+    </div>
+
+
+
+<script type="text/javascript">
+$('#pdfbutton').click(function() {
+    window.location.href = '#';
+    html2canvas(document.body, {
+        onrendered: function(canvas) {
+            console.log("hi");
+            var image = canvas.toDataURL("image/png");
+            console.log("before");
+            $('#png').html('<a href="' + image + '" download><button type="button" class="btn btn-default">Download</button></a>');
+            //$('#down').href("#");
+            //console.log("after");
+
+
+            console.log("HI");
+        }
+    });
+});
+</script>
+
 
 
 <script type="text/javascript" src="{{ url_for('static', filename='results.js') }}"></script>
