@@ -9,6 +9,45 @@ $("#btn_submit_state_ntee").click(function() {
     // update values
 });
 
+$("#submit_button_calculate").click(function(event){
+    event.preventDefault();
+    var field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
+    'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
+    'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
+    'totalefficiency'];
+    console.log("calculate button clicked");
+    var expense_data = {
+        legalfees:$('#legalfees').val(),
+        accountingfees:$('#accountingfees').val(),
+        insurance:$('#insurance').val(),
+        feesforsrvcmgmt:$('#feesforsrvcmgmt').val(),
+        feesforsrvclobby:$('#feesforsrvclobby').val(),
+        profndraising:$('#profndraising').val(),
+        feesforsrvcinvstmgmt:$('#feesforsrvcinvstmgmt').val(),
+        feesforsrvcothr:$('#feesforsrvcothr').val(),
+        advrtpromo:$('#advrtpromo').val(),
+        officexpns:$('#officexpns').val(),
+        infotech:$('#infotech').val(),
+        interestamt:$('#interestamt').val(),
+        othremplyeebene:$('#othremplyeebene').val(),
+        total_revenue:$('#total_revenue').val(),
+        state_id:$('#state_select').val(),
+        ntee_id:$('#ntee_select').val(),
+        revenue_id:$('#revenue_select').val()
+    };
+    $.post('/calculate',
+        expense_data,
+        function(data, status) {
+            console.log(data);
+            var bar_data = [
+            data.list, //lines:percentage values
+            [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4],
+            [0.7,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3],
+            [0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4,0.2]];
+            createHorizontalBars(bar_data);
+        });
+});
+
 /***************************************
 BUILDING BAR GRAPH
 ****************************************/
@@ -26,7 +65,6 @@ BUILDING BAR GRAPH
     //      [60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
 
     console.log("HEY");
-    console.log(result_data);
 
     var profndraising = "{{result_data['filing_data']['profndraising']}}";
     var totexpns = "{{result_data['filing_data']['totexpns']}}";
@@ -308,16 +346,21 @@ BUILDING BAR GRAPH
 /***************************************
 BUILDING HORIZONTAL SLIDER BARS
 ****************************************/
-
+    console.log('make horizontal bars');
     var numBars = 13;
     var gapSize = 70;
     var width = 800;
     var height = numBars*gapSize;
 
+    var sample_data = [
+            [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2], //lines:percentage values
+            [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4],
+            [0.7,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3],
+            [0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4,0.2]];
+    createHorizontalBars(sample_data);
 
-    createHorizontalBars();
-
-    function createHorizontalBars() {
+    function createHorizontalBars(comparison_data) {
+        var rect_container = d3.select("#svg2_container").html('');
         var rect_container = d3.select("#svg2_container").append("svg")
         .attr("width", width)
         .attr("height",height);
@@ -358,26 +401,26 @@ BUILDING HORIZONTAL SLIDER BARS
             .attr("fill", "url(#gradient)");
         }
 
-        var comparison_data = [
-            [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2],
-            [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4]];
-
         for (var i = 0; i < numBars; i++) {
             rect_container.append("line")
-            .attr('x1', rectWidth - (comparison_data[0][i] * rectWidth))
+            .attr('x1', rectWidth - (parseFloat(comparison_data[0][i]) * rectWidth))
             .attr('y1', i*gapSize)
-            .attr('x2', rectWidth - (comparison_data[0][i] * rectWidth))
+            .attr('x2', rectWidth - (parseFloat(comparison_data[0][i]) * rectWidth))
             .attr('y2', i*gapSize + rectHeight)
             .attr('stroke-width',2)
             .attr('stroke','black');
-
-            rect_container.append("line")
-            .attr('x1', rectWidth - (comparison_data[1][i] * rectWidth))
-            .attr('y1', i*gapSize)
-            .attr('x2', rectWidth - (comparison_data[1][i] * rectWidth))
-            .attr('y2', i*gapSize + rectHeight)
-            .attr('stroke-width',2)
-            .attr('stroke','white');
+        }
+        for (var j = 1; j < comparison_data.length; j++) {
+            for (var i = 0; i < numBars; i++) {
+                console.log('making bars: '+i+','+j);
+                rect_container.append("line")
+                .attr('x1', rectWidth - (parseFloat(comparison_data[j][i]) * rectWidth))
+                .attr('y1', i*gapSize)
+                .attr('x2', rectWidth - (parseFloat(comparison_data[j][i]) * rectWidth))
+                .attr('y2', i*gapSize + rectHeight)
+                .attr('stroke-width', 2)
+                .attr('stroke','white');
+            }
         }
     }
     

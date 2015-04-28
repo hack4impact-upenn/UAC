@@ -42,11 +42,19 @@ text {
     margin-bottom:50px;
 }
 
+<<<<<<< HEAD
 .container {
     width:90%;
 }
 
 .iframe {
+=======
+.panel {
+    width:90%;
+}
+
+#pdf_iframe {
+>>>>>>> master
     width:100%;
     height:700px;
 }

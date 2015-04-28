@@ -1,13 +1,19 @@
-from app import app
+from app import app, db, models
+from app.models import *
 from flask import request, render_template, redirect, url_for
 from flask.ext.paginate import Pagination
 from attrdict import AttrDict
 from urllib import quote_plus
 import requests, json, re
 
+
 import string
 
 RESULTS_PER_PAGE = 25
+
+field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
+    'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
+    'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene']
 
 @app.route('/', methods=['GET','POST'])
 @app.route('/#search', methods=['GET','POST'])
@@ -201,7 +207,7 @@ def populate_results_data(result, result_data, ein):
 
 @app.route('/results')
 def results():
-    return render_template('results.html')
+    return render_template('results.html', expenses=field_names)
 
 
 # TODO ? should i convert ein to <int:ein> ?
@@ -227,7 +233,35 @@ def ein_results(ein):
 
     populate_results_data(result, result_data, ein)
 
-    return render_template('results.html', result_data=result_data)
+    return render_template('results.html', result_data=result_data, expenses=field_names)
+
+@app.route('/calculate', methods=['POST'])
+def calculate():
+    print request.form.getlist('total_revenue')
+    total_rev = float(request.form.getlist('total_revenue')[0])
+    print 'POST: calculating percentiles'
+    expense_dict = {}
+    # converts all expenses into percentages and puts into dict by category name
+    for x in field_names:
+        expense_dict[x] = float(request.form.getlist(x)[0]) / total_rev * 100
+
+    state_id = request.form.getlist('state_id')[0]
+    ntee_id = request.form.getlist('ntee_id')[0]
+    revenue_id = request.form.getlist('revenue_id')[0]
+    query_bucket_id = state_id + '_' + ntee_id + '_' + revenue_id
+    table_row = models.Bucket.query.filter_by(bucket_id=query_bucket_id).first()
+    return table_row.get_all_percentiles(expense_dict)
+    # return render_template('results.html', 
+    #     name=result_data['name'],
+    #     ntee_code=result_data['ntee_code'],
+    #     state=result_data['state'],
+    #     revenue=result_data['revenue'],
+    #     nccs_url=result_data['nccs_url'],
+    #     guidestar_url=result_data['guidestar_url'],
+    #     savings=0,
+    #     current_percentile=0,
+    #     uac_percentile=0,
+    #     overhead=0)
 
     # return render_template('results.html', 
     #     name=result_data['name'],
@@ -242,4 +276,3 @@ def ein_results(ein):
     #     overhead=0)
 
 #@app.route('/results/') # ? results/123456789
-

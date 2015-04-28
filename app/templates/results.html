@@ -13,6 +13,11 @@
 <!-- CDN for D3 Data Visualization Library -->
 <script src="http://d3js.org/d3.v3.min.js"></script>
 
+<script src="/static/js/jspdf/jspdf.min.js"></script>
+
+<script src="/static/js/html2canvas/html2canvas.min.js"></script>
+<script src="http://www.nihilogic.dk/labs/canvas2image/canvas2image.js"></script>
+
 <!-- CDN for Bootstrap -->
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -30,10 +35,12 @@
 
 <div class="row"> <h1>Please enter your expenses and revenue:</h1></div>
 
+<div>{{result_data['pdf_url']}}</div>
 <div class="panel panel-default">
     <div class="panel-body">
 <div class="row">
     <div class="col-md-8">
+<<<<<<< HEAD
         {% if result_data['pdf_url'] %}
         <!-- PDF iframed here-->
         <h3>Look to Part IX for Expense Data.</h3>
@@ -41,6 +48,11 @@
         {% else %}
         <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
         {% endif %}
+=======
+        <!-- PDF iframed here-->
+        <h3>Please look to Part IX for Expense Data.</h3>
+        <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
+>>>>>>> master
     </div>
     <div class="col-md-4">
         <div class="panel panel-default">
@@ -48,73 +60,75 @@
             <h3 class="panel-title">Change values:</h3>
         </div>
         <div class="panel-body">
+
             <!-- FORM TO CHANGE SPENDING DATA VALUES -->
-            <form id="costs_form" >
+            <form id="costs_form" method="post" action="../calculate">
+
                 <div class="form-group">
                     <label class="update" for="management">Management Expenses</label>
-                    <input type="text" class="form-control" class="btn pull-right" id="management" placeholder="">
+                    <input type="text" class="form-control" class="btn pull-right" id="feesforsrvcmgmt" placeholder="" name="feesforsrvcmgmt" value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="legal">Legal Expenses</label>
-                    <input type="text" class="form-control" id="legal" placeholder="">
+                    <input type="text" class="form-control" id="legalfees" placeholder="" name='legalfees' value="0">
                 </div>
                 <div class="form-group" >
                     <label class="update"for="accounting">Accounting Expenses</label>
-                    <input type="text" class="form-control" id="accounting" placeholder="">
+                    <input type="text" class="form-control" id="accountingfees" placeholder="" name='accountingfees' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="lobbying">Lobbying Expenses</label>
-                    <input type="text" class="form-control" id="lobbying" placeholder="">
+                    <input type="text" class="form-control" id="feesforsrvclobby" placeholder="" name='feesforsrvclobby' value="0">
                 </div>
-                <div class="form-group">
+                <div class="form-group" value="0">
                     <label class="update" for="professional_fundraising">Professional Fundraising</label>
-                    <input type="text" class="form-control" id="professional_fundraising" placeholder="">
+                    <input type="text" class="form-control" id="profndraising" placeholder="" name='profndraising' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="investment_management">Investment Management Expenses</label>
-                    <input type="text" class="form-control" id="investment_management" placeholder="">
+                    <input type="text" class="form-control" id="feesforsrvcinvstmgmt" placeholder="" name='feesforsrvcinvstmgmt' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="advertising">Advertising Expenses</label>
-                    <input type="text" class="form-control" id="advertising" placeholder="">
+                    <input type="text" class="form-control" id="advrtpromo" placeholder="" name='advrtpromo' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="office_expenses">Office Expenses</label>
-                    <input type="text" class="form-control" id="office_expenses" placeholder="">
+                    <input type="text" class="form-control" id="officexpns" placeholder="" name='officexpns' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="information_technology">I.T. Expenses</label>
-                    <input type="text" class="form-control" id="information_technology" placeholder="">
+                    <input type="text" class="form-control" id="infotech" placeholder="" name='infotech' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="interest_expense">Interest Expenses</label>
-                    <input type="text" class="form-control" id="interest_expense" placeholder="">
+                    <input type="text" class="form-control" id="interestamt" placeholder="" name='interestamt' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="insurance">Insurance Expenses</label>
-                    <input type="text" class="form-control" id="insurance" placeholder="">
+                    <input type="text" class="form-control" id="insurance" placeholder="" name='insurance' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="employee_benefits">Employee Benefits </label>
-                    <input type="text" class="form-control" id="employee_benefits" placeholder="">
+                    <input type="text" class="form-control" id="othremplyeebene" placeholder="" name='othremplyeebene' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="pension_plan_contributions">Pension Plan Contributions</label>
-                    <input type="text" class="form-control" id="pension_plan_contributions" placeholder="">
+                    <input type="text" class="form-control" id="pension_plan_contributions" placeholder="" name='pension' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="other">Other Expenses</label>
-                    <input type="text" class="form-control" id="other" placeholder="">
+                    <input type="text" class="form-control" placeholder="" name='feesforsrvcothr' id='feesforsrvcothr' value="0">
                 </div>
                 <div class="form-group">
                     <label class="update" for="total">Total Expenses</label>
-                    <p id="total"> </p>
+                    <p id="total" value="0"> </p>
                 </div>
                 <div class="form-group">
                     <label class="update" for="total_revenue">Total Revenue</label>
-                    <input type="text" class="form-control" id="total_revenue" placeholder="" value="{{result_data['revenue']}}">
+                    <input type="text" class="form-control" id="total_revenue" name="total_revenue" placeholder="" value="{{result_data['revenue']}}">
                 </div>
-                <button type="submit" class="btn btn-default" id="submit_button">Submit</button>
+                <button type="submit" class="btn btn-default" id="submit_button_calculate">Submit</button>
             </form>
         </div>
     </div>
@@ -127,6 +141,7 @@
     
 {% if result_data['nccs_url'] or result_data['guidestar_url'] %}
 <!-- Links to other websites and PDFs here -->
+<<<<<<< HEAD
 <h2>Not satisfied? Find other records for <strong>{{result_data['name']}}</strong> here:</h2>
 <div class="panel panel-default">
     <div class="panel-body">
@@ -134,6 +149,12 @@
        
         {% if result_data['nccs_url'] %}
         <h3><a href="{{result_data['nccs_url']}}">National Center for Charitable Statistics (NCCS)</a></h3>
+=======
+    <div> 
+        <h2>Not satisfied? Find other records for {{result_data['name']}} here:</h2>
+        {% if result_data['nccs_url'] %}
+        <h3><a href="{{result_data['nccs_url']}}">NCCS</a></h3>
+>>>>>>> master
         {% endif %}
         {% if result_data['guidestar_url'] %}
         <h3><a href="{{result_data['guidestar_url']}}">Guidestar</a></h3>
@@ -363,13 +384,46 @@
         </div> <!-- PANEL BODY -->
     </div> <!-- PANEL -->
 
+<<<<<<< HEAD
 <div class="panel panel-default">        
     <div class="panel-body">
         <h2>Looking for more information? Need a copy of this report? Leave us your contact information below:</h2>
     </div>
 </div>
 <!-- <script type="text/javascript" src="{{ url_for('static', filename='results.js') }}"></script> -->
+=======
+    <div class="row"> 
+        <button id="pdfbutton" type="button" class="btn btn-default">Submit Form</button></a>
+        <div id="png"></div>
 
+    </div>
+
+
+
+<script type="text/javascript">
+$('#pdfbutton').click(function() {
+    window.location.href = '#';
+    html2canvas(document.body, {
+        onrendered: function(canvas) {
+            console.log("hi");
+            var image = canvas.toDataURL("image/png");
+            console.log("before");
+            $('#png').html('<a href="' + image + '" download><button type="button" class="btn btn-default">Download</button></a>');
+            //$('#down').href("#");
+            //console.log("after");
+
+
+            console.log("HI");
+        }
+    });
+});
+</script>
+
+
+>>>>>>> master
+
+<script type="text/javascript" src="{{ url_for('static', filename='results.js') }}"></script>
+<!--
 <script type="text/javascript">
 /***************************************
 PAGE INTERACTIVITY
@@ -382,8 +436,12 @@ $("#btn_submit_state_ntee").click(function() {
     // update values
 });
 
+<<<<<<< HEAD
 
 // PRE - POPULATING DROPDOWN
+=======
+// var states = ['AL', 'AK'];
+>>>>>>> master
 var states = {'AL': 1, 'AK': 2, 'AZ': 3, 'AR': 4, 'CA': 5, 'CO': 6, 'CT': 7, 'DE': 8, 'FL': 9, 'GA': 10, 'HI': 11, 'ID': 12, 'IL':13, 'IN':14, 'IA':15, 'KS':16, 'KY':17, 'LA':18, 'ME':19, 'MD':20, 'MA':21, 'MI':22, 'MN':23, 'MS':24, 'MO':25, 'MT':26, 'NE':27, 'NV':28, 'NH':29, 'NJ':30, 'NM':31, 'NY':32, 'NC':33, 'ND':34, 'OH':35, 'OK':36, 'OR':37, 'PA':38, 'RI':39, 'SC':40, 'SD':41, 'TN':42, 'TX':43, 'UT':44, 'VT':45, 'VA':46, 'WA':47, 'WV':48, 'WI':49, 'WY':50};
 
 var this_state = "{{result_data['state']}}";
@@ -396,6 +454,7 @@ var ntee = "{{result_data['ntee_code']}}".charAt(0);
 
 document.getElementById('ntee_select').options.selectedIndex = alpha[ntee];
 
+<<<<<<< HEAD
 var revenue = "{{result_data['revenue']}}";
 if (revenue === "None") {
     revenue = 0;
@@ -420,6 +479,8 @@ if (revenue >= 50000 && revenue < 250000) {
 
 document.getElementById('revenue_select').options.selectedIndex = revenue_dropdown_idx;
 
+=======
+>>>>>>> master
 
 /***************************************
 BUILDING HORIZONTAL RAINBOW BARS
@@ -429,6 +490,7 @@ BUILDING HORIZONTAL RAINBOW BARS
     var gapSize = 70;
     var width = 800;
     var height = numBars*gapSize;  
+<<<<<<< HEAD
 
     // container for whole chart
     var rect_container = d3.select("#svg2_container").append("svg")
@@ -442,6 +504,21 @@ BUILDING HORIZONTAL RAINBOW BARS
 /*
     comparison_data[0] creates all of the black lines in the graph, and refers to the current status of the nonprofit.
 
+=======
+
+    // container for whole chart
+    var rect_container = d3.select("#svg2_container").append("svg")
+        .attr("width", width)
+        .attr("height",height);
+
+    var rectWidth = width - 100;
+    var rectHeight = height/(numBars*2);
+
+/* IMPORTANT: THE DATA */
+/*
+    comparison_data[0] creates all of the black lines in the graph, and refers to the current status of the nonprofit.
+
+>>>>>>> master
     comparison_data[1] creates all of the white lines in the graph, and refers to the potential status of the nonprofit if it uses UAC.
 
     the black and white lines are added in the function 'addLineMarks()'
@@ -743,7 +820,7 @@ BUILDING VERTICAL BAR GRAPH
 
 
 </script>
-
+-->
 
 
 {% endblock %}
