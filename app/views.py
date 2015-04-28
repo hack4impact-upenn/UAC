@@ -23,8 +23,6 @@ def search():
         search_value = quote_plus(search_value)
         #print search_value
 
-
-
         if (len(request.form.getlist('page')) > 0):
             result = query(search_value, int(request.form.getlist('page')[0]))
         else:
@@ -32,8 +30,6 @@ def search():
 
         if is_EIN(search_value):
             org = result['organization']
-
-
             # redirect
             ein = parse_EIN(search_value)
             return redirect(url_for('ein_results', ein=ein))
@@ -56,7 +52,6 @@ def search():
                 }
                 results_for_html.append(result_for_html)
 
-                # print - delete me when ur done
                 # print org['name']
                 # print org['ein']
                 # print org['city']
@@ -164,7 +159,7 @@ def get_pdf_url(result):
 
     return pdf_url
 
-def populate_results_data(result, result_data):
+def populate_results_data(result, result_data, ein):
     try:
         org = result['organization']
         try:
@@ -187,11 +182,13 @@ def populate_results_data(result, result_data):
         except KeyError:
             print 'Invalid key: revenue_amount'
         try:
-            result_data['nccs_url'] = org['nccs_url']
+            #result_data['nccs_url'] = org['nccs_url']
+            result_data['nccs_url'] = "http://nccsweb.urban.org/communityplatform/nccs/organization/profile/id/" + ein + "/"
         except KeyError:
             print 'Invalid key: nccs_url'
         try:
-            result_data['guidestar_url'] = org['guidestar_url']
+            #result_data['guidestar_url'] = org['guidestar_url']
+            result_data['guidestar_url'] = "https://www.guidestar.org/organizations/"+ str(ein)[0:2]+"-" + str(ein)[2:]+"/.aspx"
         except KeyError:
             print 'Invalid key: guidestar_url'
         try:
@@ -234,7 +231,7 @@ def ein_results(ein):
         'uac_percentile':0,
         'overhead':0}
 
-    populate_results_data(result, result_data)
+    populate_results_data(result, result_data, ein)
 
     return render_template('results.html', result_data=result_data, expenses=field_names)
 
@@ -254,6 +251,18 @@ def calculate():
     query_bucket_id = state_id + '_' + ntee_id + '_' + revenue_id
     table_row = models.Bucket.query.filter_by(bucket_id=query_bucket_id).first()
     return table_row.get_all_percentiles(expense_dict)
+    # return render_template('results.html', 
+    #     name=result_data['name'],
+    #     ntee_code=result_data['ntee_code'],
+    #     state=result_data['state'],
+    #     revenue=result_data['revenue'],
+    #     nccs_url=result_data['nccs_url'],
+    #     guidestar_url=result_data['guidestar_url'],
+    #     savings=0,
+    #     current_percentile=0,
+    #     uac_percentile=0,
+    #     overhead=0)
+
     # return render_template('results.html', 
     #     name=result_data['name'],
     #     ntee_code=result_data['ntee_code'],
