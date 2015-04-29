@@ -5,6 +5,8 @@ from flask.ext.paginate import Pagination
 from attrdict import AttrDict
 from urllib import quote_plus
 import requests, json, re
+from flask.ext.mail import Message
+from app import mail
 
 
 import string
@@ -256,17 +258,26 @@ def calculate():
 
 @app.route('/contact', methods=['POST'])
 def contact():
-    print 'HI'
-    print 'arman'
-    print request.form
+    # print request.form
     client_name = request.form['name']
     client_org = request.form['org']
     client_email = request.form['email']
     client_phone = request.form['phone']
+    client_image = request.form['image']
     print client_name
     print client_org
     print client_email
     print client_phone
+    # print client_image
+
+    # msgUAC = Message("Someone used the app",
+    #     sender="yoninachmany@gmail.com",
+    #               recipients=[client_email])
+
+
+    # msgUAC.html = "<p>Client Name: " + client_name + "</p> <p>Client Organization: " + client_org + "</p> <p>Client Email: " + client_email + "</p> <p>Client Phone: " + client_phone + "</p> "
+
+    # mail.send(msgUAC)
 
     return "200"
 

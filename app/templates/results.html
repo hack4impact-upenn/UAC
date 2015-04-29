@@ -336,7 +336,6 @@
     </div>
         </div>
     </div>
-
     
 
 
@@ -370,9 +369,9 @@
     </div> <!-- PANEL -->
 
     <div class="row">
-        <h2>Want to learn more and have this report emailed to you?</h2>
+        <h2>Want to learn more and save this report?</h2>
 
-        <p>Fill out this form and we will email the report instantly and get back to you with more information soon.</p>    
+        <p>Fill out the form to access the download link and to learn more.</p>    
     </div>
 
 
@@ -398,26 +397,50 @@
                     <label>Phone</label>
                     <input type="text" id="client_phone" placeholder="" val="">
                 </div>
-                <button id="submit_button_contact" class="btn btn-default">Submit Form</button>
+                <button type="button" id="submit_button_contact" class="btn btn-default" data-toggle="modal">Submit Form</button>
                 <div id="confirm"></div>
-                <!-- <div id="png"></div> -->
+                <div id="png"></div>
 
             </form>
             <span></span>
         <div class="panel-body">   
     </div>
 
+    <div id="myModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Thank you!</h4>
+          </div>
+          <div class="modal-body">
+            <p><div id="modalMessage"></div></p>
+            <p>UAC will be in touch shortly.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 
 <script type="text/javascript">
 $( document ).ready(function() {
+    $('#myModal').modal('hide'); //data-target="#myModal"
     $('#submit_button_contact').click(function() {
         event.preventDefault();
+        $('#myModal').modal('hide');
         var clientData = {
                                 'name': $('#client_name').val(),
                                 'org': $('#client_org').val(),
                                 'email': $('#client_email').val(),
                                 'phone': $('#client_phone').val(),
+                                'image':""
                             };
+
+        // Client-side validation of the contact form:
         var nameBad = false
         var emailBad = false
 
@@ -430,13 +453,13 @@ $( document ).ready(function() {
         }
         
         if (nameBad == true) {
-            $('#nameError').html("Invalid");
+            $('#nameError').html("A name is required.");
         }
         else {
             $('#nameError').html("");
         }
         if (emailBad == true) {
-            $('#emailError').html("Invalid");
+            $('#emailError').html("A valid email address is required.");
         }
         else {
             $('#emailError').html("");
@@ -446,20 +469,20 @@ $( document ).ready(function() {
             return;
         }
 
+        // Validation ends
+        // $('#confirm').html('Thank you! An email with the report is on its way. UAC will be in touch shortly.');
+        window.location.href = '#';
+        html2canvas(document.body, {
+            onrendered: function(canvas) {
+                var image = canvas.toDataURL("image/png");
+                console.log(image);
+                $('#modalMessage').html("Here is a <a href='" + image + "' download>link</a> to download your report."); 
+                $('#myModal').modal('show');
 
-        console.log(clientData);
-        $.post( '/contact', clientData, function( data ) {
-            $('#confirm').html('Thank you! An email with the report is on its way. UAC will be in touch shortly.');
-        });
+                $.post( '/contact', clientData, function( data ) {});
 
-        // window.location.href = '#';
-        // html2canvas(document.body, {
-        //     onrendered: function(canvas) {
-        //         var image = canvas.toDataURL("image/png");
-        //         $('#png').html('<a href="' + image + '" download><button type="button" class="btn btn-default">Download</button></a>');
-        //     }
-        // });
-
+            }
+        }); 
     });
 });
 
