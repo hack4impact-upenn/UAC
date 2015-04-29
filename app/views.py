@@ -253,7 +253,9 @@ def calculate():
     ntee_id = request.form.getlist('ntee_id')[0]
     revenue_id = request.form.getlist('revenue_id')[0]
     query_bucket_id = state_id + '_' + ntee_id + '_' + revenue_id
+    print 'query_bucket_id: ' + query_bucket_id
     table_row = models.Bucket.query.filter_by(bucket_id=query_bucket_id).first()
+    print table_row
     return table_row.get_all_percentiles(expense_dict)
 
 @app.route('/contact', methods=['POST'])
@@ -268,17 +270,13 @@ def contact():
     print client_org
     print client_email
     print client_phone
-    # print client_image
+    print client_image
 
-    # msgUAC = Message("Someone used the app",
-    #     sender="yoninachmany@gmail.com",
-    #               recipients=[client_email])
-
-
-    # msgUAC.html = "<p>Client Name: " + client_name + "</p> <p>Client Organization: " + client_org + "</p> <p>Client Email: " + client_email + "</p> <p>Client Phone: " + client_phone + "</p> "
-
-    # mail.send(msgUAC)
-
+    msgUAC = Message("Someone used the app",
+        sender="armatoka@gmail.com",
+                  recipients=['armatoka@gmail.com'])
+    msgUAC.html = "<p>Client Name: " + client_name + "</p> <p>Client Organization: " + client_org + "</p> <p>Client Email: " + client_email + "</p> <p>Client Phone: " + client_phone + "</p> "
+    mail.send(msgUAC)
     return "200"
 
     # return render_template('results.html', 

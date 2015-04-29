@@ -43,10 +43,10 @@ $(document).ready(function() {
         'totalefficiency'];
         console.log("calculate button clicked");
         var expense_data = {
+            othremplyeebene:$('#othremplyeebene').val(),
+            feesforsrvcmgmt:$('#feesforsrvcmgmt').val(),
             legalfees:$('#legalfees').val(),
             accountingfees:$('#accountingfees').val(),
-            insurance:$('#insurance').val(),
-            feesforsrvcmgmt:$('#feesforsrvcmgmt').val(),
             feesforsrvclobby:$('#feesforsrvclobby').val(),
             profndraising:$('#profndraising').val(),
             feesforsrvcinvstmgmt:$('#feesforsrvcinvstmgmt').val(),
@@ -55,7 +55,8 @@ $(document).ready(function() {
             officexpns:$('#officexpns').val(),
             infotech:$('#infotech').val(),
             interestamt:$('#interestamt').val(),
-            othremplyeebene:$('#othremplyeebene').val(),
+            insurance:$('#insurance').val(),
+            total_expenses:$('#total').html(),
             total_revenue:$('#total_revenue').val(),
             state_id:$('#state_select').val(),
             ntee_id:$('#ntee_select').val(),

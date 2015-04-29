@@ -4,7 +4,8 @@ from magic_numbers import *
 
 field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
 'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
-'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene']
+'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
+'totalefficiency']
 
 class Bucket(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -50,29 +51,28 @@ class Bucket(db.Model):
 	def get_all_percentiles(self, expense_dict):
 		percentiles_list = []
 		percentages = []
-		arr = {}
+		dict_of_values = {}
 		for name in field_names:
-			percentile_for_this_value = self.get_percentile(name, expense_dict[name])
-			arr[name].append(percentile_for_this_value)
+			dict_of_values[name] = self.get_percentile(name, expense_dict[name])
 			percentiles = getattr(self, name).split('%')[:-1]
 			for p in percentiles: 
-				arr[name].append(p)
+				dict_of_values[name] = p
 
 		return jsonify(
-			legalfees_array=arr['legalfees_array'],
-			accountingfees_array=arr['accountingfees_array'],
-			insurance_array=arr['insurance_array'],
-			feesforsrvcmgmt_array=arr['feesforsrvcmgmt_array'],
-			feesforsrvclobby_array=arr['feesforsrvclobby_array'],
-			profndraising_array=arr['profndraising_array'],
-			feesforsrvcinvstmgmt_array=arr['feesforsrvcinvstmgmt_array'],
-			feesforsrvcothr_array=arr['feesforsrvcothr_array'],
-			advrtpromo_array=arr['advrtpromo_array'],
-			officexpns_array=arr['officexpns_array'],
-			infotech_array=arr['infotech_array'],
-			interestamt_array=arr['interestamt_array'],
-			othremplyeebene_array=arr['othremplyeebene_array'],
-			totalefficienc_array=arr['totalefficienc_array'],
+			legalfees_array=dict_of_values['legalfees'],
+			accountingfees_array=dict_of_values['accountingfees'],
+			insurance_array=dict_of_values['insurance'],
+			feesforsrvcmgmt_array=dict_of_values['feesforsrvcmgmt'],
+			feesforsrvclobby_array=dict_of_values['feesforsrvclobby'],
+			profndraising_array=dict_of_values['profndraising'],
+			feesforsrvcinvstmgmt_array=dict_of_values['feesforsrvcinvstmgmt'],
+			feesforsrvcothr_array=dict_of_values['feesforsrvcothr'],
+			advrtpromo_array=dict_of_values['advrtpromo'],
+			officexpns_array=dict_of_values['officexpns'],
+			infotech_array=dict_of_values['infotech'],
+			interestamt_array=dict_of_values['interestamt'],
+			othremplyeebene_array=dict_of_values['othremplyeebene'],
+			totalefficiency_array=dict_of_values['totalefficiency'],
 			percentages=percentages,
 			list=percentiles_list,
 			values=values)
