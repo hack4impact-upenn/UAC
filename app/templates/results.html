@@ -35,14 +35,13 @@
 
 <div class="row"> <h1>Please enter your expenses and revenue:</h1></div>
 
-<div>{{result_data['pdf_url']}}</div>
 <div class="panel panel-default">
     <div class="panel-body">
 <div class="row">
     <div class="col-md-8">
         {% if result_data['pdf_url'] %}
         <!-- PDF iframed here-->
-        <h3>Look to Part IX for Expense Data.</h3>
+        <h3>Most of the expenses are in Part IX.</h3>
         <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
         {% else %}
         <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
@@ -136,16 +135,16 @@
     
 {% if result_data['nccs_url'] or result_data['guidestar_url'] %}
 <!-- Links to other websites and PDFs here -->
-<h2>Not satisfied? Find other records for <strong>{{result_data['name']}}</strong> here:</h2>
+<h2>Not the most updated 990? Find other records for <strong>{{result_data['name']}}</strong> here:</h2>
 <div class="panel panel-default">
     <div class="panel-body">
     
        
         {% if result_data['nccs_url'] %}
-        <h3><a href="{{result_data['nccs_url']}}">National Center for Charitable Statistics (NCCS)</a></h3>
+        <h3><a href="{{result_data['nccs_url']}}" target="_blank">National Center for Charitable Statistics (NCCS)</a></h3>
         {% endif %}
         {% if result_data['guidestar_url'] %}
-        <h3><a href="{{result_data['guidestar_url']}}">Guidestar</a></h3>
+        <h3><a href="{{result_data['guidestar_url']}}" target="_blank">GuideStar</a></h3>
         {% endif %}
     </div>
 </div>
@@ -153,11 +152,12 @@
 
 <!-- Overall Numbers -->
 <div class="jumbotron">
-    <h1>The Numbers.</h1>
-    <p> Your overhead amount is {{result_data['overhead']}}</p>
+    <h1>The Data.</h1>
+    <p> Your overhead rate is <strong>{{result_data['overhead']}}%</strong>.</p>
     <!-- <p>With UAC, you can save <strong>${{savings}}</strong> every year.</p> -->
     <p>You are more cost-efficient than <strong>{{result_data['current_percentile']}}%</strong> of other non-profits.</p>
-    <p>With UAC, you could be more cost-efficient than <strong>{{result_data['uac_percentile']}}%</strong> of other non-profits.</p>
+    <p>With UAC, you will save around <strong>{{ saving_amount }}</strong>.</p>
+    <!--<p>With UAC, you could be more cost-efficient than <strong>{{result_data['uac_percentile']}}%</strong> of other non-profits.</p>-->
 </div>
 
     
@@ -167,7 +167,7 @@
      Comparison Chart 
      -------------------------------------->
     <div class="row"> 
-        <h1>How Does <strong>{{result_data['name']}}</strong> Compare?</h1>
+        <h1>How does <strong>{{result_data['name']}}</strong> compare to other nonprofits?</h1>
     </div>
 
    
