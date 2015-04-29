@@ -1,54 +1,80 @@
+const NUM_OF_EXPENSE_CATEGORIES = 14;
+
 /***************************************
 PAGE INTERACTIVITY
 ****************************************/
 
-$("#btn_submit_state_ntee").click(function() {
-    var state = $("#state_input").val();
-    var ntee = $("#ntee_input").val();
+$(document).ready(function() {
 
-    // update values
-});
+    $('.form-control').change(function() {
+        var total = parseInt(
+                    parseInt($('#pension_plan_contributions').val()) + 
+                    parseInt($('#othremplyeebene').val()) + 
+                    parseInt($('#feesforsrvcmgmt').val()) + 
+                    parseInt($('#legalfees').val()) + 
+                    parseInt($('#accountingfees').val()) + 
+                    parseInt($('#accountingfees').val()) + 
+                    parseInt($('#feesforsrvclobby').val()) + 
+                    parseInt($('#profndraising').val()) + 
+                    parseInt($('#feesforsrvcinvstmgmt').val()) + 
+                    parseInt($('#advrtpromo').val()) + 
+                    parseInt($('#officexpns').val()) + 
+                    parseInt($('#infotech').val()) + 
+                    parseInt($('#interestamt').val()) + 
+                    parseInt($('#insurance').val()) + 
+                    parseInt($('#feesforsrvcothr').val())
+                    );
+        console.log(parseInt($('#feesforsrvcothr').val()));
+        $('#total').html(total);
 
-$("#submit_button_calculate").click(function(event){
-    event.preventDefault();
-    var field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
-    'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
-    'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
-    'totalefficiency'];
-    console.log("calculate button clicked");
-    var expense_data = {
-        legalfees:$('#legalfees').val(),
-        accountingfees:$('#accountingfees').val(),
-        insurance:$('#insurance').val(),
-        feesforsrvcmgmt:$('#feesforsrvcmgmt').val(),
-        feesforsrvclobby:$('#feesforsrvclobby').val(),
-        profndraising:$('#profndraising').val(),
-        feesforsrvcinvstmgmt:$('#feesforsrvcinvstmgmt').val(),
-        feesforsrvcothr:$('#feesforsrvcothr').val(),
-        advrtpromo:$('#advrtpromo').val(),
-        officexpns:$('#officexpns').val(),
-        infotech:$('#infotech').val(),
-        interestamt:$('#interestamt').val(),
-        othremplyeebene:$('#othremplyeebene').val(),
-        total_revenue:$('#total_revenue').val(),
-        state_id:$('#state_select').val(),
-        ntee_id:$('#ntee_select').val(),
-        revenue_id:$('#revenue_select').val()
-    };
-    $.post('/calculate',
-        expense_data,
-        function(data, status) {
-            console.log(data);
-            var bar_data = [
-            data.list, //lines:percentage values
-            [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4],
-            [0.7,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3],
-            [0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4,0.2]];
-            createHorizontalBars(bar_data);
-        });
-});
+    });
+/*
+    $("#btn_submit_state_ntee").click(function() {
+        var state = $("#state_input").val();
+        var ntee = $("#ntee_input").val();
+        // update values
+    });
 
-/***************************************
+    $("#submit_button_calculate").click(function(event){
+        event.preventDefault();
+        var field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
+        'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
+        'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
+        'totalefficiency'];
+        console.log("calculate button clicked");
+        var expense_data = {
+            legalfees:$('#legalfees').val(),
+            accountingfees:$('#accountingfees').val(),
+            insurance:$('#insurance').val(),
+            feesforsrvcmgmt:$('#feesforsrvcmgmt').val(),
+            feesforsrvclobby:$('#feesforsrvclobby').val(),
+            profndraising:$('#profndraising').val(),
+            feesforsrvcinvstmgmt:$('#feesforsrvcinvstmgmt').val(),
+            feesforsrvcothr:$('#feesforsrvcothr').val(),
+            advrtpromo:$('#advrtpromo').val(),
+            officexpns:$('#officexpns').val(),
+            infotech:$('#infotech').val(),
+            interestamt:$('#interestamt').val(),
+            othremplyeebene:$('#othremplyeebene').val(),
+            total_revenue:$('#total_revenue').val(),
+            state_id:$('#state_select').val(),
+            ntee_id:$('#ntee_select').val(),
+            revenue_id:$('#revenue_select').val()
+        };
+        $.post('/calculate',
+            expense_data,
+            function(data, status) {
+                console.log(data);
+                var bar_data = [
+                data.list, //lines:percentage values
+                [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4],
+                [0.7,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3],
+                [0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4,0.2]];
+                createHorizontalBars(bar_data);
+            });
+    });
+
+    /***************************************
 BUILDING BAR GRAPH
 ****************************************/
 
@@ -63,7 +89,7 @@ BUILDING BAR GRAPH
     // var expense_data = [
     //      [50,30,10,40,60,80,30,40,50,60,70,80,90,100,],
     //      [60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
-
+/*
     console.log("HEY");
 
     var profndraising = "{{result_data['filing_data']['profndraising']}}";
@@ -83,7 +109,7 @@ BUILDING BAR GRAPH
 
     var labels = ['Management', 'Legal', 'Accounting', 'Lobbying', 'Prof. Fund.', 'Invest. MGMT.', 'Advertising', 'Office Exp.', 'Information Tech.', 'Interest Expense', 'Insurance', 'Empl. Benefits', 'Pension Plan', 'Other'];
 
-    populateForm(); // to fill in cost form with current data 
+    populateForm(); // to fill in cost form with current data
 
     var n = 2, // number of layers
         m = 14; // number of samples per layer
@@ -96,6 +122,53 @@ BUILDING BAR GRAPH
     var height;
 
     createBarGraph();
+
+    $('#costs_form').submit(function() {
+        var $inputs = $('#costs_form :input');
+        
+        var values = [];
+        var total = 0;
+        $inputs.each(function() {
+            var value = parseInt($(this).val());
+            if (!isNaN(value)) {
+                total = total + value;
+                values.push(value);
+            }
+        });
+
+        expense_data[0] = values;
+
+        $('#svg_container').empty();
+        createBarGraph();
+        return false;
+    });
+
+/***************************************
+BUILDING HORIZONTAL SLIDER BARS
+****************************************/
+/*    console.log('make horizontal bars');
+    var numBars = 13;
+    var gapSize = 70;
+    var width = 800;
+    var height = numBars*gapSize;
+
+    var sample_data = [
+            [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2], //lines:percentage values
+            [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4],
+            [0.7,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3],
+            [0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4,0.2]];
+    createHorizontalBars(sample_data);*/
+
+});
+
+
+    function updateTotalCost() {
+        var total_cost = 0;
+        for (var i = 0; i < NUM_OF_EXPENSE_CATEGORIES; i++) {
+            total_cost += expense_data[0][i];
+        }
+        $('#total').text(total_cost);
+    }
 
     function createBarGraph() {
 
@@ -237,17 +310,9 @@ BUILDING BAR GRAPH
         change();
     }
 
-    function updateTotalCost() {
-        var total_cost = 0;
-        for (var i = 0; i < m; i++) {
-            total_cost += expense_data[0][i];
-        }
-        $('#total').text(total_cost);
-    }
 
-    // m = number of categories
     function convertToLabel(d) {
-        if (d >= 0 && d < m) {
+        if (d >= 0 && d < NUM_OF_EXPENSE_CATEGORIES) {
             var label = labels[d]
             // if (label.length > 5) {
             //     return label.substring(0,6) + '.';
@@ -305,6 +370,7 @@ BUILDING BAR GRAPH
         return m;
     }
 
+
     function populateForm() {
         $('#management').val(expense_data[0][0]);
         $('#legal').val(expense_data[0][1]);
@@ -323,41 +389,6 @@ BUILDING BAR GRAPH
 
     }
 
-    $('#costs_form').submit(function() {
-        var $inputs = $('#costs_form :input');
-        
-        var values = [];
-        var total = 0;
-        $inputs.each(function() {
-            var value = parseInt($(this).val());
-            if (!isNaN(value)) {
-                total = total + value;
-                values.push(value);
-            }
-        });
-
-        expense_data[0] = values;
-
-        $('#svg_container').empty();
-        createBarGraph();
-        return false;
-    });
-
-/***************************************
-BUILDING HORIZONTAL SLIDER BARS
-****************************************/
-    console.log('make horizontal bars');
-    var numBars = 13;
-    var gapSize = 70;
-    var width = 800;
-    var height = numBars*gapSize;
-
-    var sample_data = [
-            [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2], //lines:percentage values
-            [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4],
-            [0.7,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3],
-            [0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4,0.2]];
-    createHorizontalBars(sample_data);
 
     function createHorizontalBars(comparison_data) {
         var rect_container = d3.select("#svg2_container").html('');

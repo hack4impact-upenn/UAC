@@ -41,7 +41,7 @@
     <div class="col-md-8">
         {% if result_data['pdf_url'] %}
         <!-- PDF iframed here-->
-        <h3>Most of the expenses are in Part IX.</h3>
+        <h3>Skip to Part IX:</h3>
         <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
         {% else %}
         <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
@@ -59,64 +59,66 @@
             <form id="costs_form" method="post" action="../calculate">
 
                 <div class="form-group">
-                    <label class="update" for="management">Management Expenses</label>
-                    <input type="text" class="form-control" class="btn pull-right" id="feesforsrvcmgmt" placeholder="" name="feesforsrvcmgmt" value="0">
+                    <label class="update" for="pension_plan_contributions">Pension plan contributions</label>
+                    <input type="text" class="form-control" id="pension_plan_contributions" placeholder="" name='pension' value="0">
                 </div>
+
                 <div class="form-group">
-                    <label class="update" for="legal">Legal Expenses</label>
-                    <input type="text" class="form-control" id="legalfees" placeholder="" name='legalfees' value="0">
-                </div>
-                <div class="form-group" >
-                    <label class="update"for="accounting">Accounting Expenses</label>
-                    <input type="text" class="form-control" id="accountingfees" placeholder="" name='accountingfees' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="lobbying">Lobbying Expenses</label>
-                    <input type="text" class="form-control" id="feesforsrvclobby" placeholder="" name='feesforsrvclobby' value="0">
-                </div>
-                <div class="form-group" value="0">
-                    <label class="update" for="professional_fundraising">Professional Fundraising</label>
-                    <input type="text" class="form-control" id="profndraising" placeholder="" name='profndraising' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="investment_management">Investment Management Expenses</label>
-                    <input type="text" class="form-control" id="feesforsrvcinvstmgmt" placeholder="" name='feesforsrvcinvstmgmt' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="advertising">Advertising Expenses</label>
-                    <input type="text" class="form-control" id="advrtpromo" placeholder="" name='advrtpromo' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="office_expenses">Office Expenses</label>
-                    <input type="text" class="form-control" id="officexpns" placeholder="" name='officexpns' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="information_technology">I.T. Expenses</label>
-                    <input type="text" class="form-control" id="infotech" placeholder="" name='infotech' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="interest_expense">Interest Expenses</label>
-                    <input type="text" class="form-control" id="interestamt" placeholder="" name='interestamt' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="insurance">Insurance Expenses</label>
-                    <input type="text" class="form-control" id="insurance" placeholder="" name='insurance' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="employee_benefits">Employee Benefits </label>
+                    <label class="update" for="employee_benefits">Other employee benefits </label>
                     <input type="text" class="form-control" id="othremplyeebene" placeholder="" name='othremplyeebene' value="0">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="pension_plan_contributions">Pension Plan Contributions</label>
-                    <input type="text" class="form-control" id="pension_plan_contributions" placeholder="" name='pension' value="0">
+                    <label class="update" for="management">Management</label>
+                    <input type="text" class="form-control" class="btn pull-right" id="feesforsrvcmgmt" placeholder="" name="feesforsrvcmgmt" value="0">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="other">Other Expenses</label>
-                    <input type="text" class="form-control" placeholder="" name='feesforsrvcothr' id='feesforsrvcothr' value="0">
+                    <label class="update" for="legal">Legal</label>
+                    <input type="text" class="form-control" id="legalfees" placeholder="" name='legalfees' value="0">
                 </div>
+                <div class="form-group" >
+                    <label class="update"for="accounting">Accounting</label>
+                    <input type="text" class="form-control" id="accountingfees" placeholder="" name='accountingfees' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="lobbying">Lobbying</label>
+                    <input type="text" class="form-control" id="feesforsrvclobby" placeholder="" name='feesforsrvclobby' value="0">
+                </div>
+                <div class="form-group" value="0">
+                    <label class="update" for="professional_fundraising">Professional fundraising services</label>
+                    <input type="text" class="form-control" id="profndraising" placeholder="" name='profndraising' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="investment_management">Investment management fees</label>
+                    <input type="text" class="form-control" id="feesforsrvcinvstmgmt" placeholder="" name='feesforsrvcinvstmgmt' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="advertising">Advertising and promotion</label>
+                    <input type="text" class="form-control" id="advrtpromo" placeholder="" name='advrtpromo' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="office_expenses">Office expenses</label>
+                    <input type="text" class="form-control" id="officexpns" placeholder="" name='officexpns' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="information_technology">Information technology</label>
+                    <input type="text" class="form-control" id="infotech" placeholder="" name='infotech' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="interest_expense">Interest</label>
+                    <input type="text" class="form-control" id="interestamt" placeholder="" name='interestamt' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="insurance">Insurance</label>
+                    <input type="text" class="form-control" id="insurance" placeholder="" name='insurance' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="other">Other</label>
+                    <input type="text" class="form-control" id='feesforsrvcothr' placeholder="" name='feesforsrvcothr' value="0">
+                </div>
+                
                 <div class="form-group">
                     <label class="update" for="total">Total Expenses</label>
-                    <p id="total" value="0"> </p>
+                    <p id="total"></p>
                 </div>
                 <div class="form-group">
                     <label class="update" for="total_revenue">Total Revenue</label>
