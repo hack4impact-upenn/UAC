@@ -379,47 +379,95 @@
     <div class="panel panel-default">
         <div class="panel-body">
             
-            <form id="pdf_form" >
+            <form>
                 <div class="form-group">
                     <label>Name <span style="color:red">*</span></label>
-                    <input type="text" class="form-control" placeholder="" required>
+                    <input type="text" id="client_name" placeholder="" val="" required>
+                    <div id="nameError"></div>
                 </div>
                 <div class="form-group">
                     <label>Organization</label>
-                    <input type="text" class="form-control" placeholder="">
+                    <input type="text" id="client_org"  placeholder="" val="">
                 </div>
                 <div class="form-group">
                     <label>Email <span style="color:red">*</span></label>
-                    <input type="email" class="form-control" placeholder="" required>
+                    <input type="email" id="client_email" placeholder="" val="" required>
+                    <div id="emailError"></div>
                 </div>
                 <div class="form-group">
                     <label>Phone</label>
-                    <input type="text"  placeholder="">
+                    <input type="text" id="client_phone" placeholder="" val="">
                 </div>
-                <button id="pdfbutton" type="submit" class="btn btn-default">Submit Form</button></a>
-                <div id="png"></div>
+                <button id="submit_button_contact" class="btn btn-default">Submit Form</button>
+                <div id="confirm"></div>
+                <!-- <div id="png"></div> -->
+
             </form>
+            <span></span>
         <div class="panel-body">   
     </div>
 
 
 <script type="text/javascript">
-$('#pdfbutton').click(function() {
-    window.location.href = '#';
-    html2canvas(document.body, {
-        onrendered: function(canvas) {
-            console.log("hi");
-            var image = canvas.toDataURL("image/png");
-            console.log("before");
-            $('#png').html('<a href="' + image + '" download><button type="button" class="btn btn-default">Download</button></a>');
-            //$('#down').href("#");
-            //console.log("after");
+$( document ).ready(function() {
+    $('#submit_button_contact').click(function() {
+        event.preventDefault();
+        var clientData = {
+                                'name': $('#client_name').val(),
+                                'org': $('#client_org').val(),
+                                'email': $('#client_email').val(),
+                                'phone': $('#client_phone').val(),
+                            };
+        var nameBad = false
+        var emailBad = false
 
-
-            console.log("HI");
+        if (clientData['name'].length == 0) {
+            nameBad = true
         }
+
+        if (!validateEmail(clientData['email'])) {
+            emailBad = true
+        }
+        
+        if (nameBad == true) {
+            $('#nameError').html("Invalid");
+        }
+        else {
+            $('#nameError').html("");
+        }
+        if (emailBad == true) {
+            $('#emailError').html("Invalid");
+        }
+        else {
+            $('#emailError').html("");
+        }
+
+        if (nameBad || emailBad) {
+            return;
+        }
+
+
+        console.log(clientData);
+        $.post( '/contact', clientData, function( data ) {
+            $('#confirm').html('Thank you! An email with the report is on its way. UAC will be in touch shortly.');
+        });
+
+        // window.location.href = '#';
+        // html2canvas(document.body, {
+        //     onrendered: function(canvas) {
+        //         var image = canvas.toDataURL("image/png");
+        //         $('#png').html('<a href="' + image + '" download><button type="button" class="btn btn-default">Download</button></a>');
+        //     }
+        // });
+
     });
 });
+
+function validateEmail(email) {
+    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    return re.test(email);
+}
+
 </script>
 
 

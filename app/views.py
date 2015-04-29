@@ -237,6 +237,8 @@ def ein_results(ein):
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
+    print request.form
+
     print request.form.getlist('total_revenue')
     total_rev = float(request.form.getlist('total_revenue')[0])
     print 'POST: calculating percentiles'
@@ -251,6 +253,23 @@ def calculate():
     query_bucket_id = state_id + '_' + ntee_id + '_' + revenue_id
     table_row = models.Bucket.query.filter_by(bucket_id=query_bucket_id).first()
     return table_row.get_all_percentiles(expense_dict)
+
+@app.route('/contact', methods=['POST'])
+def contact():
+    print 'HI'
+    print 'arman'
+    print request.form
+    client_name = request.form['name']
+    client_org = request.form['org']
+    client_email = request.form['email']
+    client_phone = request.form['phone']
+    print client_name
+    print client_org
+    print client_email
+    print client_phone
+
+    return "200"
+
     # return render_template('results.html', 
     #     name=result_data['name'],
     #     ntee_code=result_data['ntee_code'],
