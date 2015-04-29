@@ -29,26 +29,30 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='results.css') }}" ></style>
 
 <!-- Welcome -->
-<div class="jumbotron">
-    <h1>Welcome, <strong>{{result_data['name']}}.</strong></h1>
-</div>
+{% if result_data %}
+    <div class="jumbotron">
+        <h1>Welcome, <strong>{{result_data['name']}}</strong>.</h1>
+    </div>
+{% endif %}
 
 <div class="row"> <h1>Please enter your expenses and revenue:</h1></div>
 
-<div>{{result_data['pdf_url']}}</div>
 <div class="panel panel-default">
     <div class="panel-body">
 <div class="row">
+    {% if result_data %}
     <div class="col-md-8">
         {% if result_data['pdf_url'] %}
-        <!-- PDF iframed here-->
-        <h3>Look to Part IX for Expense Data.</h3>
-        <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
+            <!-- PDF iframed here-->
+            <h3>Skip to Part IX:</h3>
+            <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
         {% else %}
-        <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
+            <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
         {% endif %}
 
     </div>
+    {% endif %}
+
     <div class="col-md-4">
         <div class="panel panel-default">
         <div class="panel-heading">
@@ -60,68 +64,70 @@
             <form id="costs_form" method="post" action="../calculate">
 
                 <div class="form-group">
-                    <label class="update" for="management">Management Expenses</label>
-                    <input type="text" class="form-control" class="btn pull-right" id="feesforsrvcmgmt" placeholder="" name="feesforsrvcmgmt" value="0">
+                    <label class="update" for="pension_plan_contributions">Pension plan contributions</label>
+                    <input type="text" class="form-control" id="pension_plan_contributions" placeholder="" name='pension' value="0">
                 </div>
+
                 <div class="form-group">
-                    <label class="update" for="legal">Legal Expenses</label>
-                    <input type="text" class="form-control" id="legalfees" placeholder="" name='legalfees' value="0">
-                </div>
-                <div class="form-group" >
-                    <label class="update"for="accounting">Accounting Expenses</label>
-                    <input type="text" class="form-control" id="accountingfees" placeholder="" name='accountingfees' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="lobbying">Lobbying Expenses</label>
-                    <input type="text" class="form-control" id="feesforsrvclobby" placeholder="" name='feesforsrvclobby' value="0">
-                </div>
-                <div class="form-group" value="0">
-                    <label class="update" for="professional_fundraising">Professional Fundraising</label>
-                    <input type="text" class="form-control" id="profndraising" placeholder="" name='profndraising' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="investment_management">Investment Management Expenses</label>
-                    <input type="text" class="form-control" id="feesforsrvcinvstmgmt" placeholder="" name='feesforsrvcinvstmgmt' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="advertising">Advertising Expenses</label>
-                    <input type="text" class="form-control" id="advrtpromo" placeholder="" name='advrtpromo' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="office_expenses">Office Expenses</label>
-                    <input type="text" class="form-control" id="officexpns" placeholder="" name='officexpns' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="information_technology">I.T. Expenses</label>
-                    <input type="text" class="form-control" id="infotech" placeholder="" name='infotech' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="interest_expense">Interest Expenses</label>
-                    <input type="text" class="form-control" id="interestamt" placeholder="" name='interestamt' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="insurance">Insurance Expenses</label>
-                    <input type="text" class="form-control" id="insurance" placeholder="" name='insurance' value="0">
-                </div>
-                <div class="form-group">
-                    <label class="update" for="employee_benefits">Employee Benefits </label>
+                    <label class="update" for="employee_benefits">Other employee benefits </label>
                     <input type="text" class="form-control" id="othremplyeebene" placeholder="" name='othremplyeebene' value="0">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="pension_plan_contributions">Pension Plan Contributions</label>
-                    <input type="text" class="form-control" id="pension_plan_contributions" placeholder="" name='pension' value="0">
+                    <label class="update" for="management">Management</label>
+                    <input type="text" class="form-control" class="btn pull-right" id="feesforsrvcmgmt" placeholder="" name="feesforsrvcmgmt" value="0">
                 </div>
                 <div class="form-group">
-                    <label class="update" for="other">Other Expenses</label>
-                    <input type="text" class="form-control" placeholder="" name='feesforsrvcothr' id='feesforsrvcothr' value="0">
+                    <label class="update" for="legal">Legal</label>
+                    <input type="text" class="form-control" id="legalfees" placeholder="" name='legalfees' value="0">
                 </div>
+                <div class="form-group" >
+                    <label class="update"for="accounting">Accounting</label>
+                    <input type="text" class="form-control" id="accountingfees" placeholder="" name='accountingfees' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="lobbying">Lobbying</label>
+                    <input type="text" class="form-control" id="feesforsrvclobby" placeholder="" name='feesforsrvclobby' value="0">
+                </div>
+                <div class="form-group" value="0">
+                    <label class="update" for="professional_fundraising">Professional fundraising services</label>
+                    <input type="text" class="form-control" id="profndraising" placeholder="" name='profndraising' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="investment_management">Investment management fees</label>
+                    <input type="text" class="form-control" id="feesforsrvcinvstmgmt" placeholder="" name='feesforsrvcinvstmgmt' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="other">Other</label>
+                    <input type="text" class="form-control" id='feesforsrvcothr' placeholder="" name='feesforsrvcothr' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="advertising">Advertising and promotion</label>
+                    <input type="text" class="form-control" id="advrtpromo" placeholder="" name='advrtpromo' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="office_expenses">Office expenses</label>
+                    <input type="text" class="form-control" id="officexpns" placeholder="" name='officexpns' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="information_technology">Information technology</label>
+                    <input type="text" class="form-control" id="infotech" placeholder="" name='infotech' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="interest_expense">Interest</label>
+                    <input type="text" class="form-control" id="interestamt" placeholder="" name='interestamt' value="0">
+                </div>
+                <div class="form-group">
+                    <label class="update" for="insurance">Insurance</label>
+                    <input type="text" class="form-control" id="insurance" placeholder="" name='insurance' value="0">
+                </div>
+                
                 <div class="form-group">
                     <label class="update" for="total">Total Expenses</label>
-                    <p id="total" value="0"> </p>
+                    <p id="total"></p>
                 </div>
                 <div class="form-group">
                     <label class="update" for="total_revenue">Total Revenue</label>
-                    <input type="text" class="form-control" id="total_revenue" name="total_revenue" placeholder="" value="{{result_data['revenue']}}">
+                    <input type="text" class="form-control" id="total_revenue" name="total_revenue" placeholder="" value="{{ result_data['revenue'] or 0 }}">
                 </div>
                 <button type="submit" class="btn btn-default" id="submit_button_calculate">Submit</button>
             </form>
@@ -133,31 +139,32 @@
 </div> <!-- ENTER COSTS PANEL -->
 
 
-    
-{% if result_data['nccs_url'] or result_data['guidestar_url'] %}
 <!-- Links to other websites and PDFs here -->
-<h2>Not satisfied? Find other records for <strong>{{result_data['name']}}</strong> here:</h2>
+<h2>Not the most updated 990? Find other records for <strong>{{result_data['name']}}</strong> here:</h2>
 <div class="panel panel-default">
     <div class="panel-body">
     
-       
+        {% if ein %}
+        <h3><a href="https://www.citizenaudit.org/{{ ein }}/" target="_blank">CitizenAudit</a></h3>
+        {% endif %}
+
         {% if result_data['nccs_url'] %}
-        <h3><a href="{{result_data['nccs_url']}}">National Center for Charitable Statistics (NCCS)</a></h3>
+        <h3><a href="{{result_data['nccs_url']}}" target="_blank">National Center for Charitable Statistics (NCCS)</a></h3>
         {% endif %}
         {% if result_data['guidestar_url'] %}
-        <h3><a href="{{result_data['guidestar_url']}}">Guidestar</a></h3>
+        <h3><a href="{{result_data['guidestar_url']}}" target="_blank">GuideStar</a></h3>
         {% endif %}
     </div>
 </div>
-{% endif %}
 
 <!-- Overall Numbers -->
 <div class="jumbotron">
-    <h1>The Numbers.</h1>
-    <p> Your overhead amount is {{result_data['overhead']}}</p>
+    <h1>The Data.</h1>
+    <p> Your overhead rate is <strong>{{result_data['overhead']}}%</strong>.</p>
     <!-- <p>With UAC, you can save <strong>${{savings}}</strong> every year.</p> -->
     <p>You are more cost-efficient than <strong>{{result_data['current_percentile']}}%</strong> of other non-profits.</p>
-    <p>With UAC, you could be more cost-efficient than <strong>{{result_data['uac_percentile']}}%</strong> of other non-profits.</p>
+    <p>With UAC, you will save around <strong>{{ saving_amount }}</strong>.</p>
+    <!--<p>With UAC, you could be more cost-efficient than <strong>{{result_data['uac_percentile']}}%</strong> of other non-profits.</p>-->
 </div>
 
     
@@ -167,7 +174,7 @@
      Comparison Chart 
      -------------------------------------->
     <div class="row"> 
-        <h1>How Does <strong>{{result_data['name']}}</strong> Compare?</h1>
+        <h1>How does <strong>{{result_data['name']}}</strong> compare to other nonprofits?</h1>
     </div>
 
    
@@ -403,6 +410,69 @@ $('#pdfbutton').click(function() {
 
 
 <script type="text/javascript" src="{{ url_for('static', filename='results.js') }}"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+    // PRE - POPULATING DROPDOWN
+    // Pre-populating the state
+    var states = {'AL': 1, 'AK': 2, 'AZ': 3, 'AR': 4, 'CA': 5, 'CO': 6, 'CT': 7,
+                  'DE': 8, 'FL': 9, 'GA': 10, 'HI': 11, 'ID': 12, 'IL':13,
+                  'IN':14, 'IA':15, 'KS':16, 'KY':17, 'LA':18, 'ME':19, 'MD':20,
+                  'MA':21, 'MI':22, 'MN':23, 'MS':24, 'MO':25, 'MT':26, 'NE':27,
+                  'NV':28, 'NH':29, 'NJ':30, 'NM':31, 'NY':32, 'NC':33, 'ND':34,
+                  'OH':35, 'OK':36, 'OR':37, 'PA':38, 'RI':39, 'SC':40, 'SD':41,
+                  'TN':42, 'TX':43, 'UT':44, 'VT':45, 'VA':46, 'WA':47, 'WV':48,
+                  'WI':49, 'WY':50};
+
+    var this_state = "{{result_data['state']}}";
+    $('#state_select').val(states[this_state]);
+
+    // Pre-populating the NTEE
+    var alpha = {'A':1, 'B':2, 'C':3, 'D':4, 'E':5, 'F':6, 'G':7, 'H':8, 'I':9,
+                 'J':10, 'K':11, 'L':12, 'M':13, 'N':14, 'O':15, 'P':16, 'Q':17,
+                 'R':18, 'S':19, 'T':20, 'U':21, 'V':22, 'W':23, 'X':24, 'Y':25,
+                 'Z':26};
+
+    var ntee = "{{result_data['ntee_code']}}";
+    if (ntee === 'None') {
+        ntee = 'All'
+    } else {
+        ntee = ntee.charAt(0).toUpperCase();
+    }
+
+    console.log('ntee ' + ntee);
+    $('#ntee_select').val(ntee);
+
+    // Pre-populating the revenue size
+    var revenue = "{{result_data['revenue']}}";
+    if (revenue === "None") {
+        revenue = 0;
+        document.getElementById('total_revenue').value = 0;
+        document.getElementById('revenue_select_title').innerText = "Revenue: $0";
+    } else {
+        revenue = parseInt(revenue);
+    }
+
+    var revenue_dropdown_idx;
+    if (revenue < 50000) {
+        revenue_dropdown_idx = 0;
+    } else if (revenue >= 50000 && revenue < 250000) {
+        revenue_dropdown_idx = 1;
+    } else if (revenue >= 250000 && revenue < 1000000) {
+        revenue_dropdown_idx = 2;
+    } else if (revenue >= 1000000 && revenue < 5000000) {
+        revenue_dropdown_idx = 3;
+    } else if (revenue >= 5000000 && revenue < 10000000) {
+        revenue_dropdown_idx = 4;
+    } else {
+        revenue_dropdown_idx = 5;
+    }
+
+    document.getElementById('revenue_select')
+    .options.selectedIndex = revenue_dropdown_idx;
+});
+</script>
 <!--
 <script type="text/javascript">
 /***************************************
