@@ -24,10 +24,10 @@ $(document).ready(function() {
                     parseInt($('#insurance').val()) + 
                     parseInt($('#feesforsrvcothr').val())
                     );
-        console.log(parseInt($('#feesforsrvcothr').val()));
         $('#total').html(total);
 
     });
+
 /*
     $("#btn_submit_state_ntee").click(function() {
         var state = $("#state_input").val();
