@@ -13,10 +13,7 @@
 <!-- CDN for D3 Data Visualization Library -->
 <script src="http://d3js.org/d3.v3.min.js"></script>
 
-<script src="/static/js/jspdf/jspdf.min.js"></script>
-
 <script src="/static/js/html2canvas/html2canvas.min.js"></script>
-<script src="http://www.nihilogic.dk/labs/canvas2image/canvas2image.js"></script>
 
 <!-- CDN for Bootstrap -->
 <!-- Latest compiled and minified CSS -->
@@ -372,13 +369,38 @@
         </div> <!-- PANEL BODY -->
     </div> <!-- PANEL -->
 
+    <div class="row">
+        <h2>Want to learn more and have this report emailed to you?</h2>
 
-    <div class="row"> 
-        <button id="pdfbutton" type="button" class="btn btn-default">Submit Form</button></a>
-        <div id="png"></div>
-
+        <p>Fill out this form and we will email the report instantly and get back to you with more information soon.</p>    
     </div>
 
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            
+            <form id="pdf_form" >
+                <div class="form-group">
+                    <label>Name <span style="color:red">*</span></label>
+                    <input type="text" class="form-control" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label>Organization</label>
+                    <input type="text" class="form-control" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label>Email <span style="color:red">*</span></label>
+                    <input type="email" class="form-control" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text"  placeholder="">
+                </div>
+                <button id="pdfbutton" type="submit" class="btn btn-default">Submit Form</button></a>
+                <div id="png"></div>
+            </form>
+        <div class="panel-body">   
+    </div>
 
 
 <script type="text/javascript">
