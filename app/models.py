@@ -2,11 +2,6 @@ from app import app, db
 from flask import jsonify
 from magic_numbers import *
 
-field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
-'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
-'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
-'totalefficiency']
-
 class Bucket(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	bucket_id = db.Column(db.String(BUCKET_ID_LENGTH), unique=True)
@@ -33,46 +28,55 @@ class Bucket(db.Model):
 	def get_percentile(self, field_id, value):
 		# ordered array of data values parsed to floats (ignore last empty str)
 		data = getattr(self, field_id).split('%')[:-1]
-		# prepend data array with value of percentile 0
-		data = [0] + data
 		# how much of the sample is covered by this interval
-		interval_width = 1.0/(len(data))
+		interval_width = 1.0/(len(data) - 1)
 		# find in which interval the input value is
-		for i in range(0, len(data)):
+		if (float(data[0]) > value):
+			return 0
+		for i in range(0, len(data) - 1):
 			d = float(data[i])
 			if value==d:
 				return i*interval_width
-			elif (i==len(data)-1) or (value>d and value<float(data[i+1])):
+			elif (value>d and value<float(data[i+1])):
 				# percentile = number of prior intervals + half of current interval
 				return (i+0.5)*interval_width
+		return 1
 
 	# Takes an array of expense percentage values and returns json list of percentiles
 	# 
-	def get_all_percentiles(self, expense_dict):
+	def get_all_percentiles(self, this_nonprofit_expense_percent):
 		percentiles_list = []
 		percentages = []
-		dict_of_values = {}
+		rank_of_current_nonprofit = {}
+		field_names = ['othremplyeebene',
+                   'feesforsrvcmgmt', 'legalfees', 'accountingfees',
+                   'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt',
+                   'feesforsrvcothr', 'advrtpromo', 'officexpns', 'infotech',
+                   'interestamt', 'insurance', 'totalefficiency']
 		for name in field_names:
-			dict_of_values[name] = self.get_percentile(name, expense_dict[name])
-			percentiles = getattr(self, name).split('%')[:-1]
-			for p in percentiles: 
-				dict_of_values[name] = p
+			rank_of_current_nonprofit[name] = self.get_percentile(name, this_nonprofit_expense_percent[name])
+			#percentiles = getattr(self, name).split('%')[:-1]
+			#for p in percentiles: 
+			#	dict_of_values[name] = p
+		return rank_of_current_nonprofit
 
-		return jsonify(
-			legalfees_array=dict_of_values['legalfees'],
-			accountingfees_array=dict_of_values['accountingfees'],
-			insurance_array=dict_of_values['insurance'],
-			feesforsrvcmgmt_array=dict_of_values['feesforsrvcmgmt'],
-			feesforsrvclobby_array=dict_of_values['feesforsrvclobby'],
-			profndraising_array=dict_of_values['profndraising'],
-			feesforsrvcinvstmgmt_array=dict_of_values['feesforsrvcinvstmgmt'],
-			feesforsrvcothr_array=dict_of_values['feesforsrvcothr'],
-			advrtpromo_array=dict_of_values['advrtpromo'],
-			officexpns_array=dict_of_values['officexpns'],
-			infotech_array=dict_of_values['infotech'],
-			interestamt_array=dict_of_values['interestamt'],
-			othremplyeebene_array=dict_of_values['othremplyeebene'],
-			totalefficiency_array=dict_of_values['totalefficiency'],
-			percentages=percentages,
-			list=percentiles_list,
-			values=values)
+	def get_other_nonprofit_data(self):
+		field_names = ['othremplyeebene',
+                   'feesforsrvcmgmt', 'legalfees', 'accountingfees',
+                   'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt',
+                   'feesforsrvcothr', 'advrtpromo', 'officexpns', 'infotech',
+                   'interestamt', 'insurance', 'totalefficiency']
+		# fill expense percents
+		expense_percents = {}
+		for name in field_names:
+			expense_percents[name] = getattr(self, name).split('%')[:-1]
+		# fill rankings
+		rankings = []
+		interval_width = 1.0/(len(expense_percents[name]) - 1)
+		for i in range(0, len(expense_percents['totalefficiency'])):
+				rankings.append(i*interval_width)
+		# combine the two
+		other_nonprofit_data = {}
+		other_nonprofit_data['expense_percents'] = expense_percents
+		other_nonprofit_data['rankings'] = rankings
+		return other_nonprofit_data

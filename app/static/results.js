@@ -4,10 +4,8 @@ const NUM_OF_EXPENSE_CATEGORIES = 14;
 PAGE INTERACTIVITY
 ****************************************/
 
-$(document).ready(function() {
-
-    $('.form-control').change(function() {
-        var total = parseInt(
+function updateTotalExpense() {
+    var total_expense = parseInt(
                     parseInt($('#pension_plan_contributions').val()) + 
                     parseInt($('#othremplyeebene').val()) + 
                     parseInt($('#feesforsrvcmgmt').val()) + 
@@ -24,8 +22,15 @@ $(document).ready(function() {
                     parseInt($('#insurance').val()) + 
                     parseInt($('#feesforsrvcothr').val())
                     );
-        $('#total').html(total);
+    $('#total_expense').html(total_expense);
+}
 
+$(document).ready(function() {
+
+    updateTotalExpense();
+
+    $('.form-control').change(function() {
+        updateTotalExpense();
     });
 
     /*
@@ -37,12 +42,13 @@ $(document).ready(function() {
 
     $("#submit_button_calculate").click(function(event){
         event.preventDefault();
-        var field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
-        'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
-        'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
-        'totalefficiency'];
+        //var field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
+        //'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
+        //'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
+        //'totalefficiency'];
         console.log("calculate button clicked");
         var expense_data = {
+            pension_plan_contributions:$('#pension_plan_contributions').val(),
             othremplyeebene:$('#othremplyeebene').val(),
             feesforsrvcmgmt:$('#feesforsrvcmgmt').val(),
             legalfees:$('#legalfees').val(),
@@ -56,12 +62,13 @@ $(document).ready(function() {
             infotech:$('#infotech').val(),
             interestamt:$('#interestamt').val(),
             insurance:$('#insurance').val(),
-            total_expenses:$('#total').html(),
+            total_expense:$('#total_expense').html(),
             total_revenue:$('#total_revenue').val(),
             state_id:$('#state_select').val(),
             ntee_id:$('#ntee_select').val(),
             revenue_id:$('#revenue_select').val()
         };
+        console.log(expense_data);
         $.post('/calculate',
             expense_data,
             function(data, status) {
@@ -168,7 +175,7 @@ BUILDING HORIZONTAL SLIDER BARS
         for (var i = 0; i < NUM_OF_EXPENSE_CATEGORIES; i++) {
             total_cost += expense_data[0][i];
         }
-        $('#total').text(total_cost);
+        $('#total_expense').text(total_cost);
     }
 
     function createBarGraph() {

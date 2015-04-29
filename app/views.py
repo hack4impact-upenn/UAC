@@ -13,10 +13,6 @@ import string
 
 RESULTS_PER_PAGE = 25
 
-field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
-    'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
-    'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene']
-
 @app.route('/', methods=['GET','POST'])
 @app.route('/#search', methods=['GET','POST'])
 def search():
@@ -209,7 +205,7 @@ def populate_results_data(result, result_data, ein):
 
 @app.route('/results')
 def results():
-    return render_template('results.html', result_data={'revenue':0}, expenses=field_names)
+    return render_template('results.html', result_data={'revenue':0})
 
 
 # TODO ? should i convert ein to <int:ein> ?
@@ -235,28 +231,50 @@ def ein_results(ein):
 
     populate_results_data(result, result_data, ein)
 
-    return render_template('results.html', result_data=result_data, expenses=field_names, ein=ein)
+    return render_template('results.html', result_data=result_data, ein=ein)
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
-    print request.form
-
     print request.form.getlist('total_revenue')
+    print request.form
     total_rev = float(request.form.getlist('total_revenue')[0])
     print 'POST: calculating percentiles'
-    expense_dict = {}
+    this_nonprofit_expense_literal = {}
+    this_nonprofit_expense_percent = {}
     # converts all expenses into percentages and puts into dict by category name
-    for x in field_names:
-        expense_dict[x] = float(request.form.getlist(x)[0]) / total_rev * 100
+    field_names = ['pension_plan_contributions', 'othremplyeebene',
+                   'feesforsrvcmgmt', 'legalfees', 'accountingfees',
+                   'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt',
+                   'feesforsrvcothr', 'advrtpromo', 'officexpns', 'infotech',
+                   'interestamt', 'insurance', 'total_expense', 'total_revenue']
+    for name in field_names:
+        this_nonprofit_expense_literal[name] = float(request.form.getlist(name)[0])
+        this_nonprofit_expense_percent[name] = float(request.form.getlist(name)[0]) / total_rev * 100
+        if (name == 'total_expense'):
+            this_nonprofit_expense_percent['totalefficiency'] = float(request.form.getlist(name)[0]) / total_rev * 100
 
+    print this_nonprofit_expense_literal
+    print this_nonprofit_expense_percent
     state_id = request.form.getlist('state_id')[0]
+    if (state_id == 'US'):
+        state_id = '00'
     ntee_id = request.form.getlist('ntee_id')[0]
+    if (ntee_id == 'All'):
+        ntee_id = '0'
     revenue_id = request.form.getlist('revenue_id')[0]
     query_bucket_id = state_id + '_' + ntee_id + '_' + revenue_id
     print 'query_bucket_id: ' + query_bucket_id
     table_row = models.Bucket.query.filter_by(bucket_id=query_bucket_id).first()
-    print table_row
-    return table_row.get_all_percentiles(expense_dict)
+    this_nonprofit_ranking_data = table_row.get_all_percentiles(this_nonprofit_expense_percent)
+    other_nonprofit_data = table_row.get_other_nonprofit_data()
+    print other_nonprofit_data
+    return jsonify({
+            'this_nonprofit_expense_literal': this_nonprofit_expense_literal,
+            'this_nonprofit_expense_percent': this_nonprofit_expense_percent,
+            'this_nonprofit_rankings': this_nonprofit_ranking_data,
+            'other_nonprofits_expense_percent': other_nonprofit_data['expense_percents'],
+            'other_nonprofits_rankings': other_nonprofit_data['rankings']
+        })
 
 @app.route('/contact', methods=['POST'])
 def contact():
