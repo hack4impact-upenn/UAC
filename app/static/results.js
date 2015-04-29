@@ -28,12 +28,12 @@ $(document).ready(function() {
 
     });
 
-/*
+    /*
     $("#btn_submit_state_ntee").click(function() {
         var state = $("#state_input").val();
         var ntee = $("#ntee_input").val();
         // update values
-    });
+    });*/
 
     $("#submit_button_calculate").click(function(event){
         event.preventDefault();
