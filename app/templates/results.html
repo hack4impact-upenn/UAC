@@ -134,14 +134,13 @@
 </div> <!-- ENTER COSTS PANEL -->
 
 
-    
-{% if result_data['nccs_url'] or result_data['guidestar_url'] %}
 <!-- Links to other websites and PDFs here -->
 <h2>Not the most updated 990? Find other records for <strong>{{result_data['name']}}</strong> here:</h2>
 <div class="panel panel-default">
     <div class="panel-body">
     
-       
+        <h3><a href="https://www.citizenaudit.org/{{ ein }}/" target="_blank">CitizenAudit</a></h3>
+
         {% if result_data['nccs_url'] %}
         <h3><a href="{{result_data['nccs_url']}}" target="_blank">National Center for Charitable Statistics (NCCS)</a></h3>
         {% endif %}
@@ -150,7 +149,6 @@
         {% endif %}
     </div>
 </div>
-{% endif %}
 
 <!-- Overall Numbers -->
 <div class="jumbotron">

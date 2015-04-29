@@ -233,7 +233,7 @@ def ein_results(ein):
 
     populate_results_data(result, result_data, ein)
 
-    return render_template('results.html', result_data=result_data, expenses=field_names)
+    return render_template('results.html', result_data=result_data, expenses=field_names, ein=ein)
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
