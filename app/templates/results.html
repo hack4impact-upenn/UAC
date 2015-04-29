@@ -29,25 +29,30 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='results.css') }}" ></style>
 
 <!-- Welcome -->
-<div class="jumbotron">
-    <h1>Welcome, <strong>{{result_data['name']}}</strong>.</h1>
-</div>
+{% if result_data %}
+    <div class="jumbotron">
+        <h1>Welcome, <strong>{{result_data['name']}}</strong>.</h1>
+    </div>
+{% endif %}
 
 <div class="row"> <h1>Please enter your expenses and revenue:</h1></div>
 
 <div class="panel panel-default">
     <div class="panel-body">
 <div class="row">
+    {% if result_data %}
     <div class="col-md-8">
         {% if result_data['pdf_url'] %}
-        <!-- PDF iframed here-->
-        <h3>Skip to Part IX:</h3>
-        <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
+            <!-- PDF iframed here-->
+            <h3>Skip to Part IX:</h3>
+            <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
         {% else %}
-        <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
+            <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
         {% endif %}
 
     </div>
+    {% endif %}
+
     <div class="col-md-4">
         <div class="panel panel-default">
         <div class="panel-heading">
@@ -122,7 +127,7 @@
                 </div>
                 <div class="form-group">
                     <label class="update" for="total_revenue">Total Revenue</label>
-                    <input type="text" class="form-control" id="total_revenue" name="total_revenue" placeholder="" value="{{result_data['revenue']}}">
+                    <input type="text" class="form-control" id="total_revenue" name="total_revenue" placeholder="" value="{{ result_data['revenue'] or 0 }}">
                 </div>
                 <button type="submit" class="btn btn-default" id="submit_button_calculate">Submit</button>
             </form>
@@ -139,7 +144,9 @@
 <div class="panel panel-default">
     <div class="panel-body">
     
+        {% if ein %}
         <h3><a href="https://www.citizenaudit.org/{{ ein }}/" target="_blank">CitizenAudit</a></h3>
+        {% endif %}
 
         {% if result_data['nccs_url'] %}
         <h3><a href="{{result_data['nccs_url']}}" target="_blank">National Center for Charitable Statistics (NCCS)</a></h3>

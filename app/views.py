@@ -207,7 +207,7 @@ def populate_results_data(result, result_data, ein):
 
 @app.route('/results')
 def results():
-    return render_template('results.html', expenses=field_names)
+    return render_template('results.html', result_data={'revenue':0}, expenses=field_names)
 
 
 # TODO ? should i convert ein to <int:ein> ?
