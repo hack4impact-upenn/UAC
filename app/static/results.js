@@ -73,12 +73,21 @@ $(document).ready(function() {
             expense_data,
             function(data, status) {
                 console.log(data);
-                var bar_data = [
-                data.list, //lines:percentage values
-                [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4],
-                [0.7,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3],
-                [0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4,0.2]];
-                createHorizontalBars(bar_data);
+                /***************************************
+                BUILDING HORIZONTAL SLIDER BARS
+                ****************************************/
+                console.log('make horizontal bars');
+                var numBars = 14;
+                var gapSize = 70;
+                var width = 800;
+                var height = numBars*gapSize;
+                var thisNonprofitRankings = $.map(data.this_nonprofit_rankings, function(value, index) {
+                    return value;
+                });
+                console.log(thisNonprofitRankings);
+                $('#total-overhead-rate').html(data.this_nonprofit_expense_percent.totalefficiency);
+                $('#total-efficiency-ranking').html((1 - data.this_nonprofit_rankings.totalefficiency)*100);
+                createHorizontalBars(thisNonprofitRankings, numBars, gapSize, width, height);
             });
     });
 
@@ -97,7 +106,7 @@ BUILDING BAR GRAPH
     // var expense_data = [
     //      [50,30,10,40,60,80,30,40,50,60,70,80,90,100,],
     //      [60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
-/*
+
     console.log("HEY");
 
     var profndraising = "{{result_data['filing_data']['profndraising']}}";
@@ -150,15 +159,6 @@ BUILDING BAR GRAPH
         createBarGraph();
         return false;
     });
-
-/***************************************
-BUILDING HORIZONTAL SLIDER BARS
-****************************************/
-/*    console.log('make horizontal bars');
-    var numBars = 13;
-    var gapSize = 70;
-    var width = 800;
-    var height = numBars*gapSize;
 
     var sample_data = [
             [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2], //lines:percentage values
@@ -398,7 +398,7 @@ BUILDING HORIZONTAL SLIDER BARS
     }
 
 
-    function createHorizontalBars(comparison_data) {
+    function createHorizontalBars(thisNonprofitRankings, numBars, gapSize, width, height) {
         var rect_container = d3.select("#svg2_container").html('');
         var rect_container = d3.select("#svg2_container").append("svg")
         .attr("width", width)
@@ -440,15 +440,21 @@ BUILDING HORIZONTAL SLIDER BARS
             .attr("fill", "url(#gradient)");
         }
 
+        
         for (var i = 0; i < numBars; i++) {
+            var strokeWidth = 2;
+            if (thisNonprofitRankings[i] === 1) {
+                strokeWidth = 4;
+            }
+
             rect_container.append("line")
-            .attr('x1', rectWidth - (parseFloat(comparison_data[0][i]) * rectWidth))
+            .attr('x1', rectWidth - (thisNonprofitRankings[i] * rectWidth))
             .attr('y1', i*gapSize)
-            .attr('x2', rectWidth - (parseFloat(comparison_data[0][i]) * rectWidth))
+            .attr('x2', rectWidth - (thisNonprofitRankings[i] * rectWidth))
             .attr('y2', i*gapSize + rectHeight)
             .attr('stroke-width',2)
             .attr('stroke','black');
-        }
+        }/*
         for (var j = 1; j < comparison_data.length; j++) {
             for (var i = 0; i < numBars; i++) {
                 console.log('making bars: '+i+','+j);
@@ -458,8 +464,17 @@ BUILDING HORIZONTAL SLIDER BARS
                 .attr('x2', rectWidth - (parseFloat(comparison_data[j][i]) * rectWidth))
                 .attr('y2', i*gapSize + rectHeight)
                 .attr('stroke-width', 2)
-                .attr('stroke','white');
+                .attr('stroke','white')
+                .on("mouseover", function(d) {      
+                    tooltip.transition().duration(200).style("opacity", .9);      
+                    tooltip.html(d)  
+                      .style("left", (d3.event.pageX) + "px")     
+                      .style("top", (d3.event.pageY - 28) + "px");    
+                })                  
+                .on("mouseout", function(d) {       
+                    tooltip.transition().duration(500).style("opacity", 0);   
+                });
             }
-        }
+        }*/
     }
     

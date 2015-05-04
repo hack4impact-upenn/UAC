@@ -157,9 +157,9 @@
 <!-- Overall Numbers -->
 <div class="jumbotron">
     <h1>The Data.</h1>
-    <p> Your overhead rate is <strong>{{result_data['overhead']}}%</strong>.</p>
+    <p> Your overhead rate is <strong><span id="total-overhead-rate">{{result_data['overhead']}}</span>%</strong>.</p>
     <!-- <p>With UAC, you can save <strong>${{savings}}</strong> every year.</p> -->
-    <p>You are more cost-efficient than <strong>{{result_data['current_percentile']}}%</strong> of other non-profits.</p>
+    <p>You are more cost-efficient than <strong><span id="total-efficiency-ranking">{{result_data['current_percentile']}}</span>%</strong> of other non-profits.</p>
     <p>With UAC, you will save around <strong>{{ saving_amount }}</strong>.</p>
     <!--<p>With UAC, you could be more cost-efficient than <strong>{{result_data['uac_percentile']}}%</strong> of other non-profits.</p>-->
 </div>
