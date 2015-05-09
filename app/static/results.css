@@ -29,7 +29,7 @@ text {
 }
 
 .svg {
-    padding:50px;
+    padding:60px;
 }
 
 /* Adjust colors of bars in legend/key */
@@ -43,11 +43,11 @@ text {
 }
 
 .container {
-    width:90%;
+    width:100%;
 }
 
 .panel {
-    width:90%;
+    width:100%;
 }
 
 #pdf_iframe {
