@@ -106,7 +106,7 @@ BUILDING BAR GRAPH
     // var expense_data = [
     //      [50,30,10,40,60,80,30,40,50,60,70,80,90,100,],
     //      [60,50,40,30,20,30,40,50,60,70,80,90,100,110]];
-
+/*
     console.log("HEY");
 
     var profndraising = "{{result_data['filing_data']['profndraising']}}";
