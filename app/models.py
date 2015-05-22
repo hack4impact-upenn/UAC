@@ -29,7 +29,7 @@ class Bucket(db.Model):
 		# ordered array of data values parsed to floats (ignore last empty str)
 		data = getattr(self, field_id).split('%')[:-1]
 		# how much of the sample is covered by this interval
-		interval_width = 1.0/(len(data) - 1)
+		interval_width = 1.0/( max(len(data) - 1, 1) )
 		# find in which interval the input value is
 		if (float(data[0]) > value):
 			return 0
@@ -43,7 +43,6 @@ class Bucket(db.Model):
 		return 1
 
 	# Takes an array of expense percentage values and returns json list of percentiles
-	# 
 	def get_all_percentiles(self, this_nonprofit_expense_percent):
 		percentiles_list = []
 		percentages = []
@@ -54,7 +53,7 @@ class Bucket(db.Model):
                    'feesforsrvcothr', 'advrtpromo', 'officexpns', 'infotech',
                    'interestamt', 'insurance', 'totalefficiency']
 		for name in field_names:
-			rank_of_current_nonprofit[name] = self.get_percentile(name, this_nonprofit_expense_percent[name])
+			rank_of_current_nonprofit[name] = 1 - self.get_percentile(name, this_nonprofit_expense_percent[name])
 			#percentiles = getattr(self, name).split('%')[:-1]
 			#for p in percentiles: 
 			#	dict_of_values[name] = p
@@ -72,9 +71,10 @@ class Bucket(db.Model):
 			expense_percents[name] = getattr(self, name).split('%')[:-1]
 		# fill rankings
 		rankings = []
-		interval_width = 1.0/(len(expense_percents[name]) - 1)
+		interval_width = 1.0/( max(len(expense_percents[name]) - 1, 1) )
 		for i in range(0, len(expense_percents['totalefficiency'])):
 				rankings.append(i*interval_width)
+		rankings = list(reversed(rankings))
 		# combine the two
 		other_nonprofit_data = {}
 		other_nonprofit_data['expense_percents'] = expense_percents

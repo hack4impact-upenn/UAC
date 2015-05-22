@@ -1,194 +1,197 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<!-- <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"> -->
-
- <!-- CDN for jQuery -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<!-- CDN for jQuery Easing-->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 
 <!-- CDN for D3 Data Visualization Library -->
 <script src="http://d3js.org/d3.v3.min.js"></script>
 
-<script src="/static/js/html2canvas/html2canvas.min.js"></script>
+<!-- CDN for Google Charts -->
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-<!-- CDN for Bootstrap -->
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<!-- HTML2Canvas -->
+<script src="{{ url_for('static', filename='html2canvas.min.js') }}"></script>
 
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='results.css') }}" ></style>
+<!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div id="navbar-row" class="row">
+                <div class="col-xs-offset-1 col-xs-10">
+                    
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#accounting"></a>
+            </div>
 
-<!-- Welcome -->
-{% if result_data %}
-    <div class="jumbotron">
-        <h1>Welcome, <strong>{{result_data['name']}}</strong>.</h1>
-    </div>
-{% endif %}
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                
+                <ul class="nav navbar-nav navbar-left">
+                    <li>
+                        <a class="page-scroll" href="#accounting">{{result_data['name']}}</a>
+                    </li>
+                </ul>
+                
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="#compare">Compare</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#savings">Savings</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#report">Report</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Contact</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{{ url_for('search') }}">Search</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+  
+                </div>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
 
-<div class="row"> <h1>Please enter your expenses and revenue:</h1></div>
+<section id="accounting">
+    <div class="container">
+    <div class="row">
+        <div class="col-xs-offset-1 col-xs-10">
 
-<div class="panel panel-default">
-    <div class="panel-body">
 <div class="row">
-    {% if result_data %}
+    <div class="col-xs-12">
+        <h1 class="centered">Fill in the financials and click 'Analyze'.</h1>
+    </div>    
+</div>
+                  
+<div class="row">
     <div class="col-md-9">
         {% if result_data['pdf_url'] %}
             <!-- PDF iframed here-->
-            <h3>Skip to Part IX:</h3>
+            <p class="centered">Scroll to <strong>Part IX</strong> for the expense figures:</p>
             <div><iframe id="pdf_iframe" src="{{result_data['pdf_url']}}">iframe</iframe></div>
         {% else %}
-            <h3>Sorry, we could not find a 990 form for <strong>{{result_data['name']}}</strong>.</h3>
+            <p class="centered">Sorry, we could not find a Form 990 for <strong>{{result_data['name']}}</strong>.</p>
         {% endif %}
-
+        
+        {% if result_data['nccs_url'] or result_data['guidestar_url'] %}
+            <!-- Links to other websites and PDFs here -->
+            Not the most updated 990? Find other records for <strong>{{result_data['name']}}</strong> here:
+            {% if result_data['nccs_url'] %}
+                <a href="{{result_data['nccs_url']}}" target="_blank">NCCS</a>
+            {% endif %}
+            {% if result_data['guidestar_url'] %}
+                <a href="{{result_data['guidestar_url']}}" target="_blank">GuideStar</a>
+            {% endif %}
+        {% endif %}
     </div>
-    {% endif %}
 
     <div class="col-md-3">
-        <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Change values:</h3>
-        </div>
-        <div class="panel-body">
+        <p>Fill in the values from Part IX:</p>
 
             <!-- FORM TO CHANGE SPENDING DATA VALUES -->
             <form id="costs_form" method="post" action="../calculate">
 
                 <div class="form-group">
-                    <label class="update" for="pension_plan_contributions">Pension plan contributions</label>
-                    <input type="text" class="form-control" id="pension_plan_contributions" placeholder="" name='pension_plan_contributions' value="0">
+                    <label class="update" for="pension_plan_contributions">8 Pension plan contributions:</label>
+                    <input type="text" class="form-control dark-yellow" id="pension_plan_contributions" placeholder="" name='pension_plan_contributions' value="0">
+                    <div class="error-message"></div>
                 </div>
 
                 <div class="form-group">
-                    <label class="update" for="employee_benefits">Other employee benefits </label>
-                    <input type="text" class="form-control" id="othremplyeebene" placeholder="" name='othremplyeebene' value="0">
+                    <label class="update" for="employee_benefits">9 Other employee benefits:</label>
+                    <input type="text" class="form-control dark-yellow" id="othremplyeebene" placeholder="" name='othremplyeebene' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="management">Management</label>
-                    <input type="text" class="form-control" id="feesforsrvcmgmt" placeholder="" name="feesforsrvcmgmt" value="0">
+                    <label class="update" for="management">11.a Management:</label>
+                    <input type="text" class="form-control dark-yellow" id="feesforsrvcmgmt" placeholder="" name="feesforsrvcmgmt" value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="legal">Legal</label>
-                    <input type="text" class="form-control" id="legalfees" placeholder="" name='legalfees' value="0">
+                    <label class="update" for="legal">11.b Legal:</label>
+                    <input type="text" class="form-control dark-yellow" id="legalfees" placeholder="" name='legalfees' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group" >
-                    <label class="update"for="accounting">Accounting</label>
-                    <input type="text" class="form-control" id="accountingfees" placeholder="" name='accountingfees' value="0">
+                    <label class="update"for="accounting">11.c Accounting:</label>
+                    <input type="text" class="form-control dark-yellow" id="accountingfees" placeholder="" name='accountingfees' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="lobbying">Lobbying</label>
-                    <input type="text" class="form-control" id="feesforsrvclobby" placeholder="" name='feesforsrvclobby' value="0">
+                    <label class="update" for="lobbying">11.d Lobbying:</label>
+                    <input type="text" class="form-control dark-yellow" id="feesforsrvclobby" placeholder="" name='feesforsrvclobby' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group" value="0">
-                    <label class="update" for="professional_fundraising">Professional fundraising services</label>
-                    <input type="text" class="form-control" id="profndraising" placeholder="" name='profndraising' value="0">
+                    <label class="update" for="professional_fundraising">11.e Professional fundraising services:</label>
+                    <input type="text" class="form-control dark-yellow" id="profndraising" placeholder="" name='profndraising' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="investment_management">Investment management fees</label>
-                    <input type="text" class="form-control" id="feesforsrvcinvstmgmt" placeholder="" name='feesforsrvcinvstmgmt' value="0">
+                    <label class="update" for="investment_management">11.f Investment management fees:</label>
+                    <input type="text" class="form-control dark-yellow" id="feesforsrvcinvstmgmt" placeholder="" name='feesforsrvcinvstmgmt' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="other">Other</label>
-                    <input type="text" class="form-control" id="feesforsrvcothr" placeholder="" name='feesforsrvcothr' value="0">
+                    <label class="update" for="other">11.g Other:</label>
+                    <input type="text" class="form-control dark-yellow" id="feesforsrvcothr" placeholder="" name='feesforsrvcothr' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="advertising">Advertising and promotion</label>
-                    <input type="text" class="form-control" id="advrtpromo" placeholder="" name='advrtpromo' value="0">
+                    <label class="update" for="advertising">12 Advertising and promotion:</label>
+                    <input type="text" class="form-control dark-yellow" id="advrtpromo" placeholder="" name='advrtpromo' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="office_expenses">Office expenses</label>
-                    <input type="text" class="form-control" id="officexpns" placeholder="" name='officexpns' value="0">
+                    <label class="update" for="office_expenses">13 Office expenses:</label>
+                    <input type="text" class="form-control dark-yellow" id="officexpns" placeholder="" name='officexpns' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="information_technology">Information technology</label>
-                    <input type="text" class="form-control" id="infotech" placeholder="" name='infotech' value="0">
+                    <label class="update" for="information_technology">14 Information technology:</label>
+                    <input type="text" class="form-control dark-yellow" id="infotech" placeholder="" name='infotech' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="interest_expense">Interest</label>
-                    <input type="text" class="form-control" id="interestamt" placeholder="" name='interestamt' value="0">
+                    <label class="update" for="interest_expense">20 Interest:</label>
+                    <input type="text" class="form-control dark-yellow" id="interestamt" placeholder="" name='interestamt' value="0">
+                    <div class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="insurance">Insurance</label>
-                    <input type="text" class="form-control" id="insurance" placeholder="" name='insurance' value="0">
+                    <label class="update" for="insurance">23 Insurance:</label>
+                    <input type="text" class="form-control dark-yellow" id="insurance" placeholder="" name='insurance' value="0">
+                    <div class="error-message"></div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="update" for="total_expense">Total Expenses</label>
+                    <label class="update" for="total_expense">Total Expenses:</label>
                     <p id="total_expense"></p>
                 </div>
                 <div class="form-group">
-                    <label class="update" for="total_revenue">Total Revenue</label>
-                    <input type="text" class="form-control" id="total_revenue" name="total_revenue" placeholder="" value="{{ result_data['revenue'] or 0 }}">
+                    <label class="update" for="total_revenue">Total Revenue:</label>
+                    <input type="text" class="form-control dark-yellow" id="total_revenue" name="total_revenue" placeholder="" value="{{ result_data['revenue'] or 0 }}">
+                    <div class="error-message"></div>
                 </div>
-                <button type="submit" class="btn btn-default" id="submit_button_calculate">Submit</button>
+
             </form>
-        </div>
-    </div>
-    </div>
-</div>
-</div> <!-- ENTER COSTS PANEL BODY -->
-</div> <!-- ENTER COSTS PANEL -->
-
-
-<!-- Links to other websites and PDFs here -->
-<h2>Not the most updated 990? Find other records for <strong>{{result_data['name']}}</strong> here:</h2>
-<div class="panel panel-default">
-    <div class="panel-body">
-    
-        {% if ein %}
-        <h3><a href="https://www.citizenaudit.org/{{ ein }}/" target="_blank">CitizenAudit</a></h3>
-        {% endif %}
-
-        {% if result_data['nccs_url'] %}
-        <h3><a href="{{result_data['nccs_url']}}" target="_blank">National Center for Charitable Statistics (NCCS)</a></h3>
-        {% endif %}
-        {% if result_data['guidestar_url'] %}
-        <h3><a href="{{result_data['guidestar_url']}}" target="_blank">GuideStar</a></h3>
-        {% endif %}
-    </div>
-</div>
-
-<!-- Overall Numbers -->
-<div class="jumbotron">
-    <h1>The Data.</h1>
-    <p> Your overhead rate is <strong><span id="total-overhead-rate">{{result_data['overhead']}}</span>%</strong>.</p>
-    <!-- <p>With UAC, you can save <strong>${{savings}}</strong> every year.</p> -->
-    <p>You are more cost-efficient than <strong><span id="total-efficiency-ranking">{{result_data['current_percentile']}}</span>%</strong> of other non-profits.</p>
-    <p>With UAC, you will save around <strong>{{ saving_amount }}</strong>.</p>
-    <!--<p>With UAC, you could be more cost-efficient than <strong>{{result_data['uac_percentile']}}%</strong> of other non-profits.</p>-->
-</div>
-
-    
-
-
-<!-- -------------------------------------
-     Comparison Chart 
-     -------------------------------------->
-    <div class="row"> 
-        <h1>How does <strong>{{result_data['name']}}</strong> compare to other nonprofits?</h1>
-    </div>
-
-   
-
-<div class="panel panel-default">
-    <div class="row">
-        <div class='col-md-3'>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"> State: {{result_data['state']}}</h3>
-                </div>
-                <div class="panel-body">
-                    <!-- <div class="input-group">
-                        <span class="input-group-addon" id="basic-addon1">Update state:</span>
-                        <input type="text" class="form-control" placeholder="ex. MA" id="state_input" aria-describedby="basic-addon1">  
-                    </div> -->
-                    <select id='state_select'>
+            
+            <p>Select the peer group:</p>
+            
+            <label class="twelve-font">State ({{result_data['name']}} is from {{result_data['state']}}):</label>
+            <select id='state_select'>
                         <option value="US">All states</option>
                         <option value="AL">AL - Alabama</option>
                         <option value="AK">AK - Alaska</option>
@@ -240,22 +243,11 @@
                         <option value="WV">WV - West Virginia</option>
                         <option value="WI">WI - Wisconsin</option>
                         <option value="WY">WY - Wyoming</option>
-                    </select>
-                </div> 
-            </div> <!-- Panel for State Submit-->
-        </div> <!-- col 1 -->
-        <div class='col-md-6'>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">NTEE Code: {{result_data['ntee_code']}}</h3>
-                </div>
-                <div class="panel-body">
-                    <!-- <div class="input-group">
-                        <span class="input-group-addon" id="basic-addon1">Update NTEE code:</span>
-                        <input type="text" class="form-control" placeholder="ex. A23" id="NTEE_input" aria-describedby="basic-addon1">
-                        
-                    </div> -->
-                    <select id="ntee_select">
+            </select>
+            <br>
+
+            <label class="twelve-font">NTEE code ({{result_data['name']}} is classified as {{result_data['ntee_code']}}):</label>
+            <select id="ntee_select">
                         <option value="All">All codes</option>
                         <option value="A">A - Arts, Culture, and Humanities</option>
                         <option value="B">B - Educational Institutions</option>
@@ -284,17 +276,11 @@
                         <option value="Y">Y - Mutual/Membership Benefit Organizations, Other</option>
                         <option value="Z">Z - Unknown</option>
 
-                    </select>
-                </div> 
-            </div> <!-- Panel for NTEE Submit-->
-        </div> <!-- col 2 -->
-        <div class='col-md-3'>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title" id='revenue_select_title'>Revenue: ${{result_data['revenue']}}</h3>
-                </div>
-                <div class="panel-body">
-                    <select id='revenue_select'>
+            </select>
+            <br>
+            
+            <label class="twelve-font">Revenue (see 'Total Revenue' above):</label>
+            <select id='revenue_select'>
                         <option value="0">All</option>
                         <option value="1">under $50,000</option>
                         <option value="2">$50,000-$250,000</option>
@@ -302,25 +288,48 @@
                         <option value="4">$1M-$5M</option>
                         <option value="5">$5M-$10M</option>
                         <option value="6">$10M and over</option>
-                    </select>
+            </select>
+            <br>
+            
+            <button type="submit" class="btn btn-default" id="submit_button_calculate">Analyze</button>
+
+    </div>
+</div>
+
+        </div>
+    </div>
+</section>
+
+<section id="compare">
+    <div class="container">
+    <div class="row">
+        <div class="col-xs-offset-1 col-xs-10 centered">
+    
+        <div class="row">
+            <div class="col-xs-offset-1 col-xs-10 centered">
+            
+            <div class="row">
+                <div class="col-xs-6">
+                    <h2 class="centered">Overhead rate:</h2>
+                    <h1 id="total-overhead-rate" class='purple-font'>?</h1>
+                </div>
+                <div class="col-xs-6">
+                    <h2 class="centered">More cost-efficient than:</h2>
+                    <h1 id="total-efficiency-ranking" class='purple-font'>?</h1>
                 </div>
             </div>
-        </div> <!-- col 3 -->
-    </div> <!-- Row 1-->
 
-    
-    <div class="row">
-        <div class="col-md-9"></div>
-        <div class="col-md-3"><button class="btn btn-default" id="btn_submit_state_ntee" type="submit">Update</button></div>
-    </div>
-</div> <!-- panel for ntee, state, and revenue group updates -->
+            <div id="chart_div"></div>
 
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="row"> 
-        <div class='col-md-2'>
+
+<!-- -------------------------------------
+     Comparison Chart 
+     -------------------------------------->
+
+          <!--  <div class="row"> 
+        <div class='col-md-2'>-->
             <!-- Labels for bars -->
-            <p class="labels" class="LLLLLL">Total</p>
+            <!--<p class="labels" class="LLLLLL">Total</p>
             <p class="labels">Legal</p>
             <p class="labels">Accounting</p>
             <p class="labels">Lobbying</p>
@@ -335,84 +344,75 @@
             <p class="labels">Other</p>
         </div>
         <div class="col-md-8">
-            <div id="svg2_container"> 
+            <div id="svg2_container"> -->
                 <!-- Comparison SVG/Chart inserted here -->
-            </div>
+            <!--</div>
         </div>
         <div class="col-md-1">
         </div>
-    </div>
+    </div>-->
+
+       
         </div>
     </div>
-    
-
-
-    <!-- 
-         Costs/Savings by Categories Chart 
-         -->
-    <div class="row"> 
-        <h1>Savings Breakdown</h1>
     </div>
+</section>
 
-    <div class="panel panel-default">        
-        <div class="panel-body">
-
-            <div class="row"> 
-                <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#DC4E00" aria-hidden="true">  Current Costs</span></div>
-            </div>
-            <div class="row"> 
-                <div class="col-md-3"><span class="glyphicon glyphicon-stop" style="color:#89CEDE" aria-hidden="true">  Costs with UAC</span></div>
-            </div>
-            <div class="row"> 
-                <div class="col-md-9">
-                    <div id="svg_container"> 
-                    </div>
-                </div>  
-                <div class="col-md-3"> 
-                    
-                    
-                </div>
-            </div>
-        </div> <!-- PANEL BODY -->
-    </div> <!-- PANEL -->
-
+<section id="savings">
+    <div class="container">
     <div class="row">
-        <h2>Want to learn more and save this report?</h2>
-
-        <p>Fill out the form to access the download link and to learn more.</p>    
-    </div>
-
-
-    <div class="panel panel-default">
-        <div class="panel-body">
+        <div class="col-xs-offset-1 col-xs-10">
+           
+            <div class="row">
+                <div class="col-xs-offset-1 col-xs-10 centered">
+                    <h2 class="centered">With UAC, <strong>{{result_data['name']}}</strong> can potentially save around</h2>
+                    <h1 id="total-savings-amount" class="green-font centered">?</h1>
+                    <p class="centered">(hover over bars for breakdown)</p>
+                </div>
+            </div>
             
-            <form>
-                <div class="form-group">
-                    <label>Name <span style="color:red">*</span></label>
-                    <input type="text" id="client_name" placeholder="" val="" required>
-                    <div id="nameError"></div>
-                </div>
-                <div class="form-group">
-                    <label>Organization</label>
-                    <input type="text" id="client_org"  placeholder="" val="">
-                </div>
-                <div class="form-group">
-                    <label>Email <span style="color:red">*</span></label>
-                    <input type="email" id="client_email" placeholder="" val="" required>
-                    <div id="emailError"></div>
-                </div>
-                <div class="form-group">
-                    <label>Phone</label>
-                    <input type="text" id="client_phone" placeholder="" val="">
-                </div>
-                <button type="button" id="submit_button_contact" class="btn btn-default" data-toggle="modal">Submit Form</button>
-                <div id="confirm"></div>
-                <div id="png"></div>
-
-            </form>
-            <span></span>
-        <div class="panel-body">   
+            <!-- Costs/Savings by Categories Chart -->
+            <span class="glyphicon glyphicon-stop" style="color:#DC4E00" aria-hidden="true">Current Costs</span><br>
+            <span class="glyphicon glyphicon-stop" style="color:#89CEDE" aria-hidden="true">Costs with UAC</span>
+            <div id="svg_container" class="centered"> 
+            </div>
+        </div>
     </div>
+    </div>
+</section>
+
+<section id="report">
+    <div class="container">
+    <div class="row">
+        <div class="col-xs-offset-1 col-xs-10">
+        <h2 class="centered">Want to learn more and save this report?<br><br>Fill out the form below.</h2><br>   
+            
+        <form class="centered">
+            <input type="text" id="client_name" class='form-control user-form' placeholder="Name *" val="" required>
+            <div id="nameError"><br></div>
+            
+            <input type="text" id="client_org" class='form-control user-form' placeholder="Organization" val="" value="{{result_data['name']}}">
+            <br>
+
+            <input type="email" id="client_email" class='form-control user-form' placeholder="Email *" val="" required>
+            <div id="emailError"><br></div>
+            
+            <input type="text" id="client_phone" class='form-control user-form' placeholder="Phone" val="">
+            <br>
+            
+            <button type="button" id="submit_button_contact" class="btn btn-default" data-toggle="modal">Get Report</button>
+            <div id="confirm"></div>
+            <div id="png"></div>
+
+        </form>
+            <span></span>
+            <div class="panel-body">   
+            </div>
+    
+        </div>
+    </div>
+    </div>
+</section>
 
     <div id="myModal" class="modal fade">
       <div class="modal-dialog">
@@ -432,7 +432,6 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-
 <script type="text/javascript">
 $( document ).ready(function() {
     $('#myModal').modal('hide'); //data-target="#myModal"
@@ -444,7 +443,27 @@ $( document ).ready(function() {
                                 'org': $('#client_org').val(),
                                 'email': $('#client_email').val(),
                                 'phone': $('#client_phone').val(),
-                                'image':""
+                                'image':"",
+                                pension_plan_contributions:$('#pension_plan_contributions').val(),
+                                othremplyeebene:$('#othremplyeebene').val(),
+                                feesforsrvcmgmt:$('#feesforsrvcmgmt').val(),
+                                legalfees:$('#legalfees').val(),
+                                accountingfees:$('#accountingfees').val(),
+                                feesforsrvclobby:$('#feesforsrvclobby').val(),
+                                profndraising:$('#profndraising').val(),
+                                feesforsrvcinvstmgmt:$('#feesforsrvcinvstmgmt').val(),
+                                feesforsrvcothr:$('#feesforsrvcothr').val(),
+                                advrtpromo:$('#advrtpromo').val(),
+                                officexpns:$('#officexpns').val(),
+                                infotech:$('#infotech').val(),
+                                interestamt:$('#interestamt').val(),
+                                insurance:$('#insurance').val(),
+                                // don't forget to convert the dollar to proper number
+                                total_expense: $('#total_expense').html().replace(/[^0-9\.]+/g,""),
+                                total_revenue:$('#total_revenue').val(),
+                                state_id:$('#state_select').val(),
+                                ntee_id:$('#ntee_select').val(),
+                                revenue_id:$('#revenue_select').val()
                             };
 
         // Client-side validation of the contact form:
@@ -460,16 +479,16 @@ $( document ).ready(function() {
         }
         
         if (nameBad == true) {
-            $('#nameError').html("A name is required.");
+            $('#nameError').html("<span class='twelve-font error-message'>*please enter your name</span>");
         }
         else {
-            $('#nameError').html("");
+            $('#nameError').html("<br>");
         }
         if (emailBad == true) {
-            $('#emailError').html("A valid email address is required.");
+            $('#emailError').html("<span class='twelve-font error-message'>*please enter a valid email address</span>");
         }
         else {
-            $('#emailError').html("");
+            $('#emailError').html("<br>");
         }
 
         if (nameBad || emailBad) {
@@ -485,8 +504,10 @@ $( document ).ready(function() {
                 console.log(image);
                 $('#modalMessage').html("Here is a <a href='" + image + "' download>link</a> to download your report."); 
                 $('#myModal').modal('show');
-
-                $.post( '/contact', clientData, function( data ) {});
+                console.log(clientData);
+                $.post( '/contact', clientData, function( data ) {
+                    $(document).scrollTop( $('#report').offset().top );
+                });
 
             }
         }); 
@@ -552,408 +573,7 @@ $(document).ready(function() {
         revenue_dropdown_idx = 6;
     }
 
-    document.getElementById('revenue_select')
-    .options.selectedIndex = revenue_dropdown_idx;
+    $('#revenue_select').val(revenue_dropdown_idx);
 });
 </script>
-<!--
-<script type="text/javascript">
-/***************************************
-PAGE INTERACTIVITY
-****************************************/
-
-$("#btn_submit_state_ntee").click(function() {
-    var state = $("#state_input").val();
-    var ntee = $("#ntee_input").val();
-
-    // update values
-});
-
-<<<<<<< HEAD
-
-// PRE - POPULATING DROPDOWN
-=======
-// var states = ['AL', 'AK'];
->>>>>>> master
-var states = {'AL': 1, 'AK': 2, 'AZ': 3, 'AR': 4, 'CA': 5, 'CO': 6, 'CT': 7, 'DE': 8, 'FL': 9, 'GA': 10, 'HI': 11, 'ID': 12, 'IL':13, 'IN':14, 'IA':15, 'KS':16, 'KY':17, 'LA':18, 'ME':19, 'MD':20, 'MA':21, 'MI':22, 'MN':23, 'MS':24, 'MO':25, 'MT':26, 'NE':27, 'NV':28, 'NH':29, 'NJ':30, 'NM':31, 'NY':32, 'NC':33, 'ND':34, 'OH':35, 'OK':36, 'OR':37, 'PA':38, 'RI':39, 'SC':40, 'SD':41, 'TN':42, 'TX':43, 'UT':44, 'VT':45, 'VA':46, 'WA':47, 'WV':48, 'WI':49, 'WY':50};
-
-var this_state = "{{result_data['state']}}";
-
-document.getElementById('state_select').options.selectedIndex = states[this_state];
-
-var alpha = {'A':1, 'B':2, 'C':3, 'D':4, 'E':5, 'F':6, 'G':7, 'H':8, 'I':9, 'J':10, 'K':11, 'L':12, 'M':13, 'N':14, 'O':15, 'P':16, 'Q':17, 'R':18, 'S':19, 'T':20, 'U':21, 'V':22, 'W':23, 'X':24, 'Y':25, 'Z':26};
-
-var ntee = "{{result_data['ntee_code']}}".charAt(0);
-
-document.getElementById('ntee_select').options.selectedIndex = alpha[ntee];
-
-<<<<<<< HEAD
-var revenue = "{{result_data['revenue']}}";
-if (revenue === "None") {
-    revenue = 0;
-    document.getElementById('total_revenue').value = 0;
-    document.getElementById('revenue_select_title').innerText = "Revenue: $0";
-} else {
-    revenue = parseInt(revenue);
-}
-
-var revenue_dropdown_idx = 0;
-if (revenue >= 50000 && revenue < 250000) {
-    revenue_dropdown_idx = 1;
-} else if (revenue >= 250000 && revenue < 1000000) {
-    revenue_dropdown_idx = 2;
-} else if (revenue >= 1000000 && revenue < 5000000) {
-    revenue_dropdown_idx = 3;
-} else if (revenue >= 5000000 && 10000000) {
-    revenue_dropdown_idx = 4;
-} else if (revenue >= 10000000) {
-    revenue_dropdown_idx = 5;
-}
-
-document.getElementById('revenue_select').options.selectedIndex = revenue_dropdown_idx;
-
-=======
->>>>>>> master
-
-/***************************************
-BUILDING HORIZONTAL RAINBOW BARS
-****************************************/
-
-    var numBars = 13;
-    var gapSize = 70;
-    var width = 800;
-    var height = numBars*gapSize;  
-<<<<<<< HEAD
-
-    // container for whole chart
-    var rect_container = d3.select("#svg2_container").append("svg")
-        .attr("width", width)
-        .attr("height",height);
-
-    var rectWidth = width - 100;
-    var rectHeight = height/(numBars*2);
-
-/* IMPORTANT: THE DATA */
-/*
-    comparison_data[0] creates all of the black lines in the graph, and refers to the current status of the nonprofit.
-
-=======
-
-    // container for whole chart
-    var rect_container = d3.select("#svg2_container").append("svg")
-        .attr("width", width)
-        .attr("height",height);
-
-    var rectWidth = width - 100;
-    var rectHeight = height/(numBars*2);
-
-/* IMPORTANT: THE DATA */
-/*
-    comparison_data[0] creates all of the black lines in the graph, and refers to the current status of the nonprofit.
-
->>>>>>> master
-    comparison_data[1] creates all of the white lines in the graph, and refers to the potential status of the nonprofit if it uses UAC.
-
-    the black and white lines are added in the function 'addLineMarks()'
-*/
-    var comparison_data = [
-        [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.2],
-        [0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4]];
-
-    createHorizontalBars();
-
-    addLineMarks(comparison_data)
-
-    function createHorizontalBars() {
-
-    // color gradient
-        var gradient = rect_container.append("linearGradient")
-            .attr('y1', 0)
-            .attr('y2', 0)
-            .attr('x1', 0)
-            .attr('x2', width-100)
-            .attr('x3', width-100)
-            .attr('id', "gradient")
-            .attr('gradientUnits', 'userSpaceOnUse')
-
-        gradient
-        .append("stop")
-        .attr("offset", "0")
-        .attr("stop-color", "#DC4E00")
-
-        gradient
-        .append("stop")
-        .attr("offset", "0.5")
-        .attr("stop-color", "#ffdb33")
-        
-        gradient
-        .append("stop")
-        .attr("offset", "1")
-        .attr("stop-color", "#31c960")
-
-    // creating individual bars
-        for (var i = 0; i < numBars; i++) {
-            rect_container.append("rect")
-            .attr("x",0)
-            .attr("y",i*gapSize)
-            .attr("width",rectWidth)
-            .attr("height",rectHeight)
-            .attr("fill", "url(#gradient)");
-        }
-    }
-
-    function addLineMarks(comparison_data) {
-    // adding black and white lines 
-        for (var i = 0; i < numBars; i++) {
-            rect_container.append("line")
-            .attr('x1', rectWidth - (comparison_data[0][i] * rectWidth))
-            .attr('y1', i*gapSize)
-            .attr('x2', rectWidth - (comparison_data[0][i] * rectWidth))
-            .attr('y2', i*gapSize + rectHeight)
-            .attr('stroke-width',2)
-            .attr('stroke','black');
-
-            rect_container.append("line")
-            .attr('x1', rectWidth - (comparison_data[1][i] * rectWidth))
-            .attr('y1', i*gapSize)
-            .attr('x2', rectWidth - (comparison_data[1][i] * rectWidth))
-            .attr('y2', i*gapSize + rectHeight)
-            .attr('stroke-width',2)
-            .attr('stroke','white');
-        }
-    }
-
-
-/***************************************
-BUILDING VERTICAL BAR GRAPH
-****************************************/
-
-/* IMPORTANT: THE DATA */
-/* 
-    To change the data set, change variable expense_data (below).
-    expense_data[0] refers to the current costs being spent in 0-7 categories.
-    expense_data[1] refers to the possible costs if user makes switch to UAC, in same 0-7 categories. 
-
-    This data only affects the vertical bar graph.
-*/
-
-
-    var expense_data = [
-         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-         [0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
-
-
-    var labels = ['Management', 'Legal', 'Accounting', 'Lobbying', 'Prof. Fund.', 'Invest. MGMT.', 'Advertising', 'Office Exp.', 'Information Tech.', 'Interest Expense', 'Insurance', 'Empl. Benefits', 'Pension Plan', 'Other'];
-
-    populateForm(); // to fill in cost form with current data 
-
-    var n = 2, // number of layers
-        m = 14; // number of samples per layer
-    var x;
-    var y;
-    var rect;
-    var yGroupMax;
-    var yStackMax;
-    var width;
-    var height;
-
-    createBarGraph();
-
-    function createBarGraph() {
-
-        updateTotalCost();
-
-        var stack = d3.layout.stack();
-        var layers = stack(d3.range(n).map(function(x) {return getData(x); }));
-        
-        yGroupMax = d3.max(layers, function(layer) { return d3.max(layer, 
-            function(d) { return d.y; }); });
-        
-        yStackMax = d3.max(layers, function(layer) { return d3.max(layer, 
-            function(d) { return d.y0 + d.y; }); });
-
-        var margin = {top: 40, right: 10, bottom: 75, left: 10};
-        width = 1000 - margin.left - margin.right;
-        var diagramWidth = 1000 - margin.left - margin.right - 200;
-        height = 600 - margin.top - margin.bottom;
-
-        x = d3.scale.ordinal()
-        .domain(d3.range(m))
-        .rangeRoundBands([0, diagramWidth], .08);
-
-        y = d3.scale.linear()
-        .domain([0, yGroupMax])
-        .range([height, 0]);
-
-        // set bar graph colors
-        var color = d3.scale.linear().domain([0, n - 1]).range(["#DC4E00", "#89CEDE"]);
-
-        var xAxis = d3.svg.axis()
-        .scale(x)
-        .tickSize(3)
-        .tickPadding(6)
-        .ticks([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
-        .tickValues([0,1,2,3,4,5,6,7,8,9,10,11,12,13])
-        .tickFormat(function(d) { return convertToLabel(d); })
-        .orient("bottom");
-
-        var yAxis = d3.svg.axis()
-        .scale(y)
-        .tickSize(3)
-        .ticks(20)
-        .tickPadding(0)
-        .tickFormat(function(d) {return '$' + d; })
-        .orient("left");
-
-        var offset = margin.left + 30; // to move diagram right
-        var svg = d3.select("#svg_container").append("svg")
-        .attr("width", width + margin.left)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + offset + "," + margin.top + ")");
-
-        var layer = svg.selectAll(".layer")
-        .data(layers)
-        .enter().append("g")
-        .attr("class", "layer")
-        .style("fill", function(d, i) { return color(i); });
-
-        rect = layer.selectAll("rect")
-        .data(function(d) { return d; })
-        .enter().append("rect")
-        .attr("x", function(d) { return x(d.x); })
-        .attr("y", height)
-        .attr("width", x.rangeBand())
-        .attr("height", 0)
-        .on("mouseover", function(d) {
-            layer.selectAll("text")
-            .data(function(d) {
-                return d;
-            })
-            .enter()
-            .append("text")
-            .style("text-anchor","middle")
-            //.attr("transform", "rotate(10)")
-            .attr("x", function(d) {
-                if (d.y0 == 0) return x(d.x) + 10;
-                return x(d.x) + 40;
-            })
-            .attr("y", function(d) {
-                return y(d.y) -10;
-            })
-            .filter(function(e) {
-                return e.x == d.x;
-            })
-            .text(function(d) {
-                return '$'+d.y;
-            });
-
-        }).on("mouseout",  function(d) { 
-            layer.selectAll("text").remove();
-        });
-
-        
-
-        rect.transition()
-        .delay(function(d, i) { return i * 10; })
-        .attr("y", function(d) { return y(d.y0 + d.y); })
-        .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); });
-
-        svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-        .selectAll("text")
-        .style("text-anchor","end")
-        .attr("transform", function(d) {
-            return "rotate(-60)"
-        });
-
-        svg.append("g")
-        .attr("class", "y axis")
-        .attr("transform", "translate(0,0)")
-        .call(yAxis);
-
-        d3.selectAll("input").on("change", change);
-
-        change();
-    }
-
-    function updateTotalCost() {
-        var total_cost = 0;
-        for (var i = 0; i < m; i++) {
-            total_cost += expense_data[0][i];
-        }
-        $('#total').text(total_cost);
-    }
-
-    // m = number of categories
-    function convertToLabel(d) {
-        if (d >= 0 && d < m) {
-            var label = labels[d]
-            // if (label.length > 5) {
-            //     return label.substring(0,6) + '.';
-            // } 
-            return label;
-            
-        } else {
-            return 'Not a valid label';
-        }
-    }
-
-    
-    /* BAR GRAPH DATA GETTER */
-    // n = x axis num categories
-    // o = 0.1
-    function getData(n) {
-        var a = expense_data[n];
-        var m = a.map(function(d, i) {return {x: i, y: d}; });
-        return m;
-    }
-
-    function populateForm() {
-        $('#management').val(expense_data[0][0]);
-        $('#legal').val(expense_data[0][1]);
-        $('#accounting').val(expense_data[0][2]);
-        $('#lobbying').val(expense_data[0][3]);
-        $('#professional_fundraising').val(expense_data[0][4]);
-        $('#investment_management').val(expense_data[0][5]);
-        $('#advertising').val(expense_data[0][6]);
-        $('#office_expenses').val(expense_data[0][7]);
-        $('#information_technology').val(expense_data[0][8]);
-        $('#interest_expense').val(expense_data[0][9]);
-        $('#insurance').val(expense_data[0][10]);
-        $('#employee_benefits').val(expense_data[0][11]);
-        $('#pension_plan_contributions').val(expense_data[0][12]);
-        $('#other').val(expense_data[0][13]);
-
-    }
-
-    $('#costs_form').submit(function() {
-        var $inputs = $('#costs_form :input');
-        
-        var values = [];
-        var total = 0;
-        $inputs.each(function() {
-            var value = parseInt($(this).val());
-            if (!isNaN(value)) {
-                total = total + value;
-                values.push(value);
-            }
-        });
-
-        expense_data[0] = values;
-
-        $('#svg_container').empty();
-        createBarGraph();
-        return false;
-    });
-
-
-
-
-</script>
--->
-
-
 {% endblock %}

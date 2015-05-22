@@ -1,5 +1,6 @@
 <!-- Pagination frontend logic -->
 $(document).ready(function() {
+    
     $('.pagination a').click(function(event){
         event.preventDefault();
         //$.get("https://projects.propublica.org/nonprofits/api/v1/organizations/'", function(data, status){
@@ -16,7 +17,12 @@ $(document).ready(function() {
             {search: $('#search_value').val(), page: pageNo},
             function(data, status) {
                 $('body').html(data);
-                $('.disabled').html('');
             });
     });
+    
+    $(window).resize(function() {
+        console.log($(window).height());
+        console.log($('body').height());
+        $('#home_p').css( 'min-height', $(window).height() - 188 );
+    }).resize();
 });

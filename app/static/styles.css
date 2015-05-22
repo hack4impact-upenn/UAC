@@ -1,0 +1,328 @@
+body {
+    font-family: 'Raleway', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+text {
+    font: 10px sans-serif;
+}
+
+.jumbotron {
+    /*padding:50px;*/
+    width:90%;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+/* Adjust padding to create space between grid lines */
+.row {
+    padding:10px;
+}
+
+.form-control {
+    width: 100px;
+    border: 0px solid #fff;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: inherit;
+    height: auto;
+    padding: 8px 12px;
+}
+
+.svg {
+    padding:60px;
+}
+
+/* Adjust colors of bars in legend/key */
+.red { color:#DC4E00; }
+.blue { color:#89CEDE; }
+
+
+.labels {
+    margin-bottom:50px;
+}
+
+.container {
+    width:100%;
+}
+
+.panel {
+    width:100%;
+}
+
+#pdf_iframe {
+    width:100%;
+    height:1200px;
+}
+
+#search_value {
+    width: 20em;
+    display: inline;
+    
+}
+
+#search_value:focus {
+    box-shadow: none;
+}
+
+.centered {
+    text-align: center;
+}
+
+#home_p {
+    background-color: #f1c40f;
+    color: #fff;
+}
+
+#main-name {
+    font-size: 54px;
+    color: #fff;
+}
+
+.btn-default {
+    border: 0px solid #fff;
+    vertical-align: baseline;
+    border-radius: 0;
+    font-size: inherit;
+    height: auto;
+    padding: 8px 12px;
+}
+#search-button {
+    margin-left: -5px;
+    background-image: url('/static/search-icon.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    color: rgba(255, 255, 255, 0);
+}
+
+#home_p a, #contact a, #accounting a {
+    color: #5e5293;
+    display:inline-block;
+}
+
+#home_p a:hover, #contact a:hover, #accounting a:hover {
+    text-decoration: none;
+    color: #231858;
+}
+
+.yellow {
+    color: #f1c40f;
+}
+
+.pagination-page-info {
+    display: none;
+}
+
+#home_p .pagination > ul > li.active > a, #home_p .disabled > a {
+    pointer-events: none;
+    color: #f1c40f;
+}
+
+.pagination > ul > li {
+    display: inline;
+    margin: 0 3px;
+}
+
+.nonprofit-metadata {
+    font-size: 12px;
+}
+
+#results {
+    background-color: #fff;
+    min-height: 0px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#contact {
+    font-size: 12px;
+    background-color: #fff;
+    padding: 30px;
+}
+
+section {
+    padding: 125px 0px;
+}
+.media-icons {
+    width: 26px;
+    height: 26px;
+}
+
+hr {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.one-result {
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.one-result:hover {
+    background-color: #fffcad;
+}
+
+#results > .one-result-ahref {
+    display: block;
+}
+
+.top-page-links {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.top-page-links > hr {
+    margin-top: 0;
+}
+
+.navbar-default {
+    background-color: #f1c40f;
+}
+
+.navbar-default .navbar-collapse {
+    border-color: #aa9439;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #aa9439;
+    background-color: #f1c40f;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #aa9439;
+}
+
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #f1c40f;
+}
+
+.navbar-default .nav li a:hover,
+.navbar-default .nav li.active a:focus {
+    background-color: #aa9439;
+    color: #fff;
+}
+
+.navbar-default .navbar-nav>.active>a {
+    background-color: #aa9439;
+    color: #fff;
+}
+
+.navbar-default .navbar-nav>.active>a:hover,
+.navbar-default .navbar-nav>.active>a:focus {
+    background-color: #aa9439;
+    color: #fff;
+}
+
+.navbar-default .navbar-nav>li>a,
+.navbar-default .navbar-nav>li>a:focus {
+    color: #fff;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#navbar-row {
+    padding: 0;
+}
+
+#accounting {
+    background-color: #f6f4fe;
+    color: #aa9439;
+}
+
+.navbar-fixed-top {
+    border-width: 0;
+}
+
+iframe {
+    border: 0;
+}
+
+#costs_form {
+    font-size: 12px;
+}
+
+#submit_button_calculate {
+    font-size: 18px;
+    color: #fff;
+    background-color: #f1c40f;
+    padding: 15px 20px;
+}
+
+#submit_button_calculate:hover {
+    background-color: #aa9439;
+    color: #fff;
+}
+
+.dark-yellow {
+    color: #aa9439;
+}
+.twelve-font {
+    font-size: 12px;
+}
+
+select {
+    display: block;
+}
+
+.error-message {
+    color: red;
+}
+
+#compare {
+    background-color: #E9FCD1;
+    color: #000000;
+}
+
+.purple-font {
+    color: #6633cc;
+    font-weight: 700;
+    font-size: 72px;
+}
+
+.green-font {
+    color: #27ae60;
+    font-weight: 700;
+    font-size: 72px;
+}
+
+label {
+    font-weight: 400;
+}
+
+#savings {
+    background-color: #fff7f6;
+    color: #000000;
+}
+
+#report {
+    background-color: #7F5955;
+    color: #fff;
+}
+
+.user-form {
+    width: 20em;
+    display: block;
+    margin: 0 auto;
+    padding: 12px 12px;
+    color: #7F5955;
+}
+
+#submit_button_contact {
+    padding: 15px 20px;
+    color: #7F5955;
+    border: 1px solid #fff;
+}
+
+#submit_button_contact:hover, #submit_button_contact:focus {
+    color: #fff;
+    background-color: #7F5955;
+}

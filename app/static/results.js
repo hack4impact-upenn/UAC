@@ -4,10 +4,10 @@ $(document).ready(function() {
 
     var savingsData; 
 
-    updateTotalExpense();
+    updateTotalExpenseAndValidateFields();
 
     $('.form-control').change(function() {
-        updateTotalExpense();
+        updateTotalExpenseAndValidateFields();
     });
 
     /*
@@ -19,10 +19,22 @@ $(document).ready(function() {
 
     $("#submit_button_calculate").click(function(event){
         event.preventDefault();
-        //var field_names = ['legalfees', 'accountingfees', 'insurance', 'feesforsrvcmgmt',
-        //'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt', 'feesforsrvcothr',
-        //'advrtpromo', 'officexpns','infotech','interestamt', 'othremplyeebene',
-        //'totalefficiency'];
+        // first, validate
+        // field_names has all field names except total_expense - no need to validate it
+        var field_names = ['#pension_plan_contributions', '#othremplyeebene',
+            '#feesforsrvcmgmt', '#legalfees', '#accountingfees',
+            '#feesforsrvclobby', '#profndraising', '#feesforsrvcinvstmgmt',
+            '#feesforsrvcothr', '#advrtpromo', '#officexpns', '#infotech',
+            '#interestamt', '#insurance', '#total_revenue'];
+
+        for (var i=0; i < field_names.length; i++) {
+
+            if (  !isValidInt( $(field_names[i]).val() )  ) {
+                $(document).scrollTop( $(field_names[i]).parent().offset().top - 60 );
+                return;
+            }
+        }
+                
         var expense_data = {
             pension_plan_contributions:$('#pension_plan_contributions').val(),
             othremplyeebene:$('#othremplyeebene').val(),
@@ -38,24 +50,146 @@ $(document).ready(function() {
             infotech:$('#infotech').val(),
             interestamt:$('#interestamt').val(),
             insurance:$('#insurance').val(),
-            total_expense:$('#total_expense').html(),
+            // don't forget to convert the dollar to proper number
+            total_expense: $('#total_expense').html().replace(/[^0-9\.]+/g,""),
             total_revenue:$('#total_revenue').val(),
             state_id:$('#state_select').val(),
             ntee_id:$('#ntee_select').val(),
             revenue_id:$('#revenue_select').val()
         };
-        
+        console.log('insurance: ' + $('#insurance').val());
+        console.log('total expense: ' + expense_data);
         console.log(expense_data);
-        savingsData = calculateSavingsData(expense_data);
-        createBarGraph(savingsData);
-
+        
         $.post('/calculate',
             expense_data,
             function(data, status) {
+                
+                /* 
+                 * Calculate the total savings amount.
+                 * The formula provided by UAC is used.
+                 */
+                var savings = (  parseInt( $('#feesforsrvcmgmt').val() ) +
+                              parseInt( $('#accountingfees').val() ) +
+                              parseInt( $('#officexpns').val() ) +
+                              parseInt( $('#infotech').val() ) +
+                              parseInt( $('#othremplyeebene').val() )  ) * 0.15 +
+                              
+                              (  parseInt( $('#profndraising').val() ) +
+                              parseInt( $('#feesforsrvcinvstmgmt').val() ) +
+                              parseInt( $('#feesforsrvcothr').val() ) +
+                              parseInt( $('#advrtpromo').val() )  ) * 0.1 + 
+
+                              parseInt( $('#interestamt').val() ) + 
+                              
+                              Math.max(0, parseInt( $('#pension_plan_contributions').val() ) - 2260) +
+
+                              Math.max(0, parseInt( $('#insurance').val() ) - parseInt( $('#total_revenue').val() )*0.01 );
+
+                $('#total-savings-amount').html('$' + (savings.toFixed(0) + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '.');
+                savingsData = calculateSavingsData(expense_data);
+                createBarGraph(savingsData);
+                
+
                 console.log(data);
-                /***************************************
-                BUILDING HORIZONTAL SLIDER BARS
-                ****************************************/
+
+                if (data.no_such_bucket) {
+                    alert('We do not have data for this peer group at the moment. Please try a different selection. Sorry!');
+                    return;
+                }
+
+                $('#total-overhead-rate').html(parseFloat(data.this_nonprofit_expense_percent.totalefficiency).toFixed(2) + '%.');
+                $('#total-efficiency-ranking').html(((data.this_nonprofit_rankings.totalefficiency)*100).toFixed(2) + '%');
+                var inputData = data;
+
+                // The Google chart for comparison visualization
+                function drawCompareChart() {
+                    // checking if the data made it here
+                    console.log(inputData);
+
+                    // initialize the datatable
+                    var data = new google.visualization.DataTable();
+
+                    // label the columns (X stands for the x-axis labels)
+                    var labels = ['X', 'Other employee benefits', 'Management',
+                                  'Legal', 'Accounting', 'Lobbying',
+                                  'Professional fundraising services', 'Investment management fees', 'Other',
+                                  'Advertising and promotion', 'Office expenses',
+                                  'Information technology', 'Interest', 'Insurance', 'Total efficiency'];
+                    for (var i=0; i < labels.length; i++) {
+                        data.addColumn('number', labels[i]);
+                        data.addColumn({type:'string', role:'style'});
+                    }
+
+                    // re-format the input data:
+                    // first, insert other nonprofits' data
+                    inputData.other_nonprofits_expense_percent['percentiles'] = $.map(inputData.other_nonprofits_rankings, function(elem){
+                        return (elem*100).toFixed(2);
+                    });
+                    var field_names = [ 'percentiles', 'othremplyeebene',
+                                        'feesforsrvcmgmt', 'legalfees', 'accountingfees',
+                                        'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt',
+                                        'feesforsrvcothr', 'advrtpromo', 'officexpns', 'infotech',
+                                        'interestamt', 'insurance', 'totalefficiency'];
+
+                    var allRows = [];
+                    for (var i=0; i < inputData.other_nonprofits_rankings.length; i++) {
+                        var row = [];
+                        
+                        for (var j=0; j < field_names.length; j++) {
+                            row.push( parseFloat(inputData.other_nonprofits_expense_percent[ field_names[j] ][i]) );
+                            row.push(null);
+                        }
+                        allRows.push(row);
+                    }
+
+                    // now, insert the data for the current nonprofit:
+                    for (var i=1; i < field_names.length; i++) {
+                        var row = [parseFloat((parseFloat(inputData.this_nonprofit_rankings[ field_names[i] ])*100).toFixed(2)), null];
+
+                        for (var j=0; j < 28; j++) {
+                            row.push(null);
+                        }
+                        row[i*2] = parseFloat(parseFloat(inputData.this_nonprofit_expense_percent[ field_names[i] ]).toFixed(2));
+                        row[i*2 + 1] = 'point { size: 10';
+                        allRows.push(row);
+                    }
+
+                    console.log(allRows);
+                    // finally, add all data to the dataTable
+                      data.addRows(allRows);
+
+                      var options = {
+                        hAxis: {
+                          title: 'Percentile'
+                        },
+                        vAxis: {
+                          title: '% of the total revenue',
+                          logScale: true
+                        },
+                        series: {
+                          1: {curveType: 'function'}
+                        },
+                        height: 506,
+                        pointSize: 5,
+                        backgroundColor: '#E9FCD1'
+                      };
+
+                      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+                      // format the data for tooltips
+                      var formatter = new google.visualization.NumberFormat(
+                          {suffix: '% of the total revenue'});
+                      
+                      for (var i=1; i < 15; i++) {
+                          formatter.format(data, i*2);
+                      }
+
+                      chart.draw(data, options);
+                }
+                google.load('visualization', '1', {packages: ['corechart', 'line'], callback: drawCompareChart});
+                $(document).scrollTop( $('#compare').offset().top );
+                /*
                 console.log('make horizontal bars');
                 var numBars = 14;
                 var gapSize = 70;
@@ -64,10 +198,9 @@ $(document).ready(function() {
                 var thisNonprofitRankings = $.map(data.this_nonprofit_rankings, function(value, index) {
                     return value;
                 });
-                console.log(thisNonprofitRankings);
-                $('#total-overhead-rate').html(data.this_nonprofit_expense_percent.totalefficiency);
-                $('#total-efficiency-ranking').html((1 - data.this_nonprofit_rankings.totalefficiency)*100);
-                createHorizontalBars(thisNonprofitRankings, numBars, gapSize, width, height);
+                createHorizontalBars(thisNonprofitRankings, numBars, gapSize, width, height);*/
+                
+                
             });
         
     }); // $("#submit_button_calculate").click(function(event){
@@ -94,32 +227,56 @@ BUILDING BAR GRAPH
             [0.4,0.5,0.6,0.7,0.8,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.4,0.2]];
     createHorizontalBars(sample_data);
 
+
+    /*** FRONT END ***/
+    
+    // jQuery for page scrolling feature - requires jQuery Easing plugin
+    $(function() {
+        $('a.page-scroll').bind('click', function(event) {
+            var $anchor = $(this);
+            $('html, body').stop().animate({
+                scrollTop: $($anchor.attr('href')).offset().top
+            }, 1500, 'easeInOutExpo');
+            event.preventDefault();
+        });
+    });
+
+    // Highlight the top nav as scrolling occurs
+    $('body').scrollspy({
+        target: '.navbar-fixed-top'
+    })
+
+    // Closes the Responsive Menu on Menu Item Click
+    $('.navbar-collapse ul li a').click(function() {
+        $('.navbar-toggle:visible').click();
+    });
+
 }); //$(document).ready(function()
 
 /*
     Input: Current expense data (JSON object) 
     Output: Array formatted for D3 use, has current expense data and projected expense data with UAC
 */
-function calculateSavingsData(expense_data) {
+function calculateSavingsData(input_expense_data) {
     // transform data from JSON obj to array
-    var current_expenses = $.map(expense_data, function(value, index) {
+    var current_expenses = $.map(input_expense_data, function(value, index) {
         return parseInt(value);
      });
     // update values to reflect UAC savings
-    expense_data['feesforsrvcmgmt'] = 0.85 * expense_data['feesforsrvcmgmt'];
-    expense_data['accountingfees'] = 0.85 * expense_data['accountingfees'];
-    expense_data['profndraising'] = 0.9 * expense_data['profndraising'];
-    expense_data['feesforsrvcinvstmgmt'] = 0.9 * expense_data['feesforsrvcinvstmgmt'];
-    expense_data['feesforsrvcothr'] = 0.9 * expense_data['feesforsrvcothr'];
-    expense_data['advrtpromo'] = 0.9 * expense_data['advrtpromo'];
-    expense_data['officexpns'] = 0.85 * expense_data['officexpns'];
-    expense_data['infotech'] = 0.85 * expense_data['infotech'];
-    expense_data['interestamt'] = 0;
-    expense_data['insurance'] = Math.min(expense_data['insurance'], 0.01 * expense_data['total_revenue']);
-    expense_data['othremplyeebene'] = 0.85 * expense_data['othremplyeebene'];
-    expense_data['pension_plan_contributions'] = Math.max(0, expense_data['pension_plan_contributions'] - 2260);
+    input_expense_data['feesforsrvcmgmt'] = 0.85 * input_expense_data['feesforsrvcmgmt'];
+    input_expense_data['accountingfees'] = 0.85 * input_expense_data['accountingfees'];
+    input_expense_data['profndraising'] = 0.9 * input_expense_data['profndraising'];
+    input_expense_data['feesforsrvcinvstmgmt'] = 0.9 * input_expense_data['feesforsrvcinvstmgmt'];
+    input_expense_data['feesforsrvcothr'] = 0.9 * input_expense_data['feesforsrvcothr'];
+    input_expense_data['advrtpromo'] = 0.9 * input_expense_data['advrtpromo'];
+    input_expense_data['officexpns'] = 0.85 * input_expense_data['officexpns'];
+    input_expense_data['infotech'] = 0.85 * input_expense_data['infotech'];
+    input_expense_data['interestamt'] = 0;
+    input_expense_data['insurance'] = Math.min(input_expense_data['insurance'], 0.01 * input_expense_data['total_revenue']);
+    input_expense_data['othremplyeebene'] = 0.85 * input_expense_data['othremplyeebene'];
+    input_expense_data['pension_plan_contributions'] = Math.min(input_expense_data['pension_plan_contributions'], 2260);
 
-    var uac_expenses = $.map(expense_data, function(value, index) {
+    var uac_expenses = $.map(input_expense_data, function(value, index) {
         return parseInt(value);
      });
 
@@ -140,7 +297,11 @@ function createBarGraph(savingsData) {
     console.log('PRINTING OUT DATA PASSED INTO createBarGraph()');
     console.log(savingsData);
 
-    var labels = ['Pension Plan Contrib.', 'Empl. Benefits', 'Management', 'Legal', 'Accounting', 'Lobbying', 'Professional Fundraising', 'Investment Mgmt.', 'Other', 'Advertising & Promotion', 'Office Exp.', 'Information Tech.', 'Interest Expense', 'Insurance'];
+    var labels = ['Pension plan', 'Other employee benefits', 'Management',
+                  'Legal', 'Accounting', 'Lobbying',
+                  'Professional fundraising', 'Investment management', 'Other',
+                  'Advertising and promotion', 'Office expenses',
+                  'Information technology', 'Interest', 'Insurance'];
 
     var stack = d3.layout.stack();
     var layers = stack(d3.range(n).map(function(x) {return getData(x, savingsData); }));
@@ -152,7 +313,7 @@ function createBarGraph(savingsData) {
         function(d) { return d.y0 + d.y; }); });
 
     var margin = {top: 40, right: 10, bottom: 75, left: 10};
-    width = 1000 - margin.left - margin.right;
+    width = 838 - margin.left - margin.right;
     var diagramWidth = 1000 - margin.left - margin.right - 200;
     height = 600 - margin.top - margin.bottom;
 
@@ -415,7 +576,20 @@ function createHorizontalBars(thisNonprofitRankings, numBars, gapSize, width, he
         .attr('x2', rectWidth - (thisNonprofitRankings[i] * rectWidth))
         .attr('y2', i*gapSize + rectHeight)
         .attr('stroke-width',2)
-        .attr('stroke','black');
+        .attr('stroke','white')
+        .on("mouseover", function(d) {      
+            div.transition()        
+                .duration(200)      
+                .style("opacity", .9);      
+            div .html(formatTime(d.date) + "<br/>"  + d.close)  
+                .style("left", (d3.event.pageX) + "px")     
+                .style("top", (d3.event.pageY - 28) + "px");    
+            })                  
+        .on("mouseout", function(d) {       
+            div.transition()        
+                .duration(500)      
+                .style("opacity", 0);   
+        });
     }/*
     for (var j = 1; j < comparison_data.length; j++) {
         for (var i = 0; i < numBars; i++) {
@@ -440,24 +614,50 @@ function createHorizontalBars(thisNonprofitRankings, numBars, gapSize, width, he
     }*/
 } //function createHorizontalBars
 
-function updateTotalExpense() {
-    var total_expense = parseInt(
-                    parseInt($('#pension_plan_contributions').val()) + 
-                    parseInt($('#othremplyeebene').val()) + 
-                    parseInt($('#feesforsrvcmgmt').val()) + 
-                    parseInt($('#legalfees').val()) + 
-                    parseInt($('#accountingfees').val()) + 
-                    parseInt($('#accountingfees').val()) + 
-                    parseInt($('#feesforsrvclobby').val()) + 
-                    parseInt($('#profndraising').val()) + 
-                    parseInt($('#feesforsrvcinvstmgmt').val()) + 
-                    parseInt($('#advrtpromo').val()) + 
-                    parseInt($('#officexpns').val()) + 
-                    parseInt($('#infotech').val()) + 
-                    parseInt($('#interestamt').val()) + 
-                    parseInt($('#insurance').val()) + 
-                    parseInt($('#feesforsrvcothr').val())
-                    );
-    $('#total_expense').html(total_expense);
-} //function updateTotalExpense()
+function updateTotalExpenseAndValidateFields() {
 
+    // if the function is called on load, then no validation needed as the form
+    // is pre-populated properly
+    if ($(document).is(event.target)) { 
+        var num = 0; // just a dummy integer so the validation passes
+    } else {
+        var num = $(event.target).val();
+    }
+
+    var parent = $('#' + $(event.target)[0].id).parent(); // for appending-removing error messages
+    var errorMessageElement = parent.children()[parent.children.length];
+    console.log(errorMessageElement);
+
+    if (isValidInt(num)) {
+        var total_expense = parseInt(
+            parseInt($('#pension_plan_contributions').val()) + 
+            parseInt($('#othremplyeebene').val()) + 
+            parseInt($('#feesforsrvcmgmt').val()) + 
+            parseInt($('#legalfees').val()) + 
+            parseInt($('#accountingfees').val()) + 
+            parseInt($('#feesforsrvclobby').val()) + 
+            parseInt($('#profndraising').val()) + 
+            parseInt($('#feesforsrvcinvstmgmt').val()) + 
+            parseInt($('#advrtpromo').val()) + 
+            parseInt($('#officexpns').val()) + 
+            parseInt($('#infotech').val()) + 
+            parseInt($('#interestamt').val()) + 
+            parseInt($('#insurance').val()) + 
+            parseInt($('#feesforsrvcothr').val())
+        );
+        var dollarized = '$' + (total_expense + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+        $('#total_expense').html(dollarized);
+        
+        if (errorMessageElement) {
+            $(errorMessageElement).html('');
+        }
+
+    } else {
+        $(errorMessageElement).html('<br> Please enter an integer.');
+    }
+
+}
+
+function isValidInt(text) {
+    return Math.floor(text) == text && $.isNumeric(text);
+}

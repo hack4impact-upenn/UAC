@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <link rel="icon" href="../../favicon.ico">
+        <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
 
          <!-- CDN for jQuery -->
         <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
@@ -16,22 +16,37 @@
         <!-- CDN for Bootstrap -->
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
-        <title>UAC Nonprofit Overhead Analyzer</title>
-        </head>
-
-    <body>
-        <div class="container theme-showcase" role="main">
-            <h1>UAC Nonprofit Overhead Analyzer</h1>
-
-            {% block content %}{% endblock %}
-        </div>
-
+        <!-- Raleway from Google Fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Raleway:400,700' rel='stylesheet' type='text/css'>
         
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}" ></style>
 
+        <title>Nonprofit Overhead Analyzer</title>
+    </head>
+    <body>
+       
+        {% block content %}
+        {% endblock %}
+        
+        <footer id="contact">
+            <div class="container centered yellow">
+                Provided by <a target="_blank" href="http://uac.org/">Urban Affairs Coalition</a><br>
+                215-851-0110<br>
+                1207 Chestnut Street, Philadelphia, PA 19107<br><br>
+                <a href="http://visitor.r20.constantcontact.com/manage/optin/ea?v=00147Jgk4c64VNKCmzrLiG-Rg%3D%3D" target="_blank"><img class="media-icons" src="{{ url_for('static', filename='mail-icon.png') }}" alt="suscribe"></a>
+                <a href="https://twitter.com/UACoalition" target="_blank"><img class="media-icons" src="{{ url_for('static', filename='twitter-icon.png') }}" alt="twitter"></a>
+                <a href="https://www.facebook.com/urbanaffairscoalition" target="_blank"><img class="media-icons" src="{{ url_for('static', filename='facebook-icon.png') }}" alt="facebook"></a>
+                <a href="https://www.youtube.com/user/GPUAC" target="_blank"><img class="media-icons" src="{{ url_for('static', filename='youtube-icon.png') }}" alt="youtube"></a>
+                <a href="https://www.flickr.com/photos/gpuac" target="_blank"><img class="media-icons" src="{{ url_for('static', filename='flickr-icon.png') }}" alt="flickr"></a>
+                <a href="http://uac.org/feed/news" target="_blank"><img class="media-icons" src="{{ url_for('static', filename='rss-icon.png') }}" alt="rss"></a>
+                <br>
+                <br>
+                Developed by <a href="http://hack4impact.org/" target="_blank">Hack4Impact</a> in 2015.
+            </div>
+        </footer>
     </body>
 </html>

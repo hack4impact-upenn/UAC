@@ -1,12 +1,11 @@
-from app import app, db, models
+from app import app, db, models, mail
 from app.models import *
 from flask import request, render_template, redirect, url_for
 from flask.ext.paginate import Pagination
 from attrdict import AttrDict
 from urllib import quote_plus
-import requests, json, re
+import requests, json, re, datetime
 from flask.ext.mail import Message
-from app import mail
 
 
 import string
@@ -14,10 +13,11 @@ import string
 RESULTS_PER_PAGE = 25
 
 @app.route('/', methods=['GET','POST'])
-@app.route('/#search', methods=['GET','POST'])
+@app.route('/search', methods=['GET','POST'])
 def search():
     if request.method == 'POST':
         search_value = request.form.getlist('search')[0]
+        original_search_value = search_value
         search_value = quote_plus(search_value)
         #print search_value
 
@@ -42,22 +42,20 @@ def search():
             for i in range(0, len(filings)):
                 org = filings[i]['organization']
                 result_for_html = {
-                    'name': org['name'],
+                    'name': org['name'].title(),
                     'ein': org['ein'],
-                    'city': org['city'],
+                    'city': org['city'].title(),
                     'state': org['state'],
                     'tax_prd': filings[i]['tax_prd']
                 }
-                results_for_html.append(result_for_html)
+                added_already = False
+                for i in range(0, len(results_for_html)):
+                    if (results_for_html[i]['ein'] == result_for_html['ein']):
+                        added_already = True
+                        break
+                if (not added_already):
+                    results_for_html.append(result_for_html)
 
-                # print org['name']
-                # print org['ein']
-                # print org['city']
-                # print org['state']
-                # print filings[i]['tax_prd']
-                # print ''
-
-            print len(results_for_html) == 0
             if (len(request.form.getlist('page')) > 0):
                 page = int(request.form.getlist('page')[0])
             else:
@@ -68,7 +66,7 @@ def search():
             return render_template('index.html', results=results_for_html,
                                     pagination=pagination,
                                     no_result=len(results_for_html) == 0,
-                                    search_value=search_value)
+                                    search_value=original_search_value)
 
     return render_template('index.html')
 
@@ -205,7 +203,10 @@ def populate_results_data(result, result_data, ein):
 
 @app.route('/results')
 def results():
-    return render_template('results.html', result_data={'revenue':0})
+    return render_template('results.html', result_data={'name':'New (custom) nonprofit',
+                                                        'state':'US',
+                                                        'ntee_code': 'None',
+                                                        'revenue':0})
 
 
 # TODO ? should i convert ein to <int:ein> ?
@@ -231,6 +232,10 @@ def ein_results(ein):
 
     populate_results_data(result, result_data, ein)
 
+    # compare the DC nonprofits to those from Maryland
+    if (result_data['state'] == 'DC'):
+        result_data['state'] = 'MD'
+
     return render_template('results.html', result_data=result_data, ein=ein)
 
 @app.route('/calculate', methods=['POST'])
@@ -249,9 +254,9 @@ def calculate():
                    'interestamt', 'insurance', 'total_expense', 'total_revenue']
     for name in field_names:
         this_nonprofit_expense_literal[name] = float(request.form.getlist(name)[0])
-        this_nonprofit_expense_percent[name] = float(request.form.getlist(name)[0]) / total_rev * 100
+        this_nonprofit_expense_percent[name] = float(request.form.getlist(name)[0]) / max(total_rev, 0.000001)*100
         if (name == 'total_expense'):
-            this_nonprofit_expense_percent['totalefficiency'] = float(request.form.getlist(name)[0]) / total_rev * 100
+            this_nonprofit_expense_percent['totalefficiency'] = float(request.form.getlist(name)[0]) / max(total_rev, 0.000001)*100
 
     print this_nonprofit_expense_literal
     print this_nonprofit_expense_percent
@@ -265,6 +270,8 @@ def calculate():
     query_bucket_id = state_id + '_' + ntee_id + '_' + revenue_id
     print 'query_bucket_id: ' + query_bucket_id
     table_row = models.Bucket.query.filter_by(bucket_id=query_bucket_id).first()
+    if (not table_row):
+        return jsonify({ 'no_such_bucket': True })
     this_nonprofit_ranking_data = table_row.get_all_percentiles(this_nonprofit_expense_percent)
     other_nonprofit_data = table_row.get_other_nonprofit_data()
     print other_nonprofit_data
@@ -278,7 +285,8 @@ def calculate():
 
 @app.route('/contact', methods=['POST'])
 def contact():
-    # print request.form
+    print request.form
+    print request.values
     client_name = request.form['name']
     client_org = request.form['org']
     client_email = request.form['email']
@@ -290,10 +298,31 @@ def contact():
     print client_phone
     print client_image
 
-    msgUAC = Message("Someone used the app",
+    msgUAC = Message("Nonprofit Overhead Analyzer: new prospect",
         sender="armatoka@gmail.com",
                   recipients=['armatoka@gmail.com'])
-    msgUAC.html = "<p>Client Name: " + client_name + "</p> <p>Client Organization: " + client_org + "</p> <p>Client Email: " + client_email + "</p> <p>Client Phone: " + client_phone + "</p> "
+    msgUAC.html = ("<p>Hello,</p><p>A new prospect requested a report on the Nonprofit Overhead Analyzer. Here are the details:<br>Name: "
+    + client_name + "<br>Organization: " + client_org + "<br>Email: "
+    + client_email + "<br>Phone: " + client_phone
+    + "<br>Please see the CSV file attached for the prospect's financials.</p><p>This is an automatically-generated message. Please do not reply.<br>Have a good day!</p>")
+    
+    # create the CSV
+    current_time = datetime.datetime.now().strftime("%c")
+    csv_data='Expense type, Amount\n'
+    field_names = ['name', 'org', 'email', 'phone', 'pension_plan_contributions',
+                   'othremplyeebene', 'feesforsrvcmgmt', 'legalfees', 'accountingfees',
+                   'feesforsrvclobby', 'profndraising', 'feesforsrvcinvstmgmt',
+                   'feesforsrvcothr', 'advrtpromo', 'officexpns', 'infotech',
+                   'interestamt', 'insurance', 'total_expense', 'total_revenue']
+
+    for name in field_names:
+        csv_data += name + ',' + request.values[name] + '\n'
+
+    # attach the client financial data in the CSV
+    msgUAC.attach(data=csv_data,
+               content_type="text/plain",
+               filename='Nonprofit Overhead Analyzer prospect data from ' + current_time + '.csv')
+
     mail.send(msgUAC)
     return "200"
 
