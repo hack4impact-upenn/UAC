@@ -300,7 +300,7 @@ def contact():
 
     msgUAC = Message("Nonprofit Overhead Analyzer: new prospect",
         sender="armatoka@gmail.com",
-                  recipients=['armatoka@gmail.com'])
+                  recipients=['armatoka@gmail.com', 'arman@wharton.upenn.edu'])
     msgUAC.html = ("<p>Hello,</p><p>A new prospect requested a report on the Nonprofit Overhead Analyzer. Here are the details:<br>Name: "
     + client_name + "<br>Organization: " + client_org + "<br>Email: "
     + client_email + "<br>Phone: " + client_phone
