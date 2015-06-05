@@ -1,3 +1,4 @@
 #!ENV/bin/python
 from app import app
-app.run(debug=True)
+# for developing use app.run(debug=True)
+app.run(host='0.0.0.0')
