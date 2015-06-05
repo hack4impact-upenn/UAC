@@ -170,7 +170,7 @@ $(document).ready(function() {
                         series: {
                           1: {curveType: 'function'}
                         },
-                        height: 506,
+                        height: 550,
                         pointSize: 5,
                         backgroundColor: '#E9FCD1'
                       };
