@@ -23,6 +23,6 @@ $(document).ready(function() {
     $(window).resize(function() {
         console.log($(window).height());
         console.log($('body').height());
-        $('#home_p').css( 'min-height', $(window).height() - 188 );
+        $('#home_p').css( 'min-height', $(window).height() - 198 );
     }).resize();
 });
